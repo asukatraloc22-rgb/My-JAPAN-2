@@ -985,6 +985,40 @@ const QUIZZES = {
   }
 };
 
+
+// ═══════════════════════════════════════════════════════════
+// PDFs — chargement direct depuis Vercel
+// ═══════════════════════════════════════════════════════════
+const PDF_NAMES = {
+  'h1':  { file:'cours_01_hiragana.pdf',     label:'Cours 01 — Hiragana complet' },
+  'k1':  { file:'cours_02_katakana.pdf',     label:'Cours 02 — Katakana complet' },
+  'g1':  { file:'cours_03_structure_SOV.pdf',label:'Cours 03 — Structure SOV' },
+  'g2':  { file:'cours_04_particules.pdf',   label:'Cours 04 — Particules' },
+  'g3':  { file:'cours_05_verbes_masu.pdf',  label:'Cours 05 — Verbes en ます' },
+  'kj1': { file:'cours_06_kanji_1_80.pdf',   label:'Cours 06 — Kanji 1–80' },
+};
+
+// Charge les PDFs depuis le serveur si disponibles
+// Utilise l'URL relative → fonctionne sur n'importe quel hébergement
+async function tryAutoLoadPDFs() {
+  const checks = Object.entries(PDF_NAMES).map(([id, {file, label}]) => {
+    return new Promise(resolve => {
+      if (ST.pdfUrls[id]) { resolve(); return; } // déjà chargé
+      const img = new Image(); // astuce : Image peut tester une URL sans CORS
+      fetch(file, { method:'HEAD', cache:'no-cache' })
+        .then(r => {
+          if (r.ok) {
+            ST.pdfUrls[id] = file;
+            ST.pdfUrls[id+'_name'] = label;
+            ST.pdfUrls[id+'_server'] = true;
+          }
+          resolve();
+        })
+        .catch(() => resolve()); // fichier absent = pas d'erreur
+    });
+  });
+  await Promise.all(checks);
+}
 // ═══════════════════════════════════════════════════════════
 // INDEXEDDB — persistance des PDFs entre sessions
 // ═══════════════════════════════════════════════════════════
@@ -1173,15 +1207,48 @@ function renderCours(c){
   }
   const periods=[...new Set(MODULES.map(m=>m.period))];
   let html=`
-    <div class="card card-sakura" style="margin-bottom:16px;">
-      <div style="display:flex;gap:12px;align-items:flex-start;">
-        <span style="font-size:32px;line-height:1;">📂</span>
-        <div>
-          <div style="font-family:var(--font-title);font-size:16px;font-weight:700;margin-bottom:4px;">Importe tes cours PDF</div>
-          <div style="font-size:13px;color:#666;line-height:1.6;">Clique sur un module, puis importe le fichier PDF correspondant. Il s'affiche directement dans l'application. Tu peux mettre à jour le PDF à tout moment.</div>
-        </div>
-      </div>
-    </div>`;
+    ${(()=>{
+      const total = Object.keys(PDF_NAMES).length;
+      const fromServer = Object.keys(PDF_NAMES).filter(id=>ST.pdfUrls[id+'_server']).length;
+      const fromLocal  = Object.keys(PDF_NAMES).filter(id=>ST.pdfUrls[id]&&!ST.pdfUrls[id+'_server']).length;
+      const loaded = fromServer + fromLocal;
+
+      if(loaded === total) return `
+        <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,white,#e8f5f0);border:1.5px solid #1D9E75;border-left:4px solid #1D9E75;">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:28px;">✅</span>
+            <div>
+              <div style="font-weight:700;color:#0d6b4c;margin-bottom:2px;">Tous les cours sont prêts (\${loaded}/\${total})</div>
+              <div style="font-size:12px;color:#555;">🌐 \${fromServer} depuis Vercel · 📁 \${fromLocal} uploadés manuellement</div>
+            </div>
+          </div>
+        </div>`;
+
+      if(loaded > 0) return `
+        <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,white,#fff8e1);border:1.5px solid #c9922a;border-left:4px solid #c9922a;">
+          <div style="display:flex;gap:12px;align-items:center;">
+            <span style="font-size:28px;">⚡</span>
+            <div>
+              <div style="font-weight:700;color:#7a5a00;margin-bottom:2px;">\${loaded}/\${total} cours disponibles</div>
+              <div style="font-size:12px;color:#555;">Les autres peuvent être importés manuellement ci-dessous.</div>
+            </div>
+          </div>
+        </div>`;
+
+      return `
+        <div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,white,#fff0f5);border:1.5px solid var(--sakura);border-left:4px solid var(--sakura-deep);">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="font-size:28px;">📂</span>
+            <div>
+              <div style="font-weight:700;margin-bottom:4px;">Aucun PDF détecté sur le serveur</div>
+              <div style="font-size:12px;color:#666;line-height:1.7;">
+                <b>Solution :</b> ajoute les 6 PDF dans ton repo GitHub, puis redéploie sur Vercel.<br>
+                Ou importe-les manuellement via le bouton <b>+ Importer</b> sur chaque module.
+              </div>
+            </div>
+          </div>
+        </div>`;
+    })()}`;
   for(const period of periods){
     const mods=MODULES.filter(m=>m.period===period);
     const jlpt=mods[0].jlpt;
@@ -1202,8 +1269,10 @@ function renderCours(c){
               <div class="module-desc">${mod.desc}</div>
             </div>
             ${hasPdf
-              ?`<div style="display:flex;align-items:center;gap:6px;">
-              <span style="color:var(--teal,#1D9E75);font-size:12px;font-weight:700;">📄 PDF ✓</span>
+              ?`<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              <span style="color:var(--teal,#1D9E75);font-size:12px;font-weight:700;">
+                ${ST.pdfUrls[mod.id+'_server']?'🌐':'📄'} PDF ✓
+              </span>
               ${QUIZZES[mod.id]?`<button class="quiz-module-btn" onclick="event.stopPropagation();startQuiz('${mod.id}')">🎯 Quiz</button>`:''}
             </div>`
               :`<label class="btn-sakura btn-sm" style="cursor:pointer;white-space:nowrap;font-size:12px;padding:5px 10px;border-radius:6px;border:1.5px solid var(--sakura2);background:var(--sakura-pale);color:var(--sakura-deep);" onclick="event.stopPropagation()">
@@ -1237,8 +1306,15 @@ function uploadPDF(id, input) {
 }
 async function removePDF(id) {
   try { await deletePDF(id); } catch(e) {}
-  if (ST.pdfUrls[id]) URL.revokeObjectURL(ST.pdfUrls[id]);
-  delete ST.pdfUrls[id]; delete ST.pdfUrls[id+'_name'];
+  if (ST.pdfUrls[id] && !ST.pdfUrls[id+'_server']) URL.revokeObjectURL(ST.pdfUrls[id]);
+  delete ST.pdfUrls[id]; delete ST.pdfUrls[id+'_name']; delete ST.pdfUrls[id+'_server'];
+  // Re-check if server version available
+  if (PDF_NAMES[id]) {
+    try {
+      const res = await fetch(PDF_NAMES[id].file, {method:'HEAD'});
+      if (res.ok) { ST.pdfUrls[id]=PDF_NAMES[id].file; ST.pdfUrls[id+'_name']=PDF_NAMES[id].label; ST.pdfUrls[id+'_server']=true; }
+    } catch(e) {}
+  }
   ST.activeModule = null; render();
 }
 
@@ -1686,6 +1762,7 @@ function renderQuizScore(c, qd) {
 // INIT — load saved PDFs then render
 // ═══════════════════════════════════════════════════════════
 (async function init() {
+  // 1. Restaurer les PDFs uploadés manuellement (IndexedDB)
   try {
     const saved = await loadAllPDFs();
     for (const entry of saved) {
@@ -1693,13 +1770,15 @@ function renderQuizScore(c, qd) {
       ST.pdfUrls[entry.id] = URL.createObjectURL(blob);
       ST.pdfUrls[entry.id+'_name'] = entry.name;
     }
-    if (saved.length > 0) {
-      // Show a subtle notification
-      console.log(`✓ ${saved.length} PDF(s) restaurés depuis la mémoire locale`);
-    }
-  } catch(e) {
-    console.warn('IndexedDB load failed:', e);
-  }
+  } catch(e) { console.warn('IndexedDB:', e); }
+
+  // 2. Charger depuis le serveur ceux qui ne sont pas en IndexedDB
+  await tryAutoLoadPDFs();
+
+  const serverOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id+'_server']);
+  const manualOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id] && !ST.pdfUrls[id+'_server']);
+  console.log(`PDFs serveur: ${serverOk.length} | PDFs locaux: ${manualOk.length}`);
+
   render();
 })();
 </script>
