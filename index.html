@@ -643,6 +643,7 @@ iframe.pdf-frame{width:100%;height:640px;border:none;display:block;}
 .chapter-quiz-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(107,79,160,.35);}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1761,7 +1762,32 @@ function renderQuizScore(c, qd) {
 // ═══════════════════════════════════════════════════════════
 // INIT — load saved PDFs then render
 // ═══════════════════════════════════════════════════════════
-(async function init() {
+// ═══════════════════════════════════════════════════════════
+// CONFIGURATION SUPABASE (CONNEXION POUR LES PDF)
+// ═══════════════════════════════════════════════════════════
+const SUPABASE_URL = "https://xsnrbiyqdzzgpicevuyv.supabase.co"; 
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbnJiaXlxZHp6Z3BpY2V2dXl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAyMzU3OTcsImV4cCI6MjA5NTgxMTc5N30.I4OPdZfMHhqfsAjXKlujJXPvAuGACVL-jyLrhLyX2Iw";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function loadPDFsFromSupabase() {
+  // Liaison exacte entre ton site et tes fichiers sur Supabase
+  const mesCours = [
+    { id: 'mois12', fileName: 'cours6_kanji_1_80.pdf', title: 'Bilan : Les Kanjis N5' },
+    { id: 'chapitre1', fileName: 'cours1_hiragana.pdf', title: 'Chapitre 1 : Les Hiragana' },
+    { id: 'chapitre2', fileName: 'cour2_katakana.pdf', title: 'Chapitre 2 : Les Katakana' },
+    { id: 'chapitre3', fileName: 'cours3_structure_SOV.pdf', title: 'Chapitre 3 : La structure SOV' },
+    { id: 'chapitre4', fileName: 'cours4_particules.pdf', title: 'Chapitre 4 : Les Particules' },
+    { id: 'chapitre5', fileName: 'cours5_verbes_masu.pdf', title: 'Chapitre 5 : Les verbes en -MASU' }
+  ];
+
+  for (const cours of mesCours) {
+    const { data } = supabase.storage.from('cours-pdf').getPublicUrl(cours.fileName);
+    if (data && data.publicUrl) {
+      ST.pdfUrls[cours.id] = data.publicUrl;
+      ST.pdfUrls[cours.id + '_name'] = cours.title;
+    }
+  }
+} (async function init() {
   // 1. Restaurer les PDFs uploadés manuellement (IndexedDB)
   try {
     const saved = await loadAllPDFs();
@@ -1772,10 +1798,13 @@ function renderQuizScore(c, qd) {
     }
   } catch(e) { console.warn('IndexedDB:', e); }
 
-  // 2. Charger depuis le serveur ceux qui ne sont pas en IndexedDB
+ // 2. Charger depuis le serveur ceux qui ne sont pas en IndexedDB
   await tryAutoLoadPDFs();
 
-  const serverOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id+'_server']);
+  // On demande à Supabase de charger tes fichiers en ligne
+  await loadPDFsFromSupabase();
+
+  const serverOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id+'_server'] || ST.pdfUrls[id]);
   const manualOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id] && !ST.pdfUrls[id+'_server']);
   console.log(`PDFs serveur: ${serverOk.length} | PDFs locaux: ${manualOk.length}`);
 
