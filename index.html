@@ -1770,7 +1770,6 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function loadPDFsFromSupabase() {
-  // Liaison exacte entre ton site et tes fichiers sur Supabase
   const mesCours = [
     { id: 'mois12', fileName: 'cours6_kanji_1_80.pdf', title: 'Bilan : Les Kanjis N5' },
     { id: 'chapitre1', fileName: 'cours1_hiragana.pdf', title: 'Chapitre 1 : Les Hiragana' },
@@ -1787,7 +1786,12 @@ async function loadPDFsFromSupabase() {
       ST.pdfUrls[cours.id + '_name'] = cours.title;
     }
   }
-} (async function init() {
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT — load saved PDFs then render
+// ═══════════════════════════════════════════════════════════
+(async function init() {
   // 1. Restaurer les PDFs uploadés manuellement (IndexedDB)
   try {
     const saved = await loadAllPDFs();
@@ -1798,18 +1802,14 @@ async function loadPDFsFromSupabase() {
     }
   } catch(e) { console.warn('IndexedDB:', e); }
 
- // 2. Charger depuis le serveur ceux qui ne sont pas en IndexedDB
+  // 2. Charger depuis le serveur ceux qui ne sont pas en IndexedDB
   await tryAutoLoadPDFs();
 
   // On demande à Supabase de charger tes fichiers en ligne
   await loadPDFsFromSupabase();
 
   const serverOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id+'_server'] || ST.pdfUrls[id]);
-  const manualOk = Object.keys(PDF_NAMES).filter(id => ST.pdfUrls[id] && !ST.pdfUrls[id+'_server']);
-  console.log(`PDFs serveur: ${serverOk.length} | PDFs locaux: ${manualOk.length}`);
 
+  // Rendu initial de l'application
   render();
 })();
-</script>
-</body>
-</html>
