@@ -1759,9 +1759,9 @@ function renderQuizScore(c, qd) {
     </div>`;
 }
 
-// ═══════════════════════════════════════════════════════════
-// INIT — load saved PDFs then render
-// ═══════════════════════════════════════════════════════════
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
 // ═══════════════════════════════════════════════════════════
 // CONFIGURATION SUPABASE (CONNEXION POUR LES PDF)
 // ═══════════════════════════════════════════════════════════
@@ -1813,3 +1813,4 @@ async function loadPDFsFromSupabase() {
   // Rendu initial de l'application
   render();
 })();
+</script>
