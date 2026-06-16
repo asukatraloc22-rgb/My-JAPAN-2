@@ -43,16 +43,16 @@ body{
   font-family:var(--font-jp);
   font-weight:900;
   color:var(--aka);
-  opacity:.025;
+  opacity:0.04; /* Opacité ajustée pour être visible mais discrète */
   line-height:1;
 }
 
-/* ─── ANIMATION SAKURA RETROUVÉE & CORRIGÉE ────────────────── */
+/* ─── ANIMATION SAKURA ─────────────────────────────────────── */
 .petals{
   position:fixed;
   inset:0;
   pointer-events:none;
-  z-index:9999; /* Corrigé : Passe par-dessus tout le contenu */
+  z-index:9999;
   overflow:hidden;
 }
 .petal {
@@ -100,17 +100,22 @@ body{
 .sidebar-nav { flex: 1; padding: 12px 0; display: flex; flex-direction: column; gap: 2px; }
 .nav-group-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: .1em; text-transform: uppercase; padding: 14px 20px 4px; display: block; }
 
+/* Styles du menu déroulant */
+.menu-toggle { justify-content: space-between; font-weight: bold !important; color: #fff !important; background: rgba(0,0,0,0.15) !important;}
+.chevron { transition: transform 0.3s ease; font-size: 12px; }
+.submenu { overflow: hidden; background: rgba(0,0,0,0.1); }
+.sub-item { padding-left: 36px !important; font-size: 13px !important;}
+
 .sidebar button.nav-item {
   display: flex !important; align-items: center !important; gap: 12px !important;
-  width: 100% !important; padding: 11px 20px !important; background: transparent !important;
+  width: 100% !important; padding: 12px 20px !important; background: transparent !important;
   border: none !important; color: rgba(255,255,255,0.85) !important; font-size: 13.5px !important;
   font-weight: 500 !important; font-family: var(--font-body) !important; cursor: pointer !important;
   text-align: left !important; transition: all 0.2s ease !important; position: relative !important;
 }
-.sidebar button.nav-item:hover { background: rgba(255,255,255,0.1) !important; color: #fff !important; padding-left: 24px !important; }
-.sidebar button.nav-item.active { background: rgba(255,255,255,0.18) !important; color: #fff !important; font-weight: 700 !important; border-left: 4px solid var(--sakura); padding-left: 16px !important;}
+.sidebar button.nav-item:hover { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.sidebar button.sub-item.active { background: rgba(188,0,45,0.4) !important; color: #fff !important; font-weight: 700 !important; border-left: 4px solid var(--sakura); padding-left: 32px !important;}
 .sidebar .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge { margin-left: auto; font-size: 10px; padding: 2px 6px; border-radius: 10px; background: rgba(0,0,0,0.4); color: #fff; }
 
 .sidebar-section-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 10px 0; }
 
@@ -124,6 +129,7 @@ body{
 .kana-section { margin-bottom: 30px; }
 .kana-section h4 { font-family: var(--font-title); color: var(--aka); margin-bottom: 15px; border-bottom: 1px solid var(--sakura-pale); padding-bottom: 5px; }
 .kana-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; max-width: 650px; }
+.yoon-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; max-width: 450px; } /* Grille spéciale 3 colonnes */
 .kana-cell { background: white; border: 1.5px solid rgba(188,0,45,.12); border-radius: var(--radius-sm); padding: 12px 6px; text-align: center; cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm); }
 .kana-cell:hover { background: var(--sakura-pale); border-color: var(--sakura2); transform: translateY(-2px); }
 .kana-jp { font-size: 26px; font-family: var(--font-jp); display: block; color: var(--sumi); font-weight: bold; }
@@ -148,12 +154,7 @@ body{
 .card p { font-size: 15.5px; line-height: 1.8; color: #333; margin-bottom: 16px; }
 .card ul { margin-left: 20px; margin-bottom: 16px; line-height: 1.8; color: #333; }
 .card li { margin-bottom: 6px; }
-.example-box { background: var(--kinari); border-left: 4px solid var(--aka); padding: 16px 20px; margin: 16px 0; border-radius: 0 8px 8px 0; }
-.example-jp { font-family: var(--font-jp); font-size: 20px; font-weight: 700; color: var(--sumi); margin-bottom: 6px; }
-.example-fr { font-size: 14.5px; color: #555; }
-.grammar-highlight { background: var(--sakura-pale); padding: 2px 6px; border-radius: 4px; font-weight: bold; color: var(--aka); }
 
-  /* ─── STYLES POUR LES COURS INTÉGRÉS ──────────────────────── */
 .course-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14.5px; }
 .course-table th { background: var(--sakura-pale); color: var(--aka); padding: 14px; text-align: left; border: 1px solid rgba(188,0,45,.15); font-family: var(--font-title); }
 .course-table td { padding: 14px; border: 1px solid rgba(188,0,45,.1); line-height: 1.6; }
@@ -164,7 +165,7 @@ body{
 .vocab-jp { font-size: 22px; font-family: var(--font-jp); font-weight: bold; color: var(--sumi); display: block; margin-bottom: 6px; }
 .vocab-fr { font-size: 13px; color: #666; }
 .alert-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 15px 0; border-radius: 0 8px 8px 0; font-size: 14px; }
-  
+
 /* QUIZ INTERACTIF DYNAMIQUE */
 .quiz-container { background: white; border: 2px solid var(--sakura); border-radius: var(--radius); padding: 32px; max-width: 700px; box-shadow: var(--shadow); margin: 0 auto; }
 .quiz-question { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--sumi); text-align: center; }
@@ -199,29 +200,33 @@ body{
     </div>
     
     <nav class="sidebar-nav">
-      <div class="nav-group-label">Module 1 : Écriture & Base</div>
-      <button class="nav-item active" onclick="loadContent('cours-01')"><span class="nav-icon">あ</span> Cours 1 : Hiragana</button>
-      <button class="nav-item" onclick="loadContent('cours-02')"><span class="nav-icon">ア</span> Cours 2 : Katakana</button>
-      <button class="nav-item" onclick="loadContent('cours-06')"><span class="nav-icon">⛩</span> Cours 6 : Kanji N5</button>
+      
+      <!-- MENU DÉROULANT COURS JLPT N5 -->
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
+        <span><span class="nav-icon">🎓</span> Cours JLPT N5</span>
+        <span class="chevron" id="chevron-jlpt5-menu">▼</span>
+      </button>
+      
+      <div id="jlpt5-menu" class="submenu" style="display: block;">
+        <button class="nav-item sub-item active" onclick="loadContent('cours-01')"><span class="nav-icon">あ</span> Cours 1 : Hiragana</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-02')"><span class="nav-icon">ア</span> Cours 2 : Katakana</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-03')"><span class="nav-icon">📚</span> Cours 3 : Structure SOV</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-04')"><span class="nav-icon">📚</span> Cours 4 : Particules</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05')"><span class="nav-icon">📚</span> Cours 5 : Verbes (Masu)</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-06')"><span class="nav-icon">⛩</span> Cours 6 : Kanji N5</button>
+      </div>
       
       <div class="sidebar-section-divider"></div>
-      
-      <div class="nav-group-label">Module 2 : Grammaire Essentielle</div>
-      <button class="nav-item" onclick="loadContent('cours-03')"><span class="nav-icon">📚</span> Cours 3 : Structure SOV</button>
-      <button class="nav-item" onclick="loadContent('cours-04')"><span class="nav-icon">📚</span> Cours 4 : Particules</button>
-      <button class="nav-item" onclick="loadContent('cours-05')"><span class="nav-icon">📚</span> Cours 5 : Verbes (Masu)</button>
-      
-      <div class="sidebar-section-divider"></div>
-      
-      <div class="nav-group-label">Évaluations interactives</div>
-      <button class="nav-item" onclick="startQuiz('kana')"><span class="nav-icon">🎯</span> Quiz : Lecture Kana</button>
-      <button class="nav-item" onclick="startQuiz('kanji')"><span class="nav-icon">🎯</span> Quiz : Sens des Kanji</button>
+
+      <div class="nav-group-label">Évaluations</div>
+      <button class="nav-item" onclick="startQuiz('kana')"><span class="nav-icon">🎯</span> Quiz : Kana</button>
+      <button class="nav-item" onclick="startQuiz('kanji')"><span class="nav-icon">🎯</span> Quiz : Kanji</button>
     </nav>
   </aside>
 
   <main class="main-content">
     <header class="main-header">
-      <div class="page-title" id="page-title">Tableau Complet des Hiragana</div>
+      <div class="page-title" id="page-title">Bienvenue sur votre espace JLPT N5</div>
     </header>
     
     <div class="main-body" id="content">
@@ -231,6 +236,19 @@ body{
 </div>
 
 <script>
+/* ─── GESTION DU MENU DÉROULANT ────────────────────────────── */
+function toggleMenu(menuId) {
+  const menu = document.getElementById(menuId);
+  const chevron = document.getElementById('chevron-' + menuId);
+  if (menu.style.display === 'none') {
+    menu.style.display = 'block';
+    chevron.style.transform = 'rotate(0deg)';
+  } else {
+    menu.style.display = 'none';
+    chevron.style.transform = 'rotate(-90deg)';
+  }
+}
+
 /* ─── AUDIO SYNTHESIS ──────────────────────────────────────── */
 function speak(text) {
   if ('speechSynthesis' in window) {
@@ -240,7 +258,7 @@ function speak(text) {
   }
 }
 
-/* ─── PÉTALES DE SAKURA (CORRIGÉ & OPTIMISÉ) ───────────────── */
+/* ─── PÉTALES DE SAKURA ────────────────────────────────────── */
 function createPetal() {
   const container = document.getElementById('petals');
   if(!container) return;
@@ -256,7 +274,7 @@ function createPetal() {
 }
 setInterval(createPetal, 300);
 
-/* ─── DATA COMPLÈTE KANA (Gojūon + Dakuten + Handakuten) ────── */
+/* ─── DATA COMPLÈTE KANA + YOON ────────────────────────────── */
 const HIRAGANA_BASE = [
   {j:'あ',r:'a'},{j:'い',r:'i'},{j:'う',r:'u'},{j:'え',r:'e'},{j:'お',r:'o'},
   {j:'か',r:'ka'},{j:'き',r:'ki'},{j:'く',r:'ku'},{j:'け',r:'ke'},{j:'こ',r:'ko'},
@@ -277,6 +295,20 @@ const HIRAGANA_DAKUTEN = [
   {j:'だ',r:'da'},{j:'ぢ',r:'ji'},{j:'づ',r:'zu'},{j:'で',r:'de'},{j:'ど',r:'do'},
   {j:'ば',r:'ba'},{j:'び',r:'bi'},{j:'ぶ',r:'bu'},{j:'べ',r:'be'},{j:'ぼ',r:'bo'},
   {j:'ぱ',r:'pa'},{j:'ぴ',r:'pi'},{j:'ぷ',r:'pu'},{j:'ぺ',r:'pe'},{j:'ぽ',r:'po'}
+];
+
+const HIRAGANA_YOON = [
+  {j:'きゃ',r:'kya'}, {j:'きゅ',r:'kyu'}, {j:'きょ',r:'kyo'},
+  {j:'しゃ',r:'sha'}, {j:'しゅ',r:'shu'}, {j:'しょ',r:'sho'},
+  {j:'ちゃ',r:'cha'}, {j:'ちゅ',r:'chu'}, {j:'ちょ',r:'cho'},
+  {j:'にゃ',r:'nya'}, {j:'にゅ',r:'nyu'}, {j:'にょ',r:'nyo'},
+  {j:'ひゃ',r:'hya'}, {j:'ひゅ',r:'hyu'}, {j:'ひょ',r:'hyo'},
+  {j:'みゃ',r:'mya'}, {j:'みゅ',r:'myu'}, {j:'みょ',r:'myo'},
+  {j:'りゃ',r:'rya'}, {j:'りゅ',r:'ryu'}, {j:'りょ',r:'ryo'},
+  {j:'ぎゃ',r:'gya'}, {j:'ぎゅ',r:'gyu'}, {j:'ぎょ',r:'gyo'},
+  {j:'じゃ',r:'ja'}, {j:'じゅ',r:'ju'}, {j:'じょ',r:'jo'},
+  {j:'びゃ',r:'bya'}, {j:'びゅ',r:'byu'}, {j:'びょ',r:'byo'},
+  {j:'ぴゃ',r:'pya'}, {j:'ぴゅ',r:'pyu'}, {j:'ぴょ',r:'pyo'}
 ];
 
 const KATAKANA_BASE = [
@@ -301,9 +333,22 @@ const KATAKANA_DAKUTEN = [
   {j:'パ',r:'pa'},{j:'ピ',r:'pi'},{j:'プ',r:'pu'},{j:'ペ',r:'pe'},{j:'ポ',r:'po'}
 ];
 
-/* ─── DATA KANJI COMPLÈTE AVEC ON/KUN ──────────────────────── */
+const KATAKANA_YOON = [
+  {j:'キャ',r:'kya'}, {j:'キュ',r:'kyu'}, {j:'キョ',r:'kyo'},
+  {j:'シャ',r:'sha'}, {j:'シュ',r:'shu'}, {j:'ショ',r:'sho'},
+  {j:'チャ',r:'cha'}, {j:'チュ',r:'chu'}, {j:'チョ',r:'cho'},
+  {j:'ニャ',r:'nya'}, {j:'ニュ',r:'nyu'}, {j:'ニョ',r:'nyo'},
+  {j:'ヒャ',r:'hya'}, {j:'ヒュ',r:'hyu'}, {j:'ヒョ',r:'hyo'},
+  {j:'ミャ',r:'mya'}, {j:'ミュ',r:'myu'}, {j:'ミョ',r:'myo'},
+  {j:'リャ',r:'rya'}, {j:'リュ',r:'ryu'}, {j:'リョ',r:'ryo'},
+  {j:'ギャ',r:'gya'}, {j:'ギュ',r:'gyu'}, {j:'ギョ',r:'gyo'},
+  {j:'ジャ',r:'ja'}, {j:'ジュ',r:'ju'}, {j:'ジョ',r:'jo'},
+  {j:'ビャ',r:'bya'}, {j:'ビュ',r:'byu'}, {j:'ビョ',r:'byo'},
+  {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
+];
+
+/* ─── DATA KANJI COMPLÈTE N5 ───────────────────────────────── */
 const KANJI_N5 = [
-  // --- NOMBRES ---
   {j:'一', on:'イチ, イツ', kun:'ひと, ひと.つ', f:'Un'},
   {j:'二', on:'ニ, ジ', kun:'ふた, ふた.つ', f:'Deux'},
   {j:'三', on:'サン', kun:'み, み.つ', f:'Trois'},
@@ -317,8 +362,6 @@ const KANJI_N5 = [
   {j:'百', on:'ヒャク', kun:'もも', f:'Cent'},
   {j:'千', on:'セン', kun:'ち', f:'Mille'},
   {j:'万', on:'マン, バン', kun:'よろず', f:'Dix-mille'},
-  
-  // --- TEMPS & JOURS ---
   {j:'日', on:'ニチ, ジツ', kun:'ひ, -び, -か', f:'Jour, Soleil'},
   {j:'月', on:'ゲツ, ガツ', kun:'つき', f:'Lune, Mois'},
   {j:'火', on:'カ', kun:'ひ, -び, ほ-', f:'Feu'},
@@ -334,8 +377,6 @@ const KANJI_N5 = [
   {j:'今', on:'コン, キン', kun:'いま', f:'Maintenant'},
   {j:'先', on:'セン', kun:'さき', f:'Avant, Précédent'},
   {j:'来', on:'ライ', kun:'く.る, きた.る', f:'Venir'},
-  
-  // --- PERSONNES & CORPS ---
   {j:'人', on:'ジン, ニン', kun:'ひと', f:'Personne'},
   {j:'男', on:'ダン, ナン', kun:'おとこ', f:'Homme'},
   {j:'女', on:'ジョ, ニョ', kun:'おんな, め', f:'Femme'},
@@ -348,8 +389,6 @@ const KANJI_N5 = [
   {j:'耳', on:'ジ', kun:'みみ', f:'Oreille'},
   {j:'手', on:'シュ', kun:'て', f:'Main'},
   {j:'足', on:'ソク', kun:'あし, た.りる', f:'Pied, Jambe, Suffire'},
-  
-  // --- DIRECTIONS & POSITIONS ---
   {j:'上', on:'ジョウ, ショウ', kun:'うえ, あ.がる', f:'Haut, Monter'},
   {j:'下', on:'カ, ゲ', kun:'した, さ.がる', f:'Bas, Descendre'},
   {j:'左', on:'サ', kun:'ひだり', f:'Gauche'},
@@ -362,8 +401,6 @@ const KANJI_N5 = [
   {j:'西', on:'セイ, サイ', kun:'にし', f:'Ouest'},
   {j:'南', on:'ナン, ナ', kun:'みなみ', f:'Sud'},
   {j:'北', on:'ホク', kun:'きた', f:'Nord'},
-  
-  // --- NATURE & ENVIRONNEMENT ---
   {j:'空', on:'クウ', kun:'そら, あ.く, から', f:'Ciel, Vide'},
   {j:'山', on:'サン', kun:'やま', f:'Montagne'},
   {j:'川', on:'セン', kun:'かわ', f:'Rivière'},
@@ -371,8 +408,6 @@ const KANJI_N5 = [
   {j:'気', on:'キ, ケ', kun:'いき', f:'Esprit, Air, Humeur'},
   {j:'雨', on:'ウ', kun:'あめ, あま-', f:'Pluie'},
   {j:'電', on:'デン', kun:'-', f:'Électricité'},
-  
-  // --- ADJECTIFS ---
   {j:'大', on:'ダイ, タイ', kun:'おお, おお.きい', f:'Grand'},
   {j:'小', on:'ショウ', kun:'ちい.さい, こ-', f:'Petit'},
   {j:'高', on:'コウ', kun:'たか.い', f:'Haut, Cher'},
@@ -383,8 +418,6 @@ const KANJI_N5 = [
   {j:'多', on:'タ', kun:'おお.い', f:'Beaucoup'},
   {j:'少', on:'ショウ', kun:'すく.ない, すこ.し', f:'Peu'},
   {j:'白', on:'ハク, ビャク', kun:'しろ, しろ.い', f:'Blanc'},
-  
-  // --- VERBES ---
   {j:'食', on:'ショク, ジキ', kun:'た.べる, く.う', f:'Manger'},
   {j:'飲', on:'イン, オン', kun:'の.む', f:'Boire'},
   {j:'見', on:'ケン', kun:'み.る, み.える', f:'Voir, Regarder'},
@@ -401,8 +434,6 @@ const KANJI_N5 = [
   {j:'生', on:'セイ, ショウ', kun:'い.きる, う.まれる', f:'Vie, Naître'},
   {j:'学', on:'ガク', kun:'まな.ぶ', f:'Étudier'},
   {j:'校', on:'コウ, キョウ', kun:'-', f:'École'},
-  
-  // --- DIVERS (Noms communs) ---
   {j:'何', on:'カ', kun:'なに, なん', f:'Quoi, Comment'},
   {j:'円', on:'エン', kun:'まる.い', f:'Cercle, Yen'},
   {j:'語', on:'ゴ', kun:'かた.る, かた.らう', f:'Langue, Mot'},
@@ -417,35 +448,20 @@ const KANJI_N5 = [
   {j:'間', on:'カン, ケン', kun:'あいだ, ま', f:'Intervalle, Espace'}
 ];
 
-const KANJI_N4 = [
-  {j:'会', on:'カイ, エ', kun:'あ.う', f:'Réunion, Rencontrer'},
-  {j:'社', on:'シャ', kun:'やしろ', f:'Société, Sanctuaire'},
-  {j:'言', on:'ゲン, ゴン', kun:'い.う, こと', f:'Dire, Mot'},
-  {j:'話', on:'ワ', kun:'はな.す, はなし', f:'Parler, Histoire'},
-  {j:'読', on:'ドク, トク', kun:'よ.む', f:'Lire'},
-  {j:'書', on:'ショ', kun:'か.く', f:'Écrire'},
-  {j:'食', on:'ショク, ジキ', kun:'た.べる, く.う', f:'Manger, Nourriture'},
-  {j:'飲', on:'イン, オン', kun:'の.む', f:'Boire'},
-  {j:'買', on:'バイ', kun:'か.う', f:'Acheter'},
-  {j:'行', on:'コウ, ギョウ', kun:'い.く, ゆ.く', f:'Aller, Ligne'}
-];
-
-const KANJI_NX = [
-  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation (N3)'},
-  {j:'情', on:'ジョウ, セイ', kun:'なさ.け', f:'Émotion, Sympathie (N3)'},
-  {j:'解', on:'カイ, ゲ', kun:'と.く, と.ける', f:'Dénouer, Résoudre (N3)'},
-  {j:'識', on:'シキ', kun:'し.る', f:'Connaissance, Discernement (N2)'},
-  {j:'観', on:'カン', kun:'み.る', f:'Observer, Apparence (N2)'},
-  {j:'響', on:'キョウ', kun:'ひび.く', f:'Écho, Résonner (N1)'},
-  {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris (N1)'}
-];
-
-/* ─── RENDERING DE TABLEAUX ET LEÇONS ──────────────────────── */
+/* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
 function generateKanaGrid(dataArray) {
   let html = `<div class="kana-grid">`;
   dataArray.forEach(c => {
     if(c.e) html += `<div class="kana-cell empty"></div>`;
     else html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
+  });
+  return html + `</div>`;
+}
+
+function generateYoonGrid(dataArray) {
+  let html = `<div class="yoon-grid">`;
+  dataArray.forEach(c => {
+    html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
   });
   return html + `</div>`;
 }
@@ -466,13 +482,15 @@ function generateKanjiGrid(dataArray) {
   return html + `</div>`;
 }
 
+/* ─── LES COURS COMPLETS ───────────────────────────────────── */
 function loadContent(id) {
   const contentDiv = document.getElementById('content');
   const titleHeader = document.getElementById('page-title');
   document.getElementById('sidebar').classList.remove('open');
   
-  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-  const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
+  // Mettre à jour l'état actif dans la sidebar
+  document.querySelectorAll('.sub-item').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = Array.from(document.querySelectorAll('.sub-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
   if(activeBtn) activeBtn.classList.add('active');
 
   if(id === 'cours-01') {
@@ -480,65 +498,67 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Pourquoi apprendre les hiragana en premier ?</h3>
-        <p>Les hiragana sont l'alphabet phonétique natif du japonais. Contrairement au rōmaji, ils vous permettront de lire n'importe quel texte, de mémoriser avec la bonne prononciation et d'accéder aux <em>furigana</em> (petits caractères d'aide au-dessus des kanji).</p>
-        <p><strong>Méthode :</strong> Observez le caractère > Écoutez le son (cliquez sur les grilles ci-dessous) > Tracez-le 10 fois.</p>
+        <p>Les hiragana sont l'alphabet phonétique natif du japonais[cite: 7]. Contrairement au rōmaji, ils vous permettront de lire n'importe quel texte, de mémoriser avec la bonne prononciation et d'accéder aux <em>furigana</em> (petits caractères d'aide au-dessus des kanji)[cite: 7].</p>
+        <p><strong>Méthode :</strong> Observez le caractère > Écoutez le son (cliquez sur les grilles ci-dessous) > Tracez-le 10 fois[cite: 7].</p>
         
         <h3>2. Les sons combinés et modifiés</h3>
-        <p>En ajoutant des <strong>Dakuten</strong> (les deux petits traits) ou des <strong>Handakuten</strong> (le petit rond), un son change (ex: KA か devient GA が). De plus, en ajoutant un petit <em>ya, yu, yo</em> (や, ゆ, よ), on crée des sons fusionnés comme <em>kya, shu, cho</em>.</p>
-        <div class="alert-box"><strong>Règle spéciale :</strong> La particule は se prononce "wa", et を se prononce "o".</div>
+        <p>En ajoutant des <strong>Dakuten</strong> (les deux petits traits) ou des <strong>Handakuten</strong> (le petit rond), un son change (ex: KA か devient GA が)[cite: 7]. De plus, en ajoutant un petit <em>ya, yu, yo</em> (や, ゆ, よ), on crée des sons fusionnés comme <em>kya, shu, cho</em>[cite: 7].</p>
+        <div class="alert-box"><strong>Règle spéciale :</strong> La particule は se prononce "wa", et を se prononce "o"[cite: 7].</div>
         
         <h3>3. Vocabulaire de base (100% Hiragana)</h3>
         <div class="vocab-grid">
-          <div class="vocab-card"><span class="vocab-jp">あさ</span><span class="vocab-fr">asa (matin)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">いぬ</span><span class="vocab-fr">inu (chien)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">さかな</span><span class="vocab-fr">sakana (poisson)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">くるま</span><span class="vocab-fr">kuruma (voiture)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">せんせい</span><span class="vocab-fr">sensei (professeur)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">たべます</span><span class="vocab-fr">tabemasu (manger)</span></div>
+          <div class="vocab-card" onclick="speak('あさ')"><span class="vocab-jp">あさ</span><span class="vocab-fr">asa (matin)</span></div>
+          <div class="vocab-card" onclick="speak('いぬ')"><span class="vocab-jp">いぬ</span><span class="vocab-fr">inu (chien)</span></div>
+          <div class="vocab-card" onclick="speak('さかな')"><span class="vocab-jp">さかな</span><span class="vocab-fr">sakana (poisson)</span></div>
+          <div class="vocab-card" onclick="speak('くるま')"><span class="vocab-jp">くるま</span><span class="vocab-fr">kuruma (voiture)</span></div>
+          <div class="vocab-card" onclick="speak('せんせい')"><span class="vocab-jp">せんせい</span><span class="vocab-fr">sensei (professeur)</span></div>
+          <div class="vocab-card" onclick="speak('たべます')"><span class="vocab-jp">たべます</span><span class="vocab-fr">tabemasu (manger)</span></div>
         </div>
       </div>
       <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
-      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>`;
+      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>
+      <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(HIRAGANA_YOON)}</div>`;
   } 
   else if(id === 'cours-02') {
     titleHeader.innerText = "Cours 02 : Katakana Complet";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le rôle des Katakana</h3>
-        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères (<strong>gairaigo</strong>), les onomatopées et les noms étrangers. Il partage exactement les mêmes sons que le hiragana, mais avec des formes plus angulaires.</p>
+        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères (<strong>gairaigo</strong>), les onomatopées et les noms étrangers[cite: 6]. Il partage exactement les mêmes sons que le hiragana, mais avec des formes plus angulaires[cite: 6].</p>
         
         <h3>2. Hiragana vs Katakana</h3>
         <table class="course-table">
           <tr><th>Son</th><th>Hiragana (Japonais natif)</th><th>Katakana (Étranger)</th><th>Exemple</th></tr>
-          <tr><td>a</td><td>あ</td><td>ア</td><td>アイスクリーム (Glace)</td></tr>
-          <tr><td>ko</td><td>こ</td><td>コ</td><td>コーヒー (Café)</td></tr>
-          <tr><td>te</td><td>て</td><td>テ</td><td>テレビ (Télévision)</td></tr>
+          <tr><td>a</td><td>あ</td><td>ア</td><td>アイスクリーム (Glace)[cite: 6]</td></tr>
+          <tr><td>ko</td><td>こ</td><td>コ</td><td>コーヒー (Café)[cite: 6]</td></tr>
+          <tr><td>te</td><td>て</td><td>テ</td><td>テレビ (Télévision)[cite: 6]</td></tr>
         </table>
         
-        <div class="alert-box"><strong>Astuce :</strong> La barre horizontale (ー) allonge la voyelle précédente. Ex: コーヒー (kō-hī).</div>
+        <div class="alert-box"><strong>Astuce :</strong> La barre horizontale (ー) allonge la voyelle précédente[cite: 6]. Ex: コーヒー (kō-hī)[cite: 6].</div>
       </div>
       <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
-      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>`;
+      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>
+      <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(KATAKANA_YOON)}</div>`;
   }
   else if(id === 'cours-03') {
     titleHeader.innerText = "Cours 03 : Structure de Phrase (SOV)";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le grand choc : le verbe à la fin</h3>
-        <p>Contrairement au français (Sujet-Verbe-Objet), la langue japonaise place <strong>systématiquement le verbe à la toute fin</strong> de la phrase. L'ordre est Sujet-Objet-Verbe (SOV).</p>
+        <p>Contrairement au français (Sujet-Verbe-Objet), la langue japonaise place <strong>systématiquement le verbe à la toute fin</strong> de la phrase[cite: 5]. L'ordre est Sujet-Objet-Verbe (SOV)[cite: 5].</p>
         
         <h3>2. Exemples progressifs</h3>
         <table class="course-table">
           <tr><th>Niveau</th><th>Phrase (Japonais)</th><th>Structure & Traduction</th></tr>
-          <tr><td>Niveau 1 (S+V)</td><td>私は 学生 です。<br><em>Watashi wa gakusei desu.</em></td><td>Moi [thème] étudiant suis.<br><strong>Je suis étudiant.</strong></td></tr>
-          <tr><td>Niveau 2 (S+O+V)</td><td>私は すしを 食べます。<br><em>Watashi wa sushi wo tabemasu.</em></td><td>Moi [thème] sushis [objet] mange.<br><strong>Je mange des sushis.</strong></td></tr>
-          <tr><td>Niveau 3 (Lieu)</td><td>彼女は 学校で 勉強します。<br><em>Kanojo wa gakkō de benkyō shimasu.</em></td><td>Elle [thème] école [lieu] étudie.<br><strong>Elle étudie à l'école.</strong></td></tr>
+          <tr><td>Niveau 1 (S+V)</td><td>私は 学生 です。<br><em>Watashi wa gakusei desu.</em></td><td>Moi [thème] étudiant suis.<br><strong>Je suis étudiant.</strong>[cite: 5]</td></tr>
+          <tr><td>Niveau 2 (S+O+V)</td><td>私は すしを 食べます。<br><em>Watashi wa sushi wo tabemasu.</em></td><td>Moi [thème] sushis [objet] mange.<br><strong>Je mange des sushis.</strong>[cite: 5]</td></tr>
+          <tr><td>Niveau 3 (Lieu)</td><td>彼女は 学校で 勉強します。<br><em>Kanojo wa gakkō de benkyō shimasu.</em></td><td>Elle [thème] école [lieu] étudie.<br><strong>Elle étudie à l'école.</strong>[cite: 5]</td></tr>
         </table>
 
         <h3>3. Négations et Questions</h3>
         <ul>
-          <li><strong>Négatif :</strong> Remplacez <em>ます (masu)</em> par <em>ません (masen)</em>. Ex: 食べません (Je ne mange pas).</li>
-          <li><strong>Question :</strong> Ajoutez simplement la particule <em>か (ka)</em> à la fin. Ex: 行きますか？ (Allez-vous ?).</li>
+          <li><strong>Négatif :</strong> Remplacez <em>ます (masu)</em> par <em>ません (masen)</em>[cite: 5]. Ex: 食べません (Je ne mange pas)[cite: 5].</li>
+          <li><strong>Question :</strong> Ajoutez simplement la particule <em>か (ka)</em> à la fin[cite: 5]. Ex: 行きますか？ (Allez-vous ?)[cite: 5].</li>
         </ul>
       </div>`;
   }
@@ -547,19 +567,19 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Qu'est-ce qu'une particule ?</h3>
-        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom. Elles définissent le rôle grammatical du mot précédent. Sans elles, la phrase est incompréhensible car le japonais n'a pas de conjugaison de personne.</p>
+        <p>Les particules (助詞, joshi) sont de petits mots invariables placés <strong>après</strong> un nom ou pronom[cite: 4]. Elles définissent le rôle grammatical du mot précédent, comme des étiquettes[cite: 4]. Sans elles, la phrase japonaise est incompréhensible[cite: 4].</p>
         
         <h3>2. Tableau récapitulatif essentiel</h3>
         <table class="course-table">
           <tr><th>Particule</th><th>Rôle principal</th><th>Exemple clé</th></tr>
-          <tr><td><strong>は (wa)</strong></td><td>Marque le thème (ce dont on parle).</td><td>私<strong>は</strong>学生です (Je suis étudiant)</td></tr>
-          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau, accent mis sur LE sujet.</td><td>猫<strong>が</strong>います (Il y a un chat)</td></tr>
-          <tr><td><strong>を (o)</strong></td><td>Objet direct (ce qui subit l'action).</td><td>すし<strong>を</strong>食べます (Je mange des sushis)</td></tr>
-          <tr><td><strong>に (ni)</strong></td><td>Direction, destination, temps précis.</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo)</td></tr>
-          <tr><td><strong>で (de)</strong></td><td>Lieu de l'action, moyen, instrument.</td><td>電車<strong>で</strong>行きます (J'y vais en train)</td></tr>
+          <tr><td><strong>は (wa)</strong></td><td>Thème, sujet connu[cite: 4].</td><td>私<strong>は</strong>日本語を学びます[cite: 4]</td></tr>
+          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau, emphase[cite: 4].</td><td>猫<strong>が</strong>います[cite: 4]</td></tr>
+          <tr><td><strong>を (wo/o)</strong></td><td>Objet direct[cite: 4].</td><td>すし<strong>を</strong>食べます[cite: 4]</td></tr>
+          <tr><td><strong>に (ni)</strong></td><td>Direction, destination, moment[cite: 4].</td><td>東京<strong>に</strong>行きます[cite: 4]</td></tr>
+          <tr><td><strong>で (de)</strong></td><td>Lieu d'action, moyen[cite: 4].</td><td>電車<strong>で</strong>行きます[cite: 4]</td></tr>
         </table>
         
-        <div class="alert-box"><strong>は vs が :</strong> "は" est pour les présentations générales, "が" est pour une information nouvelle ou répondre à la question "Qui ?".</div>
+        <div class="alert-box"><strong>は vs が :</strong> "は" est pour les présentations générales, "が" est pour une information nouvelle ou répondre à la question "Qui ?"[cite: 4].</div>
       </div>`;
   }
   else if(id === 'cours-05') {
@@ -567,32 +587,32 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. La conjugaison polie universelle</h3>
-        <p>La forme en <strong>~ます (masu)</strong> est la forme standard polie. Elle ne change jamais selon la personne (je/tu/il). Il n'y a que 4 combinaisons temporelles à retenir :</p>
+        <p>La forme <strong>ます (masu)</strong> est la forme standard pour les situations polies et neutres[cite: 3]. Cette forme ne change JAMAIS selon la personne (je/tu/il = même verbe)[cite: 3]. Il n'y a que 4 combinaisons à apprendre[cite: 3] :</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Terminaison</th><th>Exemple (Manger)</th></tr>
-          <tr><td>Présent / Futur affirmatif</td><td><strong>~ます</strong> (masu)</td><td>食べます (Je mange)</td></tr>
-          <tr><td>Présent / Futur négatif</td><td><strong>~ません</strong> (masen)</td><td>食べません (Je ne mange pas)</td></tr>
-          <tr><td>Passé affirmatif</td><td><strong>~ました</strong> (mashita)</td><td>食べました (J'ai mangé)</td></tr>
-          <tr><td>Passé négatif</td><td><strong>~ませんでした</strong> (masen deshita)</td><td>食べませんでした (Je n'ai pas mangé)</td></tr>
+          <tr><td>Présent affirmatif</td><td><strong>ます</strong></td><td>食べます (tabemasu)[cite: 3]</td></tr>
+          <tr><td>Présent négatif</td><td><strong>ません</strong></td><td>食べません (tabemasen)[cite: 3]</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>ました</strong></td><td>食べました (tabemashita)[cite: 3]</td></tr>
+          <tr><td>Passé négatif</td><td><strong>ませんでした</strong></td><td>食べませんでした (tabemasen deshita)[cite: 3]</td></tr>
         </table>
 
-        <h3>2. Les 20 verbes essentiels (JLPT N5)</h3>
+        <h3>2. Les 20 verbes essentiels N5</h3>
         <div class="vocab-grid">
-          <div class="vocab-card"><span class="vocab-jp">食べます</span><span class="vocab-fr">tabemasu (Manger)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">飲みます</span><span class="vocab-fr">nomimasu (Boire)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">行きます</span><span class="vocab-fr">ikimasu (Aller)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">来ます</span><span class="vocab-fr">kimasu (Venir)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">見ます</span><span class="vocab-fr">mimasu (Voir)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">聞きます</span><span class="vocab-fr">kikimasu (Écouter)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">書きます</span><span class="vocab-fr">kakimasu (Écrire)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">読みます</span><span class="vocab-fr">yomimasu (Lire)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">話します</span><span class="vocab-fr">hanashimasu (Parler)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">買います</span><span class="vocab-fr">kaimasu (Acheter)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">起きます</span><span class="vocab-fr">okimasu (Se lever)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">寝ます</span><span class="vocab-fr">nemasu (Dormir)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">帰ります</span><span class="vocab-fr">kaerimasu (Rentrer)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">します</span><span class="vocab-fr">shimasu (Faire)</span></div>
-          <div class="vocab-card"><span class="vocab-jp">勉強します</span><span class="vocab-fr">benkyō shimasu (Étudier)</span></div>
+          <div class="vocab-card" onclick="speak('食べます')"><span class="vocab-jp">食べます</span><span class="vocab-fr">tabemasu (manger)</span></div>
+          <div class="vocab-card" onclick="speak('飲みます')"><span class="vocab-jp">飲みます</span><span class="vocab-fr">nomimasu (boire)</span></div>
+          <div class="vocab-card" onclick="speak('行きます')"><span class="vocab-jp">行きます</span><span class="vocab-fr">ikimasu (aller)</span></div>
+          <div class="vocab-card" onclick="speak('来ます')"><span class="vocab-jp">来ます</span><span class="vocab-fr">kimasu (venir)</span></div>
+          <div class="vocab-card" onclick="speak('見ます')"><span class="vocab-jp">見ます</span><span class="vocab-fr">mimasu (voir)</span></div>
+          <div class="vocab-card" onclick="speak('聞きます')"><span class="vocab-jp">聞きます</span><span class="vocab-fr">kikimasu (écouter)</span></div>
+          <div class="vocab-card" onclick="speak('書きます')"><span class="vocab-jp">書きます</span><span class="vocab-fr">kakimasu (écrire)</span></div>
+          <div class="vocab-card" onclick="speak('読みます')"><span class="vocab-jp">読みます</span><span class="vocab-fr">yomimasu (lire)</span></div>
+          <div class="vocab-card" onclick="speak('話します')"><span class="vocab-jp">話します</span><span class="vocab-fr">hanashimasu (parler)</span></div>
+          <div class="vocab-card" onclick="speak('買います')"><span class="vocab-jp">買います</span><span class="vocab-fr">kaimasu (acheter)</span></div>
+          <div class="vocab-card" onclick="speak('起きます')"><span class="vocab-jp">起きます</span><span class="vocab-fr">okimasu (se lever)</span></div>
+          <div class="vocab-card" onclick="speak('寝ます')"><span class="vocab-jp">寝ます</span><span class="vocab-fr">nemasu (dormir)</span></div>
+          <div class="vocab-card" onclick="speak('帰ります')"><span class="vocab-jp">帰ります</span><span class="vocab-fr">kaerimasu (rentrer)</span></div>
+          <div class="vocab-card" onclick="speak('します')"><span class="vocab-jp">します</span><span class="vocab-fr">shimasu (faire)</span></div>
+          <div class="vocab-card" onclick="speak('勉強します')"><span class="vocab-jp">勉強します</span><span class="vocab-fr">benkyō shimasu (étudier)</span></div>
         </div>
       </div>`;
   }
@@ -601,30 +621,30 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Comprendre les Kanji</h3>
-        <p>Les kanji sont des idéogrammes empruntés au chinois. Chaque kanji possède :</p>
+        <p>Les kanji sont des idéogrammes empruntés au chinois[cite: 2]. Chaque kanji possède :</p>
         <ul>
-          <li><strong>Une lecture ON (Onyomi) :</strong> prononciation d'origine chinoise, souvent utilisée dans les mots composés (ex: 水曜日 - <em>SUI-yōbi</em>).</li>
-          <li><strong>Une lecture KUN (Kunyomi) :</strong> prononciation japonaise native, souvent utilisée quand le kanji est seul (ex: 水 - <em>mizu</em>).</li>
+          <li><strong>Une lecture ON (Onyomi) :</strong> prononciation d'origine chinoise, souvent utilisée dans les mots composés (ex: 月曜日 - <em>GETSU-yōbi</em>)[cite: 2].</li>
+          <li><strong>Une lecture KUN (Kunyomi) :</strong> prononciation japonaise native, souvent utilisée seule ou avec okurigana (ex: 月 - <em>tsuki</em>)[cite: 2].</li>
         </ul>
-        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. Ex: 明 (brillant) = 日 (soleil) + 月 (lune). Le soleil et la lune ensemble, c'est très brillant !</p>
+        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle mémorable[cite: 2]. Ex: 明 (brillant) = 日 (soleil) + 月 (lune). Le soleil ET la lune = super brillant[cite: 2] !</p>
       </div>
       <div class="kana-section"><h4>Vos Kanji JLPT N5 à maîtriser (Cliquez pour écouter)</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
   }
 }
 
-/* ─── MODULE QUIZ INTERACTIFS RÉINTÉGRÉ & ÉTENDU ──────────────── */
+/* ─── MODULE QUIZ ──────────────────────────────────────────── */
 const QUIZ_BANK = {
   kana: [
     {q: "Quel est le son du caractère 'あ' ?", o: ["a", "i", "u", "e"], c: 0},
     {q: "Lequel de ces caractères est le hiragana 'ki' ?", o: ["さ", "き", "ち", "け"], c: 1},
-    {q: "Identifiez le son du katakana 'ツ' (Attention au 'shi' シ) :", o: ["shi", "so", "tsu", "n"], c: 2},
+    {q: "Identifiez le son du katakana 'ツ' :", o: ["shi", "so", "tsu", "n"], c: 2},
     {q: "Que donne le son 'ka' avec un dakuten (が) ?", o: ["pa", "za", "da", "ga"], c: 3}
   ],
   kanji: [
     {q: "Que signifie le kanji '日' ?", o: ["Lune", "Eau", "Soleil / Jour", "Arbre"], c: 2},
-    {q: "Quelle est la lecture KUN (japonaise) du kanji '人' (Personne) ?", o: ["ひと (hito)", "ジン (jin)", "おお (oo)", "き (ki)"], c: 0},
+    {q: "Quelle est la lecture KUN du kanji '人' (Personne) ?", o: ["ひと (hito)", "ジン (jin)", "おお (oo)", "き (ki)"], c: 0},
     {q: "Que signifie '食' ?", o: ["Boire", "Acheter", "Manger", "Lire"], c: 2},
-    {q: "Quelle est la lecture ON (chinoise) du kanji '水' (Eau) ?", o: ["カ (ka)", "スイ (sui)", "モク (moku)", "キン (kin)"], c: 1}
+    {q: "Quelle est la lecture ON du kanji '水' (Eau) ?", o: ["カ (ka)", "スイ (sui)", "モク (moku)", "キン (kin)"], c: 1}
   ]
 };
 
@@ -650,8 +670,8 @@ function renderQuestion() {
       <div class="quiz-container quiz-score-screen">
         <h3>Session Terminée !</h3>
         <div class="quiz-score-num">${quizScore} / ${qList.length}</div>
-        <p>Excellente session. Répétez ces quiz quotidiennement pour ancrer les caractères dans votre mémoire à long terme.</p>
-        <button class="quiz-opt-btn" style="margin-top:20px; background:var(--aka); color:white; width: 100%;" onclick="loadContent('hira')">Retourner au tableau de bord</button>
+        <p>Excellente session. Répétez ces quiz quotidiennement pour ancrer les caractères.</p>
+        <button class="quiz-opt-btn" style="margin-top:20px; background:var(--aka); color:white; width: 100%;" onclick="loadContent('cours-01')">Retourner au tableau de bord</button>
       </div>`;
     return;
   }
@@ -681,12 +701,12 @@ function submitAnswer(chosenIdx) {
   renderQuestion();
 }
 
-/* ─── INITIALIZATION BACKGROUND ────────────────────────────────── */
+/* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
   const bg = document.getElementById('bg-kanji');
   if(bg){
-    for(let i=0; i<30; i++){
+    for(let i=0; i<50; i++){ /* Augmentation du nombre de kanjis en fond */
       const s = document.createElement('span');
       s.textContent = KANJIS[i % KANJIS.length];
       s.style.fontSize = (Math.random() * 90 + 40) + 'px';
@@ -695,8 +715,7 @@ function submitAnswer(chosenIdx) {
       bg.appendChild(s);
     }
   }
-  // Charger la page d'accueil par défaut
-  setTimeout(() => loadContent('hira'), 100);
+  setTimeout(() => loadContent('cours-01'), 100);
 })();
 </script>
 </body>
