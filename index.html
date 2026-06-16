@@ -153,6 +153,18 @@ body{
 .example-fr { font-size: 14.5px; color: #555; }
 .grammar-highlight { background: var(--sakura-pale); padding: 2px 6px; border-radius: 4px; font-weight: bold; color: var(--aka); }
 
+  /* ─── STYLES POUR LES COURS INTÉGRÉS ──────────────────────── */
+.course-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14.5px; }
+.course-table th { background: var(--sakura-pale); color: var(--aka); padding: 14px; text-align: left; border: 1px solid rgba(188,0,45,.15); font-family: var(--font-title); }
+.course-table td { padding: 14px; border: 1px solid rgba(188,0,45,.1); line-height: 1.6; }
+.course-table tr:nth-child(even) { background: var(--kinari); }
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 20px 0; }
+.vocab-card { background: white; border: 1px solid rgba(188,0,45,.15); padding: 16px; border-radius: 8px; text-align: center; box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+.vocab-card:hover { transform: translateY(-3px); border-color: var(--sakura); }
+.vocab-jp { font-size: 22px; font-family: var(--font-jp); font-weight: bold; color: var(--sumi); display: block; margin-bottom: 6px; }
+.vocab-fr { font-size: 13px; color: #666; }
+.alert-box { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 15px 0; border-radius: 0 8px 8px 0; font-size: 14px; }
+  
 /* QUIZ INTERACTIF DYNAMIQUE */
 .quiz-container { background: white; border: 2px solid var(--sakura); border-radius: var(--radius); padding: 32px; max-width: 700px; box-shadow: var(--shadow); margin: 0 auto; }
 .quiz-question { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--sumi); text-align: center; }
