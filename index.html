@@ -2,8 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🇯🇵</text></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>日本語の道 — Mon Parcours Japonais</title>
+<title>日本語 de 道 — Mon Parcours Japonais</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <style>
 
@@ -12,7 +13,6 @@
   --sakura:#FFB7C5;--sakura2:#FF8FAB;--sakura-pale:#fff0f5;--sakura-deep:#e75480;
   --shiro:#fffef9;--kinari:#fdf6ee;--washi:#f5efe6;
   --sumi:#1a0a0a;--sumi2:#3d1515;--ink:#4a1515;
-  --gold:#c9922a;--gold2:#e8b84b;
   --font-jp:'Noto Serif JP',serif;
   --font-title:'Kaisei Decol',serif;
   --font-body:'Noto Sans JP',sans-serif;
@@ -43,840 +43,133 @@ body{
   font-family:var(--font-jp);
   font-weight:900;
   color:var(--aka);
-  opacity:.035;
+  opacity:.025;
   line-height:1;
-  transform-origin:center;
 }
 
-/* ─── SAKURA PETALS ─────────────────────────────────────────── */
-.petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden;}
-.petal{
-  position:absolute;
-  top:-30px;
-  width:14px;height:14px;
-  border-radius:0 100% 0 100%;
-  background:linear-gradient(135deg,#ffd6e0,#ffb7c5);
-  opacity:0;
-  animation:fall linear infinite;
-  filter:drop-shadow(0 1px 2px rgba(255,182,193,.5));
+/* ─── ANIMATION SAKURA RETROUVÉE & CORRIGÉE ────────────────── */
+.petals{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:9999; /* Corrigé : Passe par-dessus tout le contenu */
+  overflow:hidden;
 }
-.petal::after{
-  content:'';position:absolute;inset:0;
+.petal {
+  position:absolute;
+  top:-20px;
   border-radius:0 100% 0 100%;
-  background:linear-gradient(135deg,rgba(255,255,255,.4),transparent);
+  background:linear-gradient(135deg,#fff0f5,#ffb7c5);
+  opacity:0.9;
+  animation:fall linear forwards;
+  filter:drop-shadow(0 2px 4px rgba(255,182,193,.6));
 }
 @keyframes fall{
-  0%{opacity:0;transform:translateY(0) rotate(0deg) scale(.8);}
-  5%{opacity:.9;}
-  90%{opacity:.6;}
-  100%{opacity:0;transform:translateY(110vh) rotate(720deg) scale(1.1);}
+  0%{transform:translateY(0) rotate(0deg) translateX(0);}
+  100%{transform:translateY(105vh) rotate(720deg) translateX(150px); opacity:0;}
 }
 
-/* ─── LAYOUT ──────────────────────────────────────────────── */
-.wrap{
-  position:relative;z-index:2;
-  max-width:900px;margin:0 auto;
-  padding:0 16px 80px;
-}
-
-/* ─── HEADER ──────────────────────────────────────────────── */
-header{
-  position:relative;
-  background:linear-gradient(135deg,#8b0000 0%,var(--aka) 40%,#d4003a 100%);
-  padding:0;
-  margin:0 -16px 0;
-  overflow:hidden;
-}
-.hdr-inner{
-  display:flex;align-items:center;
-  gap:20px;padding:28px 24px 24px;
-  position:relative;z-index:2;
-}
-.hdr-circle{
-  width:64px;height:64px;
-  background:white;border-radius:50%;
-  flex-shrink:0;
-  box-shadow:0 2px 20px rgba(0,0,0,.25);
-  display:flex;align-items:center;justify-content:center;
-}
-.hdr-circle-inner{
-  width:42px;height:42px;
-  background:var(--aka);border-radius:50%;
-}
-.hdr-text{flex:1;}
-.hdr-title{
-  font-family:var(--font-title);
-  font-size:clamp(22px,4vw,34px);
-  color:white;
-  font-weight:700;
-  letter-spacing:.02em;
-  line-height:1.1;
-  text-shadow:0 2px 12px rgba(0,0,0,.3);
-}
-.hdr-kanji{
-  font-family:var(--font-jp);
-  font-size:clamp(28px,5vw,48px);
-  color:rgba(255,255,255,.18);
-  font-weight:900;
-  position:absolute;right:24px;top:50%;
-  transform:translateY(-50%);
-  pointer-events:none;
-  letter-spacing:-.02em;
-  line-height:1;
-}
-.hdr-sub{
-  font-size:12px;color:rgba(255,255,255,.75);
-  margin-top:4px;letter-spacing:.05em;font-weight:300;
-}
-/* Brush stroke bottom border */
-header::after{
-  content:'';
-  display:block;height:8px;
-  background:linear-gradient(90deg,var(--sakura2) 0%,var(--sakura) 40%,var(--sakura2) 70%,var(--sakura-deep) 100%);
-}
-/* Decorative top stripe */
-header::before{
-  content:'';
-  display:block;height:4px;
-  background:linear-gradient(90deg,var(--gold) 0%,var(--gold2) 50%,var(--gold) 100%);
-}
-.hdr-progress-bar{
-  height:3px;
-  background:rgba(255,255,255,.15);
-  margin:0 24px;
-  border-radius:2px;
-  overflow:hidden;
-}
-.hdr-progress-fill{
-  height:100%;
-  background:linear-gradient(90deg,var(--gold2),var(--gold));
-  border-radius:2px;
-  transition:width .5s ease;
-}
-.hdr-progress-label{
-  display:flex;justify-content:space-between;
-  padding:6px 24px 16px;
-  font-size:11px;color:rgba(255,255,255,.65);letter-spacing:.04em;
-}
-
-/* ─── NAVIGATION ──────────────────────────────────────────── */
-nav{
-  display:flex;gap:0;
-  background:white;
-  border-bottom:3px solid var(--aka);
-  overflow-x:auto;
-  box-shadow:0 2px 12px rgba(188,0,45,.08);
-  scrollbar-width:none;
-}
-nav::-webkit-scrollbar{display:none;}
-.tab-btn{
-  padding:14px 18px;
-  border:none;
-  background:transparent;
-  color:var(--ink);
-  cursor:pointer;
-  font-size:13px;font-weight:500;
-  font-family:var(--font-body);
-  display:flex;align-items:center;gap:6px;
-  position:relative;white-space:nowrap;
-  transition:background .15s,color .15s;
-}
-.tab-btn:hover{background:var(--sakura-pale);}
-.tab-btn.active{
-  color:var(--aka);font-weight:700;
-  background:var(--sakura-pale);
-}
-.tab-btn.active::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--sakura-deep),var(--aka));
-  margin-bottom:-3px;
-}
-
-/* ─── CARDS ───────────────────────────────────────────────── */
-.card{
-  background:white;
-  border:1px solid rgba(188,0,45,.1);
-  border-radius:var(--radius);
-  padding:20px 22px;
-  margin-bottom:12px;
-  box-shadow:var(--shadow-sm);
-  position:relative;
-  overflow:hidden;
-}
-.card::before{
-  content:'';
-  position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(180deg,var(--sakura2),var(--aka));
-  opacity:0;transition:opacity .2s;
-}
-.card:hover::before{opacity:1;}
-.card-red{border-left:4px solid var(--aka);background:linear-gradient(135deg,white,var(--aka-pale));}
-.card-sakura{background:linear-gradient(135deg,white,var(--sakura-pale));border-color:var(--sakura);}
-.card-gold{border-left:4px solid var(--gold);background:linear(white,#fffbf0);}
-
-/* ─── SECTION HEADERS ─────────────────────────────────────── */
-.section-head{
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:16px;margin-top:8px;
-}
-.section-head h2{
-  font-family:var(--font-title);
-  font-size:20px;font-weight:700;
-  color:var(--sumi);
-}
-.section-head .kanji-dec{
-  font-family:var(--font-jp);
-  font-size:32px;color:var(--sakura2);
-  font-weight:900;opacity:.7;
-  line-height:1;
-}
-.divider{
-  height:2px;
-  background:linear-gradient(90deg,var(--aka),var(--sakura),transparent);
-  border:none;margin:20px 0;
-  border-radius:1px;
-}
-
-/* ─── STATS ───────────────────────────────────────────────── */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-.stat-box{
-  background:linear-gradient(135deg,white,var(--sakura-pale));
-  border:1px solid var(--sakura);
-  border-radius:var(--radius);
-  padding:16px;text-align:center;
-  box-shadow:var(--shadow-sm);
-  position:relative;overflow:hidden;
-}
-.stat-box::after{
-  content:attr(data-kanji);
-  position:absolute;right:-4px;bottom:-8px;
-  font-family:var(--font-jp);font-size:48px;font-weight:900;
-  color:var(--sakura);opacity:.3;line-height:1;
-  pointer-events:none;
-}
-.stat-num{
-  font-family:var(--font-title);
-  font-size:32px;font-weight:700;
-  color:var(--aka);line-height:1;
-}
-.stat-lbl{font-size:11px;color:var(--ink);margin-top:5px;letter-spacing:.05em;font-weight:500;}
-
-/* ─── PROGRESS BAR ────────────────────────────────────────── */
-.pbar{height:8px;border-radius:4px;background:rgba(188,0,45,.1);overflow:hidden;margin:6px 0 14px;}
-.pfill{
-  height:100%;border-radius:4px;
-  background:linear-gradient(90deg,var(--sakura-deep),var(--aka));
-  transition:width .6s cubic-bezier(.4,0,.2,1);
-  position:relative;
-}
-.pfill::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;width:4px;
-  background:rgba(255,255,255,.5);border-radius:2px;
-}
-
-/* ─── BADGES ──────────────────────────────────────────────── */
-.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:4px;margin-bottom:4px;letter-spacing:.03em;}
-.badge-red{background:var(--aka);color:white;}
-.badge-sakura{background:var(--sakura);color:#5a0020;}
-.badge-gold{background:var(--gold2);color:#3d2000;}
-.badge-ink{background:var(--sumi);color:white;}
-.badge-outline{background:transparent;border:1.5px solid var(--aka);color:var(--aka);}
-
-/* ─── BUTTONS ─────────────────────────────────────────────── */
-.btn{
-  padding:8px 16px;border-radius:var(--radius-sm);
-  border:1.5px solid rgba(188,0,45,.25);
-  background:white;color:var(--ink);
-  cursor:pointer;font-size:13px;
-  font-family:var(--font-body);
-  transition:all .15s;
-}
-.btn:hover{background:var(--sakura-pale);border-color:var(--sakura2);}
-.btn-primary{
-  padding:9px 20px;border-radius:var(--radius-sm);
-  border:none;
-  background:linear-gradient(135deg,var(--aka2),var(--aka));
-  color:white;cursor:pointer;font-size:13px;font-weight:600;
-  font-family:var(--font-body);
-  box-shadow:0 3px 12px rgba(188,0,45,.3);
-  transition:all .15s;
-}
-.btn-primary:hover{
-  transform:translateY(-1px);
-  box-shadow:0 5px 18px rgba(188,0,45,.4);
-}
-.btn-sakura{
-  padding:8px 16px;border-radius:var(--radius-sm);
-  border:1.5px solid var(--sakura2);
-  background:var(--sakura-pale);color:var(--sakura-deep);
-  cursor:pointer;font-size:13px;font-family:var(--font-body);
-  transition:all .15s;
-}
-.btn-sakura:hover{background:var(--sakura);color:white;}
-.btn-sm{padding:5px 11px;font-size:12px;}
-
-/* ─── INPUTS ──────────────────────────────────────────────── */
-input[type=text],input[type=search],textarea,select{
-  width:100%;padding:10px 14px;
-  border-radius:var(--radius-sm);
-  border:1.5px solid rgba(188,0,45,.2);
-  background:white;color:var(--sumi);
-  font-size:13px;font-family:var(--font-body);
-  outline:none;transition:border .15s,box-shadow .15s;
-}
-input:focus,textarea:focus,select:focus{
-  border-color:var(--sakura2);
-  box-shadow:0 0 0 3px rgba(255,143,171,.15);
-}
-
-/* ─── KANA GRID ───────────────────────────────────────────── */
-.kana-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px;}
-.kana-cell{
-  background:white;
-  border:1.5px solid rgba(188,0,45,.12);
-  border-radius:var(--radius-sm);
-  padding:10px 4px;text-align:center;
-  cursor:pointer;transition:all .15s;
-  box-shadow:0 1px 4px rgba(188,0,45,.06);
-}
-.kana-cell:hover{background:var(--sakura-pale);border-color:var(--sakura2);transform:translateY(-2px);}
-.kana-cell.sel{background:var(--aka);border-color:var(--aka);}
-.kana-cell.sel .kana-jp{color:white;}
-.kana-cell.sel .kana-rom{color:rgba(255,255,255,.75);}
-.kana-jp{font-size:24px;font-family:var(--font-jp);display:block;color:var(--sumi);line-height:1.2;}
-.kana-rom{font-size:11px;color:#888;display:block;margin-top:2px;}
-
-/* ─── FLASHCARD ───────────────────────────────────────────── */
-.flashcard-wrap{
-  perspective:1000px;cursor:pointer;user-select:none;margin-bottom:12px;
-}
-.flashcard{
-  min-height:220px;
-  background:linear-gradient(135deg,white 60%,var(--sakura-pale));
-  border:2px solid rgba(188,0,45,.15);
-  border-radius:var(--radius);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:24px;
-  box-shadow:var(--shadow);
-  transition:background .2s,transform .05s;
-  position:relative;overflow:hidden;
-}
-.flashcard::before{
-  content:attr(data-kanji);
-  position:absolute;right:-10px;bottom:-15px;
-  font-family:var(--font-jp);font-size:100px;font-weight:900;
-  color:var(--sakura);opacity:.15;line-height:1;pointer-events:none;
-}
-.flashcard.flipped{background:linear-gradient(135deg,var(--sakura-pale),white);}
-.fc-jp{font-family:var(--font-jp);font-size:52px;color:var(--sumi);line-height:1.1;margin-bottom:10px;}
-.fc-fr{font-family:var(--font-title);font-size:24px;font-weight:700;color:var(--aka);margin-bottom:8px;}
-.fc-sub{font-size:13px;color:#888;}
-.fc-hint{font-size:11px;color:var(--sakura2);margin-top:12px;letter-spacing:.04em;}
-
-/* ─── VOCAB ROWS ──────────────────────────────────────────── */
-.vocab-card{
-  background:white;
-  border:1px solid rgba(188,0,45,.1);
-  border-radius:var(--radius-sm);
-  padding:12px 16px;
-  margin-bottom:8px;
-  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  box-shadow:0 1px 4px rgba(188,0,45,.06);
-  transition:all .15s;
-}
-.vocab-card:hover{border-color:var(--sakura2);transform:translateX(3px);}
-.vocab-card.learned{opacity:.5;}
-.vocab-jp{font-family:var(--font-jp);font-size:20px;font-weight:700;color:var(--sumi);min-width:80px;}
-.vocab-rom{font-size:12px;color:#aaa;min-width:80px;}
-.vocab-fr{font-size:13px;flex:1;color:var(--ink);}
-
-/* ─── CHECKLIST ───────────────────────────────────────────── */
-.check-group{
-  background:white;border-radius:var(--radius);
-  border:1px solid rgba(188,0,45,.1);
-  overflow:hidden;margin-bottom:12px;
-  box-shadow:var(--shadow-sm);
-}
-.check-head{
-  display:flex;align-items:center;gap:10px;
-  padding:14px 18px;
-  background:linear-gradient(135deg,var(--aka) 0%,#d40035 100%);
-  color:white;
-}
-.check-head-jp{font-family:var(--font-jp);font-size:22px;font-weight:900;opacity:.7;margin-left:auto;}
-.check-item{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 18px;
-  border-bottom:1px solid rgba(188,0,45,.07);
-  cursor:pointer;transition:background .12s;
-}
-.check-item:last-child{border-bottom:none;}
-.check-item:hover{background:var(--sakura-pale);}
-.checkbox{
-  width:20px;height:20px;border-radius:50%;
-  border:2px solid rgba(188,0,45,.3);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;transition:all .15s;
-}
-.checkbox.done{background:var(--aka);border-color:var(--aka);}
-.check-label{font-size:13px;color:var(--ink);}
-.check-label.done{text-decoration:line-through;color:#aaa;}
-
-/* ─── TIMELINE ────────────────────────────────────────────── */
-.tl-item{display:flex;gap:14px;margin-bottom:14px;}
-.tl-dot{display:flex;flex-direction:column;align-items:center;}
-.tl-circle{
-  width:12px;height:12px;border-radius:50%;
-  background:linear-gradient(135deg,var(--sakura2),var(--aka));
-  flex-shrink:0;margin-top:6px;
-  box-shadow:0 0 0 3px rgba(188,0,45,.15);
-}
-.tl-line{width:2px;flex:1;background:linear-gradient(180deg,var(--sakura),transparent);margin:3px 0;}
-
-/* ─── MODULE ITEMS ────────────────────────────────────────── */
-.module-item{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 16px;
-  border:1.5px solid rgba(188,0,45,.1);border-radius:var(--radius-sm);
-  margin-bottom:8px;cursor:pointer;
-  background:white;transition:all .15s;
-}
-.module-item:hover{border-color:var(--sakura2);background:var(--sakura-pale);transform:translateX(4px);}
-.module-icon{font-size:22px;flex-shrink:0;width:36px;text-align:center;}
-.module-title{font-size:13px;font-weight:600;color:var(--sumi);}
-.module-desc{font-size:12px;color:#888;margin-top:2px;}
-
-/* ─── PDF VIEWER ──────────────────────────────────────────── */
-.pdf-viewer-wrap{border:2px solid rgba(188,0,45,.15);border-radius:var(--radius);overflow:hidden;margin-top:14px;}
-.pdf-viewer-bar{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 16px;
-  background:linear-gradient(90deg,var(--aka),#d40035);
-  color:white;
-}
-.pdf-viewer-bar span{font-size:13px;font-weight:600;}
-iframe.pdf-frame{width:100%;height:640px;border:none;display:block;}
-
-/* ─── FILTER BAR ──────────────────────────────────────────── */
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.filter-btn{
-  padding:6px 13px;border-radius:20px;
-  border:1.5px solid rgba(188,0,45,.2);
-  background:white;color:var(--ink);
-  cursor:pointer;font-size:12px;font-family:var(--font-body);
-  transition:all .15s;font-weight:500;
-}
-.filter-btn:hover{background:var(--sakura-pale);}
-.filter-btn.active{background:var(--aka);color:white;border-color:var(--aka);}
-
-/* ─── TIP BOX ─────────────────────────────────────────────── */
-.tip-box{
-  background:linear-gradient(135deg,var(--sakura-pale),white);
-  border:1.5px solid var(--sakura);border-radius:var(--radius-sm);
-  padding:14px 18px;margin:12px 0;
-  font-size:13px;line-height:1.8;color:var(--ink);
-}
-.tip-box strong{color:var(--aka);}
-
-/* ─── ROADMAP ROWS ────────────────────────────────────────── */
-.road-item{
-  display:flex;align-items:center;gap:12px;
-  padding:10px 0;border-bottom:1px dashed rgba(188,0,45,.15);
-}
-.road-item:last-child{border-bottom:none;}
-.road-period{
-  min-width:80px;font-size:12px;font-weight:700;
-  color:white;background:var(--aka);
-  padding:3px 10px;border-radius:20px;text-align:center;
-}
-
-/* ─── METHOD ROWS ─────────────────────────────────────────── */
-.method-item{
-  display:flex;align-items:flex-start;gap:14px;
-  padding:12px 0;border-bottom:1px solid rgba(188,0,45,.08);
-}
-.method-icon{font-size:22px;margin-top:1px;width:28px;text-align:center;}
-.method-label{font-size:13px;font-weight:700;color:var(--sumi);}
-.method-desc{font-size:12px;color:#888;margin-top:2px;}
-
-/* ─── ANIMATIONS ──────────────────────────────────────────── */
-@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.fade-in{animation:fadeSlideIn .3s ease forwards;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-
-/* ─── RESPONSIVE ──────────────────────────────────────────── */
-@media(max-width:600px){
-  .stats-grid{grid-template-columns:repeat(3,1fr);}
-  .hdr-kanji{display:none;}
-  .tab-btn{padding:12px 13px;font-size:12px;}
-}
-
-/* ─── SCROLLBAR ───────────────────────────────────────────── */
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:var(--sakura-pale);}
-::-webkit-scrollbar-thumb{background:var(--sakura2);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--aka);}
-
-/* ─── FOOTER SAKURA LINE ──────────────────────────────────── */
-.sakura-line{
-  text-align:center;font-family:var(--font-jp);font-size:18px;
-  color:var(--sakura2);opacity:.5;padding:24px 0;
-  letter-spacing:.2em;
-}
-
-/* ─── PDF FULLSCREEN ──────────────────────────────────────── */
-.pdf-fs-overlay{
-  position:fixed;inset:0;z-index:9999;
-  background:#111;
-  display:flex;flex-direction:column;
-}
-.pdf-fs-bar{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 16px;
-  background:linear-gradient(90deg,#8b0000,var(--aka));
-  flex-shrink:0;
-}
-.pdf-fs-bar span{font-family:var(--font-title);font-size:14px;font-weight:700;color:white;flex:1;}
-.pdf-fs-frame{flex:1;border:none;width:100%;display:block;}
-
-/* ─── QUIZ SYSTEM ─────────────────────────────────────────── */
-.quiz-wrap{max-width:680px;margin:0 auto;}
-.quiz-progress{
-  display:flex;align-items:center;gap:10px;margin-bottom:20px;
-}
-.quiz-progress-bar{
-  flex:1;height:8px;border-radius:4px;
-  background:rgba(188,0,45,.12);overflow:hidden;
-}
-.quiz-progress-fill{
-  height:100%;border-radius:4px;
-  background:linear-gradient(90deg,var(--sakura-deep),var(--aka));
-  transition:width .4s ease;
-}
-.quiz-q-num{font-size:12px;font-weight:700;color:var(--aka);white-space:nowrap;}
-.quiz-card{
-  background:white;border:1.5px solid rgba(188,0,45,.12);
-  border-radius:var(--radius);padding:24px;
-  box-shadow:var(--shadow);margin-bottom:14px;
-  position:relative;overflow:hidden;
-}
-.quiz-card::before{
-  content:attr(data-kanji);
-  position:absolute;right:-8px;bottom:-12px;
-  font-family:var(--font-jp);font-size:90px;font-weight:900;
-  color:var(--sakura);opacity:.12;pointer-events:none;line-height:1;
-}
-.quiz-question{
-  font-family:var(--font-title);font-size:17px;font-weight:700;
-  color:var(--sumi);line-height:1.5;margin-bottom:18px;
-}
-.quiz-jp{
-  font-family:var(--font-jp);font-size:36px;
-  color:var(--aka);text-align:center;display:block;
-  margin-bottom:16px;
-}
-.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@media(max-width:480px){.quiz-choices{grid-template-columns:1fr;}}
-.quiz-choice{
-  padding:14px 16px;border-radius:var(--radius-sm);
-  border:1.5px solid rgba(188,0,45,.18);
-  background:white;color:var(--sumi);
-  cursor:pointer;font-size:14px;font-family:var(--font-body);
-  text-align:left;transition:all .15s;
-  display:flex;align-items:center;gap:10px;
-}
-.quiz-choice:hover:not(:disabled){
-  background:var(--sakura-pale);border-color:var(--sakura2);
-  transform:translateY(-2px);box-shadow:0 4px 12px rgba(188,0,45,.1);
-}
-.quiz-choice .choice-jp{font-family:var(--font-jp);font-size:22px;color:var(--sumi);}
-.quiz-choice.correct{background:#e8f5e9;border-color:#4caf50;color:#1b5e20;}
-.quiz-choice.wrong{background:#fce8ed;border-color:var(--aka);color:var(--aka);}
-.quiz-choice.reveal{background:var(--sakura-pale);border-color:var(--sakura);}
-.quiz-choice:disabled{cursor:default;transform:none;}
-.quiz-feedback{
-  margin-top:14px;padding:12px 16px;border-radius:var(--radius-sm);
-  font-size:13px;line-height:1.7;
-  animation:fadeSlideIn .2s ease;
-}
-.quiz-feedback.ok{background:#e8f5e9;border-left:4px solid #4caf50;color:#1b5e20;}
-.quiz-feedback.ko{background:var(--aka-pale);border-left:4px solid var(--aka);color:#5a0010;}
-.quiz-next-btn{
-  margin-top:14px;width:100%;padding:12px;
-  background:linear-gradient(135deg,var(--sakura-deep),var(--aka));
-  color:white;border:none;border-radius:var(--radius-sm);
-  font-size:14px;font-weight:700;cursor:pointer;
-  font-family:var(--font-body);transition:all .15s;
-}
-.quiz-next-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(188,0,45,.3);}
-.quiz-score-card{
-  text-align:center;padding:40px 24px;
-  background:linear-gradient(135deg,white,var(--sakura-pale));
-  border:2px solid var(--sakura);border-radius:var(--radius);
-  box-shadow:var(--shadow);
-}
-.quiz-score-num{
-  font-family:var(--font-title);font-size:64px;font-weight:700;
-  color:var(--aka);line-height:1;margin-bottom:8px;
-}
-.quiz-score-msg{font-size:15px;color:var(--ink);margin-bottom:20px;}
-.quiz-score-jp{
-  font-family:var(--font-jp);font-size:28px;
-  color:var(--sakura2);margin-bottom:20px;display:block;
-}
-.quiz-module-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 12px;border-radius:20px;
-  background:var(--aka);color:white;
-  border:none;cursor:pointer;font-size:12px;font-weight:700;
-  font-family:var(--font-body);margin-left:auto;
-  transition:all .15s;
-}
-.quiz-module-btn:hover{background:var(--sakura-deep);}
-.chapter-quiz-btn{
-  width:100%;margin-top:14px;padding:14px;
-  background:linear-gradient(135deg,#6b4fa0,#9b59b6);
-  color:white;border:none;border-radius:var(--radius-sm);
-  font-size:14px;font-weight:700;cursor:pointer;
-  font-family:var(--font-body);transition:all .15s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.chapter-quiz-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(107,79,160,.35);}
-
-
-
-/* ═══ FULL-SCREEN LAYOUT ═════════════════════════════════════ */
-html, body { height:100%; overflow-x:hidden; }
+/* ─── APP STRUCTURE (DASHBOARD LAYOUT) ─────────────────────── */
 .app-shell {
-  display:flex; min-height:100vh; width:100%;
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
 }
-/* SIDEBAR */
+
 .sidebar {
-  width:240px; flex-shrink:0;
-  background:linear-gradient(180deg,#5a0000 0%,#8b0000 30%,var(--aka) 100%);
-  position:fixed; top:0; left:0; bottom:0;
-  overflow-y:auto; z-index:200;
-  display:flex; flex-direction:column;
-  box-shadow:4px 0 20px rgba(0,0,0,.25);
+  width: 280px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #2a0000 0%, #4a0000 50%, #6e0000 100%);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 25px rgba(0,0,0,0.4);
 }
+
 .sidebar-logo {
-  padding:24px 20px 16px;
-  border-bottom:1px solid rgba(255,255,255,.12);
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
 }
-.sidebar-logo .jp-title {
-  font-family:var(--font-jp);
-  font-size:22px; color:white;
-  font-weight:900; display:block;
-  text-shadow:0 2px 8px rgba(0,0,0,.3);
+.sidebar-logo .jp-title { font-family: var(--font-jp); font-size: 24px; color: #fff; font-weight: 900; display: block; }
+.sidebar-logo .sub { font-size: 11px; color: var(--sakura); font-weight: 700; letter-spacing: .08em; margin-top: 4px; display: block; }
+
+.sidebar-nav { flex: 1; padding: 12px 0; display: flex; flex-direction: column; gap: 2px; }
+.nav-group-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: .1em; text-transform: uppercase; padding: 14px 20px 4px; display: block; }
+
+.sidebar button.nav-item {
+  display: flex !important; align-items: center !important; gap: 12px !important;
+  width: 100% !important; padding: 11px 20px !important; background: transparent !important;
+  border: none !important; color: rgba(255,255,255,0.85) !important; font-size: 13.5px !important;
+  font-weight: 500 !important; font-family: var(--font-body) !important; cursor: pointer !important;
+  text-align: left !important; transition: all 0.2s ease !important; position: relative !important;
 }
-.sidebar-logo .sub {
-  font-size:10px; color:rgba(255,255,255,.6);
-  letter-spacing:.08em; margin-top:4px; display:block;
-}
-.sidebar-progress {
-  padding:12px 20px;
-  border-bottom:1px solid rgba(255,255,255,.08);
-}
-.sidebar-progress .prog-label {
-  font-size:10px; color:rgba(255,255,255,.6);
-  letter-spacing:.06em; margin-bottom:4px;
-  display:flex; justify-content:space-between;
-}
-.sidebar-progress .prog-bar {
-  height:4px; background:rgba(255,255,255,.15);
-  border-radius:2px; overflow:hidden;
-}
-.sidebar-progress .prog-fill {
-  height:100%; background:linear-gradient(90deg,var(--sakura),var(--gold2));
-  border-radius:2px; transition:width .5s;
-}
-.sidebar-nav { flex:1; padding:12px 0; }
-.nav-group-label {
-  font-size:10px; font-weight:700;
-  color:rgba(255,255,255,.4);
-  letter-spacing:.1em; text-transform:uppercase;
-  padding:12px 20px 4px;
-}
-.nav-item {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 20px;
-  color:rgba(255,255,255,.75);
-  cursor:pointer; font-size:13px; font-weight:500;
-  transition:all .15s; position:relative;
-  border:none; background:transparent;
-  width:100%; text-align:left; font-family:var(--font-body);
-}
-.nav-item:hover { background:rgba(255,255,255,.1); color:white; }
-.nav-item.active {
-  background:rgba(255,255,255,.18); color:white; font-weight:700;
-}
-.nav-item.active::before {
-  content:''; position:absolute; left:0; top:0; bottom:0;
-  width:3px; background:linear-gradient(180deg,var(--sakura),white);
-  border-radius:0 2px 2px 0;
-}
-.nav-item .nav-icon { font-size:17px; width:22px; text-align:center; flex-shrink:0; }
-/* Sub-items (cours modules) */
-.nav-sub { padding:0; }
-.nav-sub-item {
-  display:flex; align-items:center; gap:8px;
-  padding:7px 20px 7px 52px;
-  color:rgba(255,255,255,.55);
-  cursor:pointer; font-size:12px;
-  transition:all .15s;
-}
-.nav-sub-item:hover { color:rgba(255,255,255,.9); background:rgba(255,255,255,.06); }
-.nav-sub-item.active { color:var(--sakura); font-weight:600; }
-.nav-sub-item .dot {
-  width:6px; height:6px; border-radius:50%;
-  background:currentColor; flex-shrink:0;
-}
-.sidebar-footer {
-  padding:14px 20px;
-  border-top:1px solid rgba(255,255,255,.1);
-}
-.cloud-btn {
-  display:flex; align-items:center; gap:8px;
-  width:100%; padding:8px 12px;
-  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2);
-  border-radius:8px; color:white; font-size:12px;
-  cursor:pointer; font-family:var(--font-body);
-  transition:all .15s;
-}
-.cloud-btn:hover { background:rgba(255,255,255,.18); }
-/* MAIN CONTENT */
-.main-content {
-  margin-left:240px; flex:1;
-  min-height:100vh;
-  background:var(--shiro);
-  display:flex; flex-direction:column;
-}
-.main-header {
-  background:white;
-  border-bottom:1px solid rgba(188,0,45,.08);
-  padding:16px 32px;
-  display:flex; align-items:center; gap:16px;
-  flex-shrink:0;
-  box-shadow:0 1px 8px rgba(0,0,0,.04);
-}
-.main-header .page-title {
-  font-family:var(--font-title);
-  font-size:20px; font-weight:700;
-  color:var(--sumi);
-}
-.main-header .page-sub {
-  font-size:13px; color:var(--text2,#888);
-  margin-top:2px;
-}
-.main-body { flex:1; padding:28px 32px; max-width:1200px; }
-/* HAMBURGER (mobile) */
-.hamburger {
-  display:none; position:fixed; top:12px; left:12px;
-  z-index:300; background:var(--aka);
-  border:none; border-radius:8px;
-  width:40px; height:40px; cursor:pointer;
-  color:white; font-size:18px;
-  align-items:center; justify-content:center;
-}
-.sidebar-overlay {
-  display:none; position:fixed; inset:0;
-  background:rgba(0,0,0,.5); z-index:190;
-}
+.sidebar button.nav-item:hover { background: rgba(255,255,255,0.1) !important; color: #fff !important; padding-left: 24px !important; }
+.sidebar button.nav-item.active { background: rgba(255,255,255,0.18) !important; color: #fff !important; font-weight: 700 !important; border-left: 4px solid var(--sakura); padding-left: 16px !important;}
+.sidebar .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; font-size: 10px; padding: 2px 6px; border-radius: 10px; background: rgba(0,0,0,0.4); color: #fff; }
+
+.sidebar-section-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 10px 0; }
+
+/* CONTENU */
+.main-content { margin-left: 280px; flex: 1; min-height: 100vh; background: var(--shiro); display: flex; flex-direction: column; position: relative; z-index: 10; }
+.main-header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); border-bottom: 1px solid rgba(188,0,45,.1); padding: 18px 36px; }
+.main-header .page-title { font-family: var(--font-title); font-size: 24px; font-weight: 700; color: var(--sumi); }
+.main-body { flex: 1; padding: 32px 36px; max-width: 1200px; }
+
+/* GRIDS COMPLETES (KANA & KANJI) */
+.kana-section { margin-bottom: 30px; }
+.kana-section h4 { font-family: var(--font-title); color: var(--aka); margin-bottom: 15px; border-bottom: 1px solid var(--sakura-pale); padding-bottom: 5px; }
+.kana-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; max-width: 650px; }
+.kana-cell { background: white; border: 1.5px solid rgba(188,0,45,.12); border-radius: var(--radius-sm); padding: 12px 6px; text-align: center; cursor: pointer; transition: all .15s; box-shadow: var(--shadow-sm); }
+.kana-cell:hover { background: var(--sakura-pale); border-color: var(--sakura2); transform: translateY(-2px); }
+.kana-jp { font-size: 26px; font-family: var(--font-jp); display: block; color: var(--sumi); font-weight: bold; }
+.kana-rom { font-size: 12px; color: #777; display: block; margin-top: 2px; }
+.kana-cell.empty { background: transparent; border-color: transparent; cursor: default; pointer-events: none; box-shadow: none;}
+
+.kanji-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 15px; }
+.kanji-tile { background: white; border: 1.5px solid rgba(188,0,45,.15); border-radius: 12px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all .2s; box-shadow: var(--shadow-sm); position: relative; }
+.kanji-tile:hover { border-color: var(--aka); transform: translateY(-4px); box-shadow: var(--shadow); }
+.kanji-tile .kt-char { font-family: var(--font-jp); font-size: 46px; color: var(--sumi); display: block; margin-bottom: 10px; }
+.kanji-tile .kt-readings { background: var(--kinari); border-radius: 6px; padding: 8px; margin-bottom: 10px; text-align: left; }
+.kanji-tile .kt-on { font-size: 11px; color: #8a1c1c; display: block; margin-bottom: 4px; font-weight: 600; }
+.kanji-tile .kt-on::before { content: 'ON : '; opacity: 0.6; }
+.kanji-tile .kt-kun { font-size: 11px; color: #1d6e9e; display: block; font-weight: 600; }
+.kanji-tile .kt-kun::before { content: 'KUN : '; opacity: 0.6; }
+.kanji-tile .kt-fr { font-size: 14px; font-weight: 700; color: var(--aka); display: block; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 8px; }
+
+/* LEÇONS STRUCTURE */
+.card { background: white; border: 1px solid rgba(188,0,45,.1); border-radius: var(--radius); padding: 32px; margin-bottom: 24px; box-shadow: var(--shadow-sm); }
+.card h3 { font-family: var(--font-title); font-size: 22px; margin-bottom: 16px; color: var(--aka); border-bottom: 2px solid var(--sakura-pale); padding-bottom: 8px; }
+.card h4 { font-family: var(--font-title); font-size: 18px; margin: 20px 0 10px; color: var(--sumi2); }
+.card p { font-size: 15.5px; line-height: 1.8; color: #333; margin-bottom: 16px; }
+.card ul { margin-left: 20px; margin-bottom: 16px; line-height: 1.8; color: #333; }
+.card li { margin-bottom: 6px; }
+.example-box { background: var(--kinari); border-left: 4px solid var(--aka); padding: 16px 20px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+.example-jp { font-family: var(--font-jp); font-size: 20px; font-weight: 700; color: var(--sumi); margin-bottom: 6px; }
+.example-fr { font-size: 14.5px; color: #555; }
+.grammar-highlight { background: var(--sakura-pale); padding: 2px 6px; border-radius: 4px; font-weight: bold; color: var(--aka); }
+
+/* QUIZ INTERACTIF DYNAMIQUE */
+.quiz-container { background: white; border: 2px solid var(--sakura); border-radius: var(--radius); padding: 32px; max-width: 700px; box-shadow: var(--shadow); margin: 0 auto; }
+.quiz-question { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--sumi); text-align: center; }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.quiz-opt-btn { padding: 16px 20px; text-align: center; background: #fff; border: 2px solid rgba(188,0,45,.15); border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.quiz-opt-btn:hover { background: var(--sakura-pale); border-color: var(--sakura2); transform: translateY(-2px); }
+.quiz-score-screen { text-align: center; padding: 30px; }
+.quiz-score-num { font-size: 56px; font-weight: 900; color: var(--aka); margin: 20px 0; }
+
+.hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 300; background: var(--aka); border: none; border-radius: 8px; width: 42px; height: 42px; cursor: pointer; color: white; font-size: 20px; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 @media(max-width:768px){
-  .sidebar{ transform:translateX(-100%); transition:transform .25s; }
+  .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); }
   .sidebar.open{ transform:none; }
   .main-content{ margin-left:0; }
-  .main-body{ padding:16px; }
   .hamburger{ display:flex; }
-  .sidebar-overlay.open{ display:block; }
+  .quiz-options { grid-template-columns: 1fr; }
 }
-
-/* ═══ COURSE MODULE STYLES ═══════════════════════════════════ */
-.course-module { line-height:1.7; }
-.course-intro { font-size:14px; color:var(--ink,#4a1515); margin-bottom:20px; }
-.sec-h {
-  font-family:var(--font-title);
-  font-size:16px; font-weight:700;
-  color:var(--sumi); margin:22px 0 10px;
-  display:flex; align-items:center; gap:8px;
-  padding-bottom:6px;
-  border-bottom:2px solid var(--sakura-pale,#fff0f5);
-}
-.hint { font-size:12px; color:#aaa; margin-bottom:6px; }
-.kana-grid {
-  display:grid; grid-template-columns:repeat(5,1fr);
-  gap:5px; margin-bottom:12px;
-}
-.kana-cell {
-  background:white;
-  border:1.5px solid rgba(188,0,45,.12);
-  border-radius:8px; padding:10px 4px;
-  text-align:center; cursor:pointer;
-  transition:all .15s;
-  box-shadow:0 1px 4px rgba(188,0,45,.06);
-}
-.kana-cell:hover { background:var(--sakura-pale,#fff0f5); border-color:var(--sakura2,#FF8FAB); transform:translateY(-2px); }
-.kana-cell.empty { background:var(--bg2,#f0efed); cursor:default; border-color:transparent; }
-.kj { font-family:var(--font-jp); font-size:22px; display:block; line-height:1.2; }
-.kr { font-size:11px; color:#aaa; display:block; margin-top:2px; }
-.yoon-grid { margin-bottom:12px; }
-.yoon-row { display:flex; gap:5px; margin-bottom:5px; }
-.yoon-row .kana-cell { flex:1; }
-.ex-table {
-  width:100%; border-collapse:collapse; margin-bottom:12px; font-size:13px;
-}
-.ex-table th {
-  background:var(--aka); color:white;
-  padding:7px 10px; text-align:left; font-size:11px;
-  font-weight:700; letter-spacing:.04em;
-}
-.ex-table td { padding:7px 10px; border-bottom:1px solid rgba(188,0,45,.07); }
-.ex-table tr:nth-child(even) td { background:var(--sakura-pale,#fff0f5); }
-.ex-jp { font-family:var(--font-jp); }
-.ex-rom { font-size:11px; color:#aaa; }
-.tip-box {
-  background:linear-gradient(135deg,white,var(--sakura-pale,#fff0f5));
-  border-left:3px solid var(--teal,#1D9E75);
-  border-radius:0 8px 8px 0;
-  padding:12px 16px; margin:10px 0;
-  font-size:13px; line-height:1.7;
-  color:var(--ink,#4a1515);
-}
-.schema-box {
-  background:var(--kinari,#fdf6ee);
-  border:1.5px solid var(--sakura,#FFB7C5);
-  border-radius:var(--radius,12px);
-  padding:16px 20px; margin-bottom:14px;
-}
-.schema-row { display:flex; align-items:center; gap:14px; margin-bottom:8px; font-size:14px; }
-.schema-lang { font-size:11px; color:#aaa; width:130px; flex-shrink:0; font-weight:600; }
-.schema-ex { font-family:var(--font-jp); font-size:16px; }
-.schema-v { color:var(--aka); font-weight:900; }
-.schema-note { font-size:12px; color:var(--aka); font-weight:600; margin-top:8px; text-align:center; }
-.particle-card {
-  border-left:4px solid var(--aka);
-  background:white; border-radius:0 var(--radius,12px) var(--radius,12px) 0;
-  padding:14px 16px; margin-bottom:12px;
-  box-shadow:0 1px 6px rgba(0,0,0,.06);
-}
-.particle-header { display:flex; align-items:center; gap:14px; margin-bottom:10px; }
-.particle-char { font-family:var(--font-jp); font-size:40px; font-weight:900; line-height:1; }
-.particle-rom { font-size:12px; color:#aaa; }
-.particle-role { font-size:13px; font-weight:600; color:var(--sumi); }
-
-/* ═══ CLOUD SYNC MODAL ══════════════════════════════════════ */
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,.6);
-  z-index:500; display:flex; align-items:center; justify-content:center;
-  padding:20px;
-}
-.modal-box {
-  background:white; border-radius:var(--radius,12px);
-  padding:28px; max-width:480px; width:100%;
-  box-shadow:0 20px 60px rgba(0,0,0,.3);
-}
-.modal-box h2 { font-family:var(--font-title); font-size:18px; margin-bottom:16px; }
-
 </style>
 </head>
 <body>
@@ -884,1293 +177,469 @@ html, body { height:100%; overflow-x:hidden; }
 <div class="bg-kanji" id="bg-kanji"></div>
 <div class="petals" id="petals"></div>
 
-<button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <span class="jp-title">日本語の道</span>
-    <span class="sub">MON PARCOURS JAPONAIS</span>
-  </div>
-  <div class="sidebar-progress">
-    <div class="prog-label">
-      <span id="sb-level">N5 Débutant</span>
-      <span id="sb-pct">0%</span>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="jp-title">日本語の道</span>
+      <span class="sub">TABLEAU DE BORD COMPLET</span>
     </div>
-    <div class="prog-bar"><div class="prog-fill" id="sb-fill" style="width:0%"></div></div>
-  </div>
-  <nav class="sidebar-nav" id="sidebar-nav"></nav>
-  <div class="sidebar-footer">
-    <button class="cloud-btn" onclick="openCloudModal()">☁ Sauvegarde &amp; Sync</button>
-  </div>
-</aside>
+    
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Syllabaires (Kana)</div>
+      <button class="nav-item active" onclick="loadContent('hira')"><span class="nav-icon">あ</span> Hiragana Complet <span class="nav-badge">71</span></button>
+      <button class="nav-item" onclick="loadContent('kata')"><span class="nav-icon">ア</span> Katakana Complet <span class="nav-badge">71</span></button>
+      
+      <div class="sidebar-section-divider"></div>
+      
+      <div class="nav-group-label">Dictionnaire Kanji (On/Kun)</div>
+      <button class="nav-item" onclick="loadContent('kanji-n5')"><span class="nav-icon">⛩</span> Kanjis N5 (Fondations)</button>
+      <button class="nav-item" onclick="loadContent('kanji-n4')"><span class="nav-icon">⛩</span> Kanjis N4 (Basique)</button>
+      <button class="nav-item" onclick="loadContent('kanji-nx')"><span class="nav-icon">⛩</span> Kanjis N3-N1 (Avancés)</button>
+      
+      <div class="sidebar-section-divider"></div>
+      
+      <div class="nav-group-label">Leçons de Grammaire</div>
+      <button class="nav-item" onclick="loadContent('les-base')"><span class="nav-icon">📚</span> 1. Structure de la phrase</button>
+      <button class="nav-item" onclick="loadContent('les-particules')"><span class="nav-icon">📚</span> 2. Les Particules (Wa, O, Ni)</button>
+      <button class="nav-item" onclick="loadContent('les-verbes')"><span class="nav-icon">📚</span> 3. Les Verbes (Forme MASU)</button>
+      
+      <div class="sidebar-section-divider"></div>
+      
+      <div class="nav-group-label">Évaluations</div>
+      <button class="nav-item" onclick="startQuiz('kana')"><span class="nav-icon">🎯</span> Quiz : Lecture Kana</button>
+      <button class="nav-item" onclick="startQuiz('kanji')"><span class="nav-icon">🎯</span> Quiz : Sens des Kanji</button>
+    </nav>
+  </aside>
 
-<div class="main-content">
-  <div class="main-header">
-    <div>
-      <div class="page-title" id="page-title">Accueil</div>
-      <div class="page-sub" id="page-sub">日本語の道</div>
+  <main class="main-content">
+    <header class="main-header">
+      <div class="page-title" id="page-title">Tableau Complet des Hiragana</div>
+    </header>
+    
+    <div class="main-body" id="content">
+      <!-- Le contenu sera injecté ici par JS -->
     </div>
-    <div style="margin-left:auto;" id="header-stats"></div>
-  </div>
-  <div class="main-body" id="content"></div>
-</div>
-
-<div class="modal-overlay" id="cloud-modal" style="display:none;" onclick="if(event.target===this)this.style.display='none'">
-  <div class="modal-box">
-    <h2>☁ Sauvegarde &amp; Synchronisation</h2>
-    <div style="font-size:13px;color:#666;line-height:1.7;margin-bottom:16px;">
-      Ta progression est sauvegardée dans ce navigateur. Pour la conserver sur un autre appareil, exporte-la en JSON.
-    </div>
-    <div style="display:grid;gap:10px;margin-bottom:16px;">
-      <div style="background:#e8f5f0;border:1px solid #1D9E75;border-radius:8px;padding:14px;">
-        <div style="font-weight:700;color:#0d6b4c;margin-bottom:6px;">📤 Exporter ma progression</div>
-        <div style="font-size:12px;color:#555;margin-bottom:10px;">Télécharge un JSON avec toute ta progression.</div>
-        <button onclick="exportProgress()" style="background:#1D9E75;color:white;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;">⬇ Télécharger</button>
-      </div>
-      <div style="background:#fff0f5;border:1px solid #FFB7C5;border-radius:8px;padding:14px;">
-        <div style="font-weight:700;color:#5a0020;margin-bottom:6px;">📥 Importer une progression</div>
-        <div style="font-size:12px;color:#555;margin-bottom:10px;">Restaure une sauvegarde précédente.</div>
-        <label style="background:#BC002D;color:white;border-radius:6px;padding:8px 16px;cursor:pointer;font-size:13px;font-weight:600;display:inline-block;">
-          ⬆ Choisir fichier<input type="file" accept=".json" style="display:none;" onchange="importProgress(this)">
-        </label>
-      </div>
-    </div>
-    <button onclick="document.getElementById('cloud-modal').style.display='none'" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;background:transparent;cursor:pointer;font-size:13px;">Fermer</button>
-  </div>
+  </main>
 </div>
 
 <script>
-const COURSES = {
-  "h1": { title:"Hiragana complet", icon:"\u270d", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>Les hiragana sont l'alphabet phonétique natif du japonais. Chaque caractère = une syllabe fixe. C'est la première chose à maîtriser — tout le reste en dépend.</p>
-    <div class="tip-box" style="border-color:#1D9E75;"><b>Règle d'or :</b> Mémorise les hiragana avant d'utiliser la romanisation (rōmaji). Le rōmaji crée de mauvaises habitudes de prononciation. 2 semaines suffisent pour les maîtriser tous.</div>
-  </div>
-  <h3 class="sec-h">✍ Les 46 hiragana de base</h3>
-  <p class="hint">Clique sur un caractère pour l'entendre</p>
-  <div class="kana-grid"><div class="kana-cell" onclick="speak('あ')" title="a"><span class="kj">あ</span><span class="kr">a</span></div><div class="kana-cell" onclick="speak('い')" title="i"><span class="kj">い</span><span class="kr">i</span></div><div class="kana-cell" onclick="speak('う')" title="u"><span class="kj">う</span><span class="kr">u</span></div><div class="kana-cell" onclick="speak('え')" title="e"><span class="kj">え</span><span class="kr">e</span></div><div class="kana-cell" onclick="speak('お')" title="o"><span class="kj">お</span><span class="kr">o</span></div><div class="kana-cell" onclick="speak('か')" title="ka"><span class="kj">か</span><span class="kr">ka</span></div><div class="kana-cell" onclick="speak('き')" title="ki"><span class="kj">き</span><span class="kr">ki</span></div><div class="kana-cell" onclick="speak('く')" title="ku"><span class="kj">く</span><span class="kr">ku</span></div><div class="kana-cell" onclick="speak('け')" title="ke"><span class="kj">け</span><span class="kr">ke</span></div><div class="kana-cell" onclick="speak('こ')" title="ko"><span class="kj">こ</span><span class="kr">ko</span></div><div class="kana-cell" onclick="speak('さ')" title="sa"><span class="kj">さ</span><span class="kr">sa</span></div><div class="kana-cell" onclick="speak('し')" title="shi"><span class="kj">し</span><span class="kr">shi</span></div><div class="kana-cell" onclick="speak('す')" title="su"><span class="kj">す</span><span class="kr">su</span></div><div class="kana-cell" onclick="speak('せ')" title="se"><span class="kj">せ</span><span class="kr">se</span></div><div class="kana-cell" onclick="speak('そ')" title="so"><span class="kj">そ</span><span class="kr">so</span></div><div class="kana-cell" onclick="speak('た')" title="ta"><span class="kj">た</span><span class="kr">ta</span></div><div class="kana-cell" onclick="speak('ち')" title="chi"><span class="kj">ち</span><span class="kr">chi</span></div><div class="kana-cell" onclick="speak('つ')" title="tsu"><span class="kj">つ</span><span class="kr">tsu</span></div><div class="kana-cell" onclick="speak('て')" title="te"><span class="kj">て</span><span class="kr">te</span></div><div class="kana-cell" onclick="speak('と')" title="to"><span class="kj">と</span><span class="kr">to</span></div><div class="kana-cell" onclick="speak('な')" title="na"><span class="kj">な</span><span class="kr">na</span></div><div class="kana-cell" onclick="speak('に')" title="ni"><span class="kj">に</span><span class="kr">ni</span></div><div class="kana-cell" onclick="speak('ぬ')" title="nu"><span class="kj">ぬ</span><span class="kr">nu</span></div><div class="kana-cell" onclick="speak('ね')" title="ne"><span class="kj">ね</span><span class="kr">ne</span></div><div class="kana-cell" onclick="speak('の')" title="no"><span class="kj">の</span><span class="kr">no</span></div><div class="kana-cell" onclick="speak('は')" title="ha"><span class="kj">は</span><span class="kr">ha</span></div><div class="kana-cell" onclick="speak('ひ')" title="hi"><span class="kj">ひ</span><span class="kr">hi</span></div><div class="kana-cell" onclick="speak('ふ')" title="fu"><span class="kj">ふ</span><span class="kr">fu</span></div><div class="kana-cell" onclick="speak('へ')" title="he"><span class="kj">へ</span><span class="kr">he</span></div><div class="kana-cell" onclick="speak('ほ')" title="ho"><span class="kj">ほ</span><span class="kr">ho</span></div><div class="kana-cell" onclick="speak('ま')" title="ma"><span class="kj">ま</span><span class="kr">ma</span></div><div class="kana-cell" onclick="speak('み')" title="mi"><span class="kj">み</span><span class="kr">mi</span></div><div class="kana-cell" onclick="speak('む')" title="mu"><span class="kj">む</span><span class="kr">mu</span></div><div class="kana-cell" onclick="speak('め')" title="me"><span class="kj">め</span><span class="kr">me</span></div><div class="kana-cell" onclick="speak('も')" title="mo"><span class="kj">も</span><span class="kr">mo</span></div><div class="kana-cell" onclick="speak('や')" title="ya"><span class="kj">や</span><span class="kr">ya</span></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('ゆ')" title="yu"><span class="kj">ゆ</span><span class="kr">yu</span></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('よ')" title="yo"><span class="kj">よ</span><span class="kr">yo</span></div><div class="kana-cell" onclick="speak('ら')" title="ra"><span class="kj">ら</span><span class="kr">ra</span></div><div class="kana-cell" onclick="speak('り')" title="ri"><span class="kj">り</span><span class="kr">ri</span></div><div class="kana-cell" onclick="speak('る')" title="ru"><span class="kj">る</span><span class="kr">ru</span></div><div class="kana-cell" onclick="speak('れ')" title="re"><span class="kj">れ</span><span class="kr">re</span></div><div class="kana-cell" onclick="speak('ろ')" title="ro"><span class="kj">ろ</span><span class="kr">ro</span></div><div class="kana-cell" onclick="speak('わ')" title="wa"><span class="kj">わ</span><span class="kr">wa</span></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('を')" title="wo"><span class="kj">を</span><span class="kr">wo</span></div><div class="kana-cell" onclick="speak('ん')" title="n"><span class="kj">ん</span><span class="kr">n</span></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div></div>
-  <div class="tip-box" style="border-color:#1D9E75;"><b>Ordre des traits :</b> Toujours gauche → droite, haut → bas. Écris chaque hiragana 10 fois à la main en prononçant à voix haute.</div>
+/* ─── AUDIO SYNTHESIS ──────────────────────────────────────── */
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP';
+    window.speechSynthesis.speak(u);
+  }
+}
 
-  <h3 class="sec-h">🔊 Sons voicés — Dakuten ゛et Handakuten ゜</h3>
-  <p class="hint">Ajouter ゛transforme k→g, s→z, t→d, h→b. Ajouter ゜transforme h→p.</p>
-  <div class="kana-grid"><div class="kana-cell" onclick="speak('が')" title="ga"><span class="kj">が</span><span class="kr">ga</span></div><div class="kana-cell" onclick="speak('ぎ')" title="gi"><span class="kj">ぎ</span><span class="kr">gi</span></div><div class="kana-cell" onclick="speak('ぐ')" title="gu"><span class="kj">ぐ</span><span class="kr">gu</span></div><div class="kana-cell" onclick="speak('げ')" title="ge"><span class="kj">げ</span><span class="kr">ge</span></div><div class="kana-cell" onclick="speak('ご')" title="go"><span class="kj">ご</span><span class="kr">go</span></div><div class="kana-cell" onclick="speak('ざ')" title="za"><span class="kj">ざ</span><span class="kr">za</span></div><div class="kana-cell" onclick="speak('じ')" title="ji"><span class="kj">じ</span><span class="kr">ji</span></div><div class="kana-cell" onclick="speak('ず')" title="zu"><span class="kj">ず</span><span class="kr">zu</span></div><div class="kana-cell" onclick="speak('ぜ')" title="ze"><span class="kj">ぜ</span><span class="kr">ze</span></div><div class="kana-cell" onclick="speak('ぞ')" title="zo"><span class="kj">ぞ</span><span class="kr">zo</span></div><div class="kana-cell" onclick="speak('だ')" title="da"><span class="kj">だ</span><span class="kr">da</span></div><div class="kana-cell" onclick="speak('ぢ')" title="ji"><span class="kj">ぢ</span><span class="kr">ji</span></div><div class="kana-cell" onclick="speak('づ')" title="zu"><span class="kj">づ</span><span class="kr">zu</span></div><div class="kana-cell" onclick="speak('で')" title="de"><span class="kj">で</span><span class="kr">de</span></div><div class="kana-cell" onclick="speak('ど')" title="do"><span class="kj">ど</span><span class="kr">do</span></div><div class="kana-cell" onclick="speak('ば')" title="ba"><span class="kj">ば</span><span class="kr">ba</span></div><div class="kana-cell" onclick="speak('び')" title="bi"><span class="kj">び</span><span class="kr">bi</span></div><div class="kana-cell" onclick="speak('ぶ')" title="bu"><span class="kj">ぶ</span><span class="kr">bu</span></div><div class="kana-cell" onclick="speak('べ')" title="be"><span class="kj">べ</span><span class="kr">be</span></div><div class="kana-cell" onclick="speak('ぼ')" title="bo"><span class="kj">ぼ</span><span class="kr">bo</span></div><div class="kana-cell" onclick="speak('ぱ')" title="pa"><span class="kj">ぱ</span><span class="kr">pa</span></div><div class="kana-cell" onclick="speak('ぴ')" title="pi"><span class="kj">ぴ</span><span class="kr">pi</span></div><div class="kana-cell" onclick="speak('ぷ')" title="pu"><span class="kj">ぷ</span><span class="kr">pu</span></div><div class="kana-cell" onclick="speak('ぺ')" title="pe"><span class="kj">ぺ</span><span class="kr">pe</span></div><div class="kana-cell" onclick="speak('ぽ')" title="po"><span class="kj">ぽ</span><span class="kr">po</span></div></div>
+/* ─── PÉTALES DE SAKURA (CORRIGÉ & OPTIMISÉ) ───────────────── */
+function createPetal() {
+  const container = document.getElementById('petals');
+  if(!container) return;
+  const p = document.createElement('div');
+  p.classList.add('petal');
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+  const size = (Math.random() * 10 + 8) + 'px';
+  p.style.width = size;
+  p.style.height = size;
+  container.appendChild(p);
+  setTimeout(() => { p.remove(); }, 9000);
+}
+setInterval(createPetal, 300);
 
-  <h3 class="sec-h">✨ Sons combinés — Yōon 拗音</h3>
-  <p class="hint">き + ゃ = きゃ (kya) — le petit caractère fusionne avec le précédent en un seul son</p>
-  <div class="yoon-grid"><div class="yoon-row"><div class="kana-cell" onclick="speak('きゃ')" title="kya"><span class="kj" style="font-size:18px;">きゃ</span><span class="kr">kya</span></div><div class="kana-cell" onclick="speak('きゅ')" title="kyu"><span class="kj" style="font-size:18px;">きゅ</span><span class="kr">kyu</span></div><div class="kana-cell" onclick="speak('きょ')" title="kyo"><span class="kj" style="font-size:18px;">きょ</span><span class="kr">kyo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('しゃ')" title="sha"><span class="kj" style="font-size:18px;">しゃ</span><span class="kr">sha</span></div><div class="kana-cell" onclick="speak('しゅ')" title="shu"><span class="kj" style="font-size:18px;">しゅ</span><span class="kr">shu</span></div><div class="kana-cell" onclick="speak('しょ')" title="sho"><span class="kj" style="font-size:18px;">しょ</span><span class="kr">sho</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('ちゃ')" title="cha"><span class="kj" style="font-size:18px;">ちゃ</span><span class="kr">cha</span></div><div class="kana-cell" onclick="speak('ちゅ')" title="chu"><span class="kj" style="font-size:18px;">ちゅ</span><span class="kr">chu</span></div><div class="kana-cell" onclick="speak('ちょ')" title="cho"><span class="kj" style="font-size:18px;">ちょ</span><span class="kr">cho</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('にゃ')" title="nya"><span class="kj" style="font-size:18px;">にゃ</span><span class="kr">nya</span></div><div class="kana-cell" onclick="speak('にゅ')" title="nyu"><span class="kj" style="font-size:18px;">にゅ</span><span class="kr">nyu</span></div><div class="kana-cell" onclick="speak('にょ')" title="nyo"><span class="kj" style="font-size:18px;">にょ</span><span class="kr">nyo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('ひゃ')" title="hya"><span class="kj" style="font-size:18px;">ひゃ</span><span class="kr">hya</span></div><div class="kana-cell" onclick="speak('ひゅ')" title="hyu"><span class="kj" style="font-size:18px;">ひゅ</span><span class="kr">hyu</span></div><div class="kana-cell" onclick="speak('ひょ')" title="hyo"><span class="kj" style="font-size:18px;">ひょ</span><span class="kr">hyo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('みゃ')" title="mya"><span class="kj" style="font-size:18px;">みゃ</span><span class="kr">mya</span></div><div class="kana-cell" onclick="speak('みゅ')" title="myu"><span class="kj" style="font-size:18px;">みゅ</span><span class="kr">myu</span></div><div class="kana-cell" onclick="speak('みょ')" title="myo"><span class="kj" style="font-size:18px;">みょ</span><span class="kr">myo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('りゃ')" title="rya"><span class="kj" style="font-size:18px;">りゃ</span><span class="kr">rya</span></div><div class="kana-cell" onclick="speak('りゅ')" title="ryu"><span class="kj" style="font-size:18px;">りゅ</span><span class="kr">ryu</span></div><div class="kana-cell" onclick="speak('りょ')" title="ryo"><span class="kj" style="font-size:18px;">りょ</span><span class="kr">ryo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('ぎゃ')" title="gya"><span class="kj" style="font-size:18px;">ぎゃ</span><span class="kr">gya</span></div><div class="kana-cell" onclick="speak('ぎゅ')" title="gyu"><span class="kj" style="font-size:18px;">ぎゅ</span><span class="kr">gyu</span></div><div class="kana-cell" onclick="speak('ぎょ')" title="gyo"><span class="kj" style="font-size:18px;">ぎょ</span><span class="kr">gyo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('じゃ')" title="ja"><span class="kj" style="font-size:18px;">じゃ</span><span class="kr">ja</span></div><div class="kana-cell" onclick="speak('じゅ')" title="ju"><span class="kj" style="font-size:18px;">じゅ</span><span class="kr">ju</span></div><div class="kana-cell" onclick="speak('じょ')" title="jo"><span class="kj" style="font-size:18px;">じょ</span><span class="kr">jo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('びゃ')" title="bya"><span class="kj" style="font-size:18px;">びゃ</span><span class="kr">bya</span></div><div class="kana-cell" onclick="speak('びゅ')" title="byu"><span class="kj" style="font-size:18px;">びゅ</span><span class="kr">byu</span></div><div class="kana-cell" onclick="speak('びょ')" title="byo"><span class="kj" style="font-size:18px;">びょ</span><span class="kr">byo</span></div></div><div class="yoon-row"><div class="kana-cell" onclick="speak('ぴゃ')" title="pya"><span class="kj" style="font-size:18px;">ぴゃ</span><span class="kr">pya</span></div><div class="kana-cell" onclick="speak('ぴゅ')" title="pyu"><span class="kj" style="font-size:18px;">ぴゅ</span><span class="kr">pyu</span></div><div class="kana-cell" onclick="speak('ぴょ')" title="pyo"><span class="kj" style="font-size:18px;">ぴょ</span><span class="kr">pyo</span></div></div></div>
+/* ─── DATA COMPLÈTE KANA (Gojūon + Dakuten + Handakuten) ────── */
+const HIRAGANA_BASE = [
+  {j:'あ',r:'a'},{j:'い',r:'i'},{j:'う',r:'u'},{j:'え',r:'e'},{j:'お',r:'o'},
+  {j:'か',r:'ka'},{j:'き',r:'ki'},{j:'く',r:'ku'},{j:'け',r:'ke'},{j:'こ',r:'ko'},
+  {j:'さ',r:'sa'},{j:'し',r:'shi'},{j:'す',r:'su'},{j:'せ',r:'se'},{j:'そ',r:'so'},
+  {j:'た',r:'ta'},{j:'ち',r:'chi'},{j:'つ',r:'tsu'},{j:'て',r:'te'},{j:'と',r:'to'},
+  {j:'な',r:'na'},{j:'に',r:'ni'},{j:'ぬ',r:'nu'},{j:'ね',r:'ne'},{j:'の',r:'no'},
+  {j:'は',r:'ha'},{j:'ひ',r:'hi'},{j:'ふ',r:'fu'},{j:'へ',r:'he'},{j:'ほ',r:'ho'},
+  {j:'ま',r:'ma'},{j:'み',r:'mi'},{j:'む',r:'mu'},{j:'め',r:'me'},{j:'も',r:'mo'},
+  {j:'や',r:'ya'},{e:true},{j:'ゆ',r:'yu'},{e:true},{j:'よ',r:'yo'},
+  {j:'ら',r:'ra'},{j:'り',r:'ri'},{j:'る',r:'ru'},{j:'れ',r:'re'},{j:'ろ',r:'ro'},
+  {j:'わ',r:'wa'},{e:true},{e:true},{e:true},{j:'を',r:'wo'},
+  {j:'ん',r:'n'},{e:true},{e:true},{e:true},{e:true}
+];
 
-  <h3 class="sec-h">⚠ Règles spéciales</h3>
-  <table class="ex-table">
-    <thead><tr><th>Règle</th><th>Explication</th><th>Exemple</th></tr></thead>
-    <tbody>
-      <tr><td class="ex-jp">っ</td><td>Double la consonne suivante — crée une pause</td><td class="ex-jp">きって (timbre)</td></tr>
-      <tr><td class="ex-jp">は</td><td>Comme particule = se prononce "wa"</td><td class="ex-jp">私<b>は</b>学生 (Je suis étudiant)</td></tr>
-      <tr><td class="ex-jp">を</td><td>Comme particule = se prononce "o"</td><td class="ex-jp">すし<b>を</b>食べる</td></tr>
-      <tr><td class="ex-jp">ん</td><td>Seul hiragana sans voyelle — son "n" nasal</td><td class="ex-jp">にほ<b>ん</b> (Japon)</td></tr>
-    </tbody>
-  </table>
+const HIRAGANA_DAKUTEN = [
+  {j:'が',r:'ga'},{j:'ぎ',r:'gi'},{j:'ぐ',r:'gu'},{j:'げ',r:'ge'},{j:'ご',r:'go'},
+  {j:'ざ',r:'za'},{j:'じ',r:'ji'},{j:'ず',r:'zu'},{j:'ぜ',r:'ze'},{j:'ぞ',r:'zo'},
+  {j:'だ',r:'da'},{j:'ぢ',r:'ji'},{j:'づ',r:'zu'},{j:'で',r:'de'},{j:'ど',r:'do'},
+  {j:'ば',r:'ba'},{j:'び',r:'bi'},{j:'ぶ',r:'bu'},{j:'べ',r:'be'},{j:'ぼ',r:'bo'},
+  {j:'ぱ',r:'pa'},{j:'ぴ',r:'pi'},{j:'ぷ',r:'pu'},{j:'ぺ',r:'pe'},{j:'ぽ',r:'po'}
+];
 
-  <h3 class="sec-h">📚 Vocabulaire — 20 mots en hiragana pur</h3>
-  <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">いぬ</td><td class="ex-rom">inu</td><td class="ex-fr">chien</td></tr><tr><td class="ex-jp">ねこ</td><td class="ex-rom">neko</td><td class="ex-fr">chat</td></tr><tr><td class="ex-jp">さかな</td><td class="ex-rom">sakana</td><td class="ex-fr">poisson</td></tr><tr><td class="ex-jp">みず</td><td class="ex-rom">mizu</td><td class="ex-fr">eau</td></tr><tr><td class="ex-jp">はな</td><td class="ex-rom">hana</td><td class="ex-fr">fleur</td></tr><tr><td class="ex-jp">そら</td><td class="ex-rom">sora</td><td class="ex-fr">ciel</td></tr><tr><td class="ex-jp">やま</td><td class="ex-rom">yama</td><td class="ex-fr">montagne</td></tr><tr><td class="ex-jp">かわ</td><td class="ex-rom">kawa</td><td class="ex-fr">rivière</td></tr><tr><td class="ex-jp">うみ</td><td class="ex-rom">umi</td><td class="ex-fr">mer</td></tr><tr><td class="ex-jp">つき</td><td class="ex-rom">tsuki</td><td class="ex-fr">lune</td></tr><tr><td class="ex-jp">きもの</td><td class="ex-rom">kimono</td><td class="ex-fr">kimono</td></tr><tr><td class="ex-jp">すし</td><td class="ex-rom">sushi</td><td class="ex-fr">sushi</td></tr><tr><td class="ex-jp">さくら</td><td class="ex-rom">sakura</td><td class="ex-fr">cerisier</td></tr><tr><td class="ex-jp">にほん</td><td class="ex-rom">nihon</td><td class="ex-fr">Japon</td></tr><tr><td class="ex-jp">がっこう</td><td class="ex-rom">gakkō</td><td class="ex-fr">école</td></tr><tr><td class="ex-jp">でんしゃ</td><td class="ex-rom">densha</td><td class="ex-fr">train</td></tr><tr><td class="ex-jp">おちゃ</td><td class="ex-rom">ocha</td><td class="ex-fr">thé</td></tr><tr><td class="ex-jp">ともだち</td><td class="ex-rom">tomodachi</td><td class="ex-fr">ami(e)</td></tr><tr><td class="ex-jp">せんせい</td><td class="ex-rom">sensei</td><td class="ex-fr">professeur</td></tr><tr><td class="ex-jp">たべもの</td><td class="ex-rom">tabemono</td><td class="ex-fr">nourriture</td></tr></tbody></table>
+const KATAKANA_BASE = [
+  {j:'ア',r:'a'},{j:'イ',r:'i'},{j:'ウ',r:'u'},{j:'エ',r:'e'},{j:'オ',r:'o'},
+  {j:'カ',r:'ka'},{j:'キ',r:'ki'},{j:'ク',r:'ku'},{j:'ケ',r:'ke'},{j:'コ',r:'ko'},
+  {j:'サ',r:'sa'},{j:'シ',r:'shi'},{j:'ス',r:'su'},{j:'セ',r:'se'},{j:'ソ',r:'so'},
+  {j:'タ',r:'ta'},{j:'チ',r:'chi'},{j:'ツ',r:'tsu'},{j:'テ',r:'te'},{j:'ト',r:'to'},
+  {j:'ナ',r:'na'},{j:'ニ',r:'ni'},{j:'ヌ',r:'nu'},{j:'ネ',r:'ne'},{j:'ノ',r:'no'},
+  {j:'ハ',r:'ha'},{j:'ヒ',r:'hi'},{j:'フ',r:'fu'},{j:'ヘ',r:'he'},{j:'ホ',r:'ho'},
+  {j:'マ',r:'ma'},{j:'ミ',r:'mi'},{j:'ム',r:'mu'},{j:'メ',r:'me'},{j:'モ',r:'mo'},
+  {j:'ヤ',r:'ya'},{e:true},{j:'ユ',r:'yu'},{e:true},{j:'ヨ',r:'yo'},
+  {j:'ラ',r:'ra'},{j:'リ',r:'ri'},{j:'ル',r:'ru'},{j:'レ',r:'re'},{j:'ロ',r:'ro'},
+  {j:'ワ',r:'wa'},{e:true},{e:true},{e:true},{j:'ヲ',r:'wo'},
+  {j:'ン',r:'n'},{e:true},{e:true},{e:true},{e:true}
+];
 
-  <h3 class="sec-h">📅 Plan de travail — 2 semaines</h3>
-  <table class="ex-table">
-    <thead><tr><th>Jours</th><th>Objectif</th><th>Cibles</th></tr></thead>
-    <tbody>
-      <tr><td>J1–J2</td><td>あ行 + か行</td><td class="ex-jp">あいうえお · かきくけこ</td></tr>
-      <tr><td>J3–J4</td><td>さ行 + た行</td><td class="ex-jp">さしすせそ · たちつてと</td></tr>
-      <tr><td>J5–J6</td><td>な行 + は行</td><td class="ex-jp">なにぬねの · はひふへほ</td></tr>
-      <tr><td>J7–J8</td><td>ま行 + や行 + ら行</td><td class="ex-jp">まみむめも · やゆよ · らりるれろ</td></tr>
-      <tr><td>J9–J10</td><td>わ行 + ん + révision</td><td class="ex-jp">わをん + tous les 46</td></tr>
-      <tr><td>J11–J12</td><td>Sons voicés</td><td class="ex-jp">が·ざ·だ·ば·ぱ rangées</td></tr>
-      <tr><td>J13–J14</td><td>Sons combinés</td><td class="ex-jp">きゃ·しゃ·ちゃ·じゃ…</td></tr>
-    </tbody>
-  </table>
-  <div class="tip-box" style="border-color:#1D9E75;">🎧 <b>Ressources :</b> NHK Web Easy (nhk.or.jp/lesson) · Anki deck "Hiragana+Katakana" · App Kanji Study</div>
-</div>
-` },
-  "k1": { title:"Katakana complet", icon:"\u270d", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>Le katakana partage exactement les mêmes sons que le hiragana, mais avec des formes angulaires. Il sert principalement à transcrire les <b>mots empruntés aux langues étrangères</b> (gairaigo), les onomatopées et les noms propres étrangers.</p>
-    <div class="tip-box" style="border-color:#1D9E75;">Bonne nouvelle : tu reconnaîtras beaucoup de mots ! コーヒー (café), テレビ (télé), パン (pain)… Le katakana, c'est du japonais que tu comprends déjà.</div>
-  </div>
-  <h3 class="sec-h">✍ Les 46 katakana</h3>
-  <p class="hint">Clique pour entendre · Attention aux paires ツ/シ et ン/ソ</p>
-  <div class="kana-grid"><div class="kana-cell" onclick="speak('ア')" title="a"><span class="kj">ア</span><span class="kr">a</span></div><div class="kana-cell" onclick="speak('イ')" title="i"><span class="kj">イ</span><span class="kr">i</span></div><div class="kana-cell" onclick="speak('ウ')" title="u"><span class="kj">ウ</span><span class="kr">u</span></div><div class="kana-cell" onclick="speak('エ')" title="e"><span class="kj">エ</span><span class="kr">e</span></div><div class="kana-cell" onclick="speak('オ')" title="o"><span class="kj">オ</span><span class="kr">o</span></div><div class="kana-cell" onclick="speak('カ')" title="ka"><span class="kj">カ</span><span class="kr">ka</span></div><div class="kana-cell" onclick="speak('キ')" title="ki"><span class="kj">キ</span><span class="kr">ki</span></div><div class="kana-cell" onclick="speak('ク')" title="ku"><span class="kj">ク</span><span class="kr">ku</span></div><div class="kana-cell" onclick="speak('ケ')" title="ke"><span class="kj">ケ</span><span class="kr">ke</span></div><div class="kana-cell" onclick="speak('コ')" title="ko"><span class="kj">コ</span><span class="kr">ko</span></div><div class="kana-cell" onclick="speak('サ')" title="sa"><span class="kj">サ</span><span class="kr">sa</span></div><div class="kana-cell" onclick="speak('シ')" title="shi"><span class="kj">シ</span><span class="kr">shi</span></div><div class="kana-cell" onclick="speak('ス')" title="su"><span class="kj">ス</span><span class="kr">su</span></div><div class="kana-cell" onclick="speak('セ')" title="se"><span class="kj">セ</span><span class="kr">se</span></div><div class="kana-cell" onclick="speak('ソ')" title="so"><span class="kj">ソ</span><span class="kr">so</span></div><div class="kana-cell" onclick="speak('タ')" title="ta"><span class="kj">タ</span><span class="kr">ta</span></div><div class="kana-cell" onclick="speak('チ')" title="chi"><span class="kj">チ</span><span class="kr">chi</span></div><div class="kana-cell" onclick="speak('ツ')" title="tsu"><span class="kj">ツ</span><span class="kr">tsu</span></div><div class="kana-cell" onclick="speak('テ')" title="te"><span class="kj">テ</span><span class="kr">te</span></div><div class="kana-cell" onclick="speak('ト')" title="to"><span class="kj">ト</span><span class="kr">to</span></div><div class="kana-cell" onclick="speak('ナ')" title="na"><span class="kj">ナ</span><span class="kr">na</span></div><div class="kana-cell" onclick="speak('ニ')" title="ni"><span class="kj">ニ</span><span class="kr">ni</span></div><div class="kana-cell" onclick="speak('ヌ')" title="nu"><span class="kj">ヌ</span><span class="kr">nu</span></div><div class="kana-cell" onclick="speak('ネ')" title="ne"><span class="kj">ネ</span><span class="kr">ne</span></div><div class="kana-cell" onclick="speak('ノ')" title="no"><span class="kj">ノ</span><span class="kr">no</span></div><div class="kana-cell" onclick="speak('ハ')" title="ha"><span class="kj">ハ</span><span class="kr">ha</span></div><div class="kana-cell" onclick="speak('ヒ')" title="hi"><span class="kj">ヒ</span><span class="kr">hi</span></div><div class="kana-cell" onclick="speak('フ')" title="fu"><span class="kj">フ</span><span class="kr">fu</span></div><div class="kana-cell" onclick="speak('ヘ')" title="he"><span class="kj">ヘ</span><span class="kr">he</span></div><div class="kana-cell" onclick="speak('ホ')" title="ho"><span class="kj">ホ</span><span class="kr">ho</span></div><div class="kana-cell" onclick="speak('マ')" title="ma"><span class="kj">マ</span><span class="kr">ma</span></div><div class="kana-cell" onclick="speak('ミ')" title="mi"><span class="kj">ミ</span><span class="kr">mi</span></div><div class="kana-cell" onclick="speak('ム')" title="mu"><span class="kj">ム</span><span class="kr">mu</span></div><div class="kana-cell" onclick="speak('メ')" title="me"><span class="kj">メ</span><span class="kr">me</span></div><div class="kana-cell" onclick="speak('モ')" title="mo"><span class="kj">モ</span><span class="kr">mo</span></div><div class="kana-cell" onclick="speak('ヤ')" title="ya"><span class="kj">ヤ</span><span class="kr">ya</span></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('ユ')" title="yu"><span class="kj">ユ</span><span class="kr">yu</span></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('ヨ')" title="yo"><span class="kj">ヨ</span><span class="kr">yo</span></div><div class="kana-cell" onclick="speak('ラ')" title="ra"><span class="kj">ラ</span><span class="kr">ra</span></div><div class="kana-cell" onclick="speak('リ')" title="ri"><span class="kj">リ</span><span class="kr">ri</span></div><div class="kana-cell" onclick="speak('ル')" title="ru"><span class="kj">ル</span><span class="kr">ru</span></div><div class="kana-cell" onclick="speak('レ')" title="re"><span class="kj">レ</span><span class="kr">re</span></div><div class="kana-cell" onclick="speak('ロ')" title="ro"><span class="kj">ロ</span><span class="kr">ro</span></div><div class="kana-cell" onclick="speak('ワ')" title="wa"><span class="kj">ワ</span><span class="kr">wa</span></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell" onclick="speak('ヲ')" title="wo"><span class="kj">ヲ</span><span class="kr">wo</span></div><div class="kana-cell" onclick="speak('ン')" title="n"><span class="kj">ン</span><span class="kr">n</span></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div><div class="kana-cell empty"></div></div>
-  <table class="ex-table" style="margin-top:12px;">
-    <thead><tr><th>Confusion fréquente</th><th>Astuce</th></tr></thead>
-    <tbody>
-      <tr><td class="ex-jp">ツ vs シ</td><td>ツ (tsu) = traits <b>vers le bas</b> · シ (shi) = traits <b>vers la droite</b></td></tr>
-      <tr><td class="ex-jp">ン vs ソ</td><td>ン (n) = diagonal puis crochet · ソ (so) = deux traits vers le bas</td></tr>
-      <tr><td class="ex-jp">ー</td><td>Tiret horizontal = <b>allonge la voyelle</b> précédente · コーヒー = kō-hī</td></tr>
-    </tbody>
-  </table>
+const KATAKANA_DAKUTEN = [
+  {j:'ガ',r:'ga'},{j:'ギ',r:'gi'},{j:'グ',r:'gu'},{j:'ゲ',r:'ge'},{j:'ゴ',r:'go'},
+  {j:'ザ',r:'za'},{j:'ジ',r:'ji'},{j:'ズ',r:'zu'},{j:'ゼ',r:'ze'},{j:'ゾ',r:'zo'},
+  {j:'ダ',r:'da'},{j:'ヂ',r:'ji'},{j:'ヅ',r:'zu'},{j:'デ',r:'de'},{j:'ド',r:'do'},
+  {j:'バ',r:'ba'},{j:'ビ',r:'bi'},{j:'ブ',r:'bu'},{j:'ベ',r:'be'},{j:'ボ',r:'bo'},
+  {j:'パ',r:'pa'},{j:'ピ',r:'pi'},{j:'プ',r:'pu'},{j:'ペ',r:'pe'},{j:'ポ',r:'po'}
+];
 
-  <h3 class="sec-h">🌍 Gairaigo — 20 mots empruntés</h3>
-  <table class="ex-table">
-    <thead><tr><th>Katakana</th><th>Romaji</th><th>Français</th></tr></thead>
-    <tbody><tr><td class="ex-jp" style="font-size:18px;">コーヒー</td><td class="ex-rom">kōhī</td><td>café</td></tr><tr><td class="ex-jp" style="font-size:18px;">テレビ</td><td class="ex-rom">terebi</td><td>télévision</td></tr><tr><td class="ex-jp" style="font-size:18px;">パン</td><td class="ex-rom">pan</td><td>pain</td></tr><tr><td class="ex-jp" style="font-size:18px;">ホテル</td><td class="ex-rom">hoteru</td><td>hôtel</td></tr><tr><td class="ex-jp" style="font-size:18px;">バス</td><td class="ex-rom">basu</td><td>bus</td></tr><tr><td class="ex-jp" style="font-size:18px;">レストラン</td><td class="ex-rom">resutoran</td><td>restaurant</td></tr><tr><td class="ex-jp" style="font-size:18px;">スポーツ</td><td class="ex-rom">supōtsu</td><td>sports</td></tr><tr><td class="ex-jp" style="font-size:18px;">ミルク</td><td class="ex-rom">miruku</td><td>lait</td></tr><tr><td class="ex-jp" style="font-size:18px;">ケーキ</td><td class="ex-rom">kēki</td><td>gâteau</td></tr><tr><td class="ex-jp" style="font-size:18px;">ジュース</td><td class="ex-rom">jūsu</td><td>jus</td></tr><tr><td class="ex-jp" style="font-size:18px;">タクシー</td><td class="ex-rom">takushī</td><td>taxi</td></tr><tr><td class="ex-jp" style="font-size:18px;">インターネット</td><td class="ex-rom">intānetto</td><td>internet</td></tr><tr><td class="ex-jp" style="font-size:18px;">スマホ</td><td class="ex-rom">sumaho</td><td>smartphone</td></tr><tr><td class="ex-jp" style="font-size:18px;">フランス</td><td class="ex-rom">Furansu</td><td>France</td></tr><tr><td class="ex-jp" style="font-size:18px;">パリ</td><td class="ex-rom">Pari</td><td>Paris</td></tr><tr><td class="ex-jp" style="font-size:18px;">アイスクリーム</td><td class="ex-rom">aisukurīmu</td><td>glace</td></tr><tr><td class="ex-jp" style="font-size:18px;">チョコレート</td><td class="ex-rom">chokoreēto</td><td>chocolat</td></tr><tr><td class="ex-jp" style="font-size:18px;">ゲーム</td><td class="ex-rom">gēmu</td><td>jeu vidéo</td></tr><tr><td class="ex-jp" style="font-size:18px;">ピザ</td><td class="ex-rom">piza</td><td>pizza</td></tr><tr><td class="ex-jp" style="font-size:18px;">カメラ</td><td class="ex-rom">kamera</td><td>caméra</td></tr></tbody>
-  </table>
-  <div class="tip-box" style="border-color:#1D9E75;">Astuce : cherche "menu japonais" sur Google Images. Tout ce qui est en katakana = mot étranger que tu peux deviner !</div>
-
-  <h3 class="sec-h">📅 Plan de travail — 1 semaine</h3>
-  <table class="ex-table">
-    <thead><tr><th>Jours</th><th>Cibles</th></tr></thead>
-    <tbody>
-      <tr><td>J1–J2</td><td class="ex-jp">ア行 カ行 サ行</td></tr>
-      <tr><td>J3–J4</td><td class="ex-jp">タ行 ナ行 ハ行</td></tr>
-      <tr><td>J5–J6</td><td class="ex-jp">マ行 ヤ行 ラ行</td></tr>
-      <tr><td>J7</td><td class="ex-jp">ワ行 ン + révision totale + ー</td></tr>
-    </tbody>
-  </table>
-</div>
-` },
-  "g1": { title:"Structure de phrase SOV", icon:"\ud83d\udcd0", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>La différence fondamentale entre le japonais et le français : <b>le verbe est toujours en fin de phrase</b>. Cette règle est absolue et ne souffre aucune exception.</p>
-  </div>
-  <h3 class="sec-h">⚡ SOV vs SVO</h3>
-  <div class="schema-box">
-    <div class="schema-row"><span class="schema-lang">Français (SVO)</span><span class="schema-ex">Je <span class="schema-v">mange</span> des sushis.</span></div>
-    <div class="schema-row"><span class="schema-lang">Japonais (SOV)</span><span class="schema-ex">私はすしを<span class="schema-v">食べます</span>。</span></div>
-    <div class="schema-note">Le verbe (食べます) est toujours à la fin !</div>
-  </div>
-  <div class="tip-box" style="border-color:#1D9E75;"><b>Conséquence pratique :</b> à l'oral, il faut écouter jusqu'au bout pour comprendre si la phrase est affirmative ou négative.</div>
-
-  <h3 class="sec-h">📝 Exemples progressifs</h3>
-  <p class="hint"><b>Niveau 1 — S + V (phrase minimale)</b></p>
-  <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">私は学生です。</td><td class="ex-rom">Watashi wa gakusei desu.</td><td class="ex-fr">Je suis étudiant(e).</td></tr><tr><td class="ex-jp">田中さんは先生です。</td><td class="ex-rom">Tanaka-san wa sensei desu.</td><td class="ex-fr">M. Tanaka est professeur.</td></tr></tbody></table>
-  <p class="hint" style="margin-top:12px;"><b>Niveau 2 — S + O + V</b></p>
-  <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">私はすしを食べます。</td><td class="ex-rom">Watashi wa sushi wo tabemasu.</td><td class="ex-fr">Je mange des sushis.</td></tr><tr><td class="ex-jp">彼は水を飲みます。</td><td class="ex-rom">Kare wa mizu wo nomimasu.</td><td class="ex-fr">Il boit de l'eau.</td></tr><tr><td class="ex-jp">私は音楽を聞きます。</td><td class="ex-rom">Watashi wa ongaku wo kikimasu.</td><td class="ex-fr">J'écoute de la musique.</td></tr></tbody></table>
-  <p class="hint" style="margin-top:12px;"><b>Niveau 3 — S + lieu + O + V</b></p>
-  <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">私はカフェでコーヒーを飲みます。</td><td class="ex-rom">Watashi wa kafe de kōhī wo nomimasu.</td><td class="ex-fr">Je bois du café au café.</td></tr><tr><td class="ex-jp">彼女は学校で日本語を勉強します。</td><td class="ex-rom">Kanojo wa gakkō de nihongo wo benkyō shimasu.</td><td class="ex-fr">Elle étudie le japonais à l'école.</td></tr></tbody></table>
-
-  <h3 class="sec-h">❓ Forme négative et interrogative</h3>
-  <table class="ex-table">
-    <thead><tr><th>Forme</th><th>Règle</th><th>Exemple</th></tr></thead>
-    <tbody>
-      <tr><td><b>Négatif</b></td><td>ます → ません</td><td class="ex-jp">食べません (ne mange pas)</td></tr>
-      <tr><td><b>Passé</b></td><td>ます → ました</td><td class="ex-jp">食べました (a mangé)</td></tr>
-      <tr><td><b>Passé négatif</b></td><td>ます → ませんでした</td><td class="ex-jp">食べませんでした</td></tr>
-      <tr><td><b>Question</b></td><td>ajouter か en fin</td><td class="ex-jp">食べますか？</td></tr>
-    </tbody>
-  </table>
-  <div class="tip-box" style="border-color:#1D9E75;"><b>Flexible grâce aux particules :</b> L'ordre S+O peut varier car les particules (は, を, に…) identifient le rôle de chaque mot. Seul le verbe reste toujours en DERNIER.</div>
-</div>
-` },
-  "g2": { title:"Particules \u306f \u304c \u3092 \u306b \u3067", icon:"\ud83d\udcd0", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>Les particules (助詞 joshi) sont de petits mots invariables placés <b>après</b> un nom. Elles définissent le rôle grammatical de chaque mot, comme des étiquettes. Sans elles, la phrase japonaise est incompréhensible.</p>
-    <div class="tip-box" style="border-color:#1D9E75;"><b>Règle :</b> les particules ne changent jamais de forme, quelle que soit la personne, le temps ou le genre. Bien plus simple qu'en français !</div>
-  </div>
-  <h3 class="sec-h">🏷 Les 5 particules fondamentales</h3>
+/* ─── DATA KANJI COMPLÈTE AVEC ON/KUN ──────────────────────── */
+const KANJI_N5 = [
+  // --- NOMBRES ---
+  {j:'一', on:'イチ, イツ', kun:'ひと, ひと.つ', f:'Un'},
+  {j:'二', on:'ニ, ジ', kun:'ふた, ふた.つ', f:'Deux'},
+  {j:'三', on:'サン', kun:'み, み.つ', f:'Trois'},
+  {j:'四', on:'シ', kun:'よ, よ.つ, よん', f:'Quatre'},
+  {j:'五', on:'ゴ', kun:'いつ, いつ.つ', f:'Cinq'},
+  {j:'六', on:'ロク', kun:'む, む.つ', f:'Six'},
+  {j:'七', on:'シチ', kun:'なな, なな.つ', f:'Sept'},
+  {j:'八', on:'ハチ', kun:'や, や.つ', f:'Huit'},
+  {j:'九', on:'キュウ, ク', kun:'ここの, ここの.つ', f:'Neuf'},
+  {j:'十', on:'ジュウ, ジッ', kun:'とお, と', f:'Dix'},
+  {j:'百', on:'ヒャク', kun:'もも', f:'Cent'},
+  {j:'千', on:'セン', kun:'ち', f:'Mille'},
+  {j:'万', on:'マン, バン', kun:'よろず', f:'Dix-mille'},
   
-    <div class="particle-card" style="border-left-color:#BC002D;">
-      <div class="particle-header">
-        <span class="particle-char" style="color:#BC002D;">は</span>
-        <div>
-          <div class="particle-rom">(wa)</div>
-          <div class="particle-role">Thème · sujet connu</div>
-        </div>
-      </div>
-      <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">私は学生です。</td><td class="ex-rom">Watashi wa gakusei desu.</td><td class="ex-fr">Je suis étudiant(e).</td></tr><tr><td class="ex-jp">彼女は医者です。</td><td class="ex-rom">Kanojo wa isha desu.</td><td class="ex-fr">Elle est médecin.</td></tr><tr><td class="ex-jp">東京は大きい。</td><td class="ex-rom">Tōkyō wa ōkii.</td><td class="ex-fr">Tokyo est grande.</td></tr></tbody></table>
-    </div>
-    <div class="particle-card" style="border-left-color:#7F77DD;">
-      <div class="particle-header">
-        <span class="particle-char" style="color:#7F77DD;">が</span>
-        <div>
-          <div class="particle-rom">(ga)</div>
-          <div class="particle-role">Sujet grammatical · info nouvelle · réponse à QUI</div>
-        </div>
-      </div>
-      <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">猫がいます。</td><td class="ex-rom">Neko ga imasu.</td><td class="ex-fr">Il y a un chat.</td></tr><tr><td class="ex-jp">私が学生です。</td><td class="ex-rom">Watashi ga gakusei desu.</td><td class="ex-fr">C'est MOI l'étudiant.</td></tr><tr><td class="ex-jp">雨が降ります。</td><td class="ex-rom">Ame ga furimasu.</td><td class="ex-fr">Il pleut.</td></tr></tbody></table>
-    </div>
-    <div class="particle-card" style="border-left-color:#1D9E75;">
-      <div class="particle-header">
-        <span class="particle-char" style="color:#1D9E75;">を</span>
-        <div>
-          <div class="particle-rom">(wo)</div>
-          <div class="particle-role">Objet direct · ce qui subit l'action</div>
-        </div>
-      </div>
-      <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">すしを食べます。</td><td class="ex-rom">Sushi wo tabemasu.</td><td class="ex-fr">Je mange des sushis.</td></tr><tr><td class="ex-jp">音楽を聞きます。</td><td class="ex-rom">Ongaku wo kikimasu.</td><td class="ex-fr">J'écoute de la musique.</td></tr><tr><td class="ex-jp">日本語を勉強します。</td><td class="ex-rom">Nihongo wo benkyō shimasu.</td><td class="ex-fr">J'étudie le japonais.</td></tr></tbody></table>
-    </div>
-    <div class="particle-card" style="border-left-color:#BA7517;">
-      <div class="particle-header">
-        <span class="particle-char" style="color:#BA7517;">に</span>
-        <div>
-          <div class="particle-rom">(ni)</div>
-          <div class="particle-role">Direction · destination · moment précis</div>
-        </div>
-      </div>
-      <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">東京に行きます。</td><td class="ex-rom">Tōkyō ni ikimasu.</td><td class="ex-fr">Je vais à Tokyo.</td></tr><tr><td class="ex-jp">三時に来ます。</td><td class="ex-rom">Sanji ni kimasu.</td><td class="ex-fr">Je viens à 3 heures.</td></tr><tr><td class="ex-jp">学校にいます。</td><td class="ex-rom">Gakkō ni imasu.</td><td class="ex-fr">Je suis à l'école.</td></tr></tbody></table>
-    </div>
-    <div class="particle-card" style="border-left-color:#D85A30;">
-      <div class="particle-header">
-        <span class="particle-char" style="color:#D85A30;">で</span>
-        <div>
-          <div class="particle-rom">(de)</div>
-          <div class="particle-role">Lieu d'action · moyen · instrument</div>
-        </div>
-      </div>
-      <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">カフェで勉強します。</td><td class="ex-rom">Kafe de benkyō shimasu.</td><td class="ex-fr">J'étudie au café.</td></tr><tr><td class="ex-jp">電車で行きます。</td><td class="ex-rom">Densha de ikimasu.</td><td class="ex-fr">J'y vais en train.</td></tr><tr><td class="ex-jp">日本語で話します。</td><td class="ex-rom">Nihongo de hanashimasu.</td><td class="ex-fr">Je parle en japonais.</td></tr></tbody></table>
-    </div>
+  // --- TEMPS & JOURS ---
+  {j:'日', on:'ニチ, ジツ', kun:'ひ, -び, -か', f:'Jour, Soleil'},
+  {j:'月', on:'ゲツ, ガツ', kun:'つき', f:'Lune, Mois'},
+  {j:'火', on:'カ', kun:'ひ, -び, ほ-', f:'Feu'},
+  {j:'水', on:'スイ', kun:'みず', f:'Eau'},
+  {j:'木', on:'ボク, モク', kun:'き, こ-', f:'Arbre, Bois'},
+  {j:'金', on:'キン, コン', kun:'かね, かな-', f:'Or, Argent, Monnaie'},
+  {j:'土', on:'ド, ト', kun:'つち', f:'Terre, Sol'},
+  {j:'年', on:'ネン', kun:'とし', f:'Année'},
+  {j:'時', on:'ジ', kun:'とき', f:'Heure, Temps'},
+  {j:'分', on:'ブン, フン, ブ', kun:'わ.ける, わ.かる', f:'Minute, Diviser'},
+  {j:'半', on:'ハン', kun:'なか.ば', f:'Moitié'},
+  {j:'午', on:'ゴ', kun:'うま', f:'Midi'},
+  {j:'今', on:'コン, キン', kun:'いま', f:'Maintenant'},
+  {j:'先', on:'セン', kun:'さき', f:'Avant, Précédent'},
+  {j:'来', on:'ライ', kun:'く.る, きた.る', f:'Venir'},
+  
+  // --- PERSONNES & CORPS ---
+  {j:'人', on:'ジン, ニン', kun:'ひと', f:'Personne'},
+  {j:'男', on:'ダン, ナン', kun:'おとこ', f:'Homme'},
+  {j:'女', on:'ジョ, ニョ', kun:'おんな, め', f:'Femme'},
+  {j:'子', on:'シ, ス', kun:'こ', f:'Enfant'},
+  {j:'父', on:'フ', kun:'ちち', f:'Père'},
+  {j:'母', on:'ボ', kun:'はは', f:'Mère'},
+  {j:'友', on:'ユウ', kun:'とも', f:'Ami'},
+  {j:'目', on:'モク, ボク', kun:'め', f:'Œil'},
+  {j:'口', on:'コウ, ク', kun:'くち', f:'Bouche'},
+  {j:'耳', on:'ジ', kun:'みみ', f:'Oreille'},
+  {j:'手', on:'シュ', kun:'て', f:'Main'},
+  {j:'足', on:'ソク', kun:'あし, た.りる', f:'Pied, Jambe, Suffire'},
+  
+  // --- DIRECTIONS & POSITIONS ---
+  {j:'上', on:'ジョウ, ショウ', kun:'うえ, あ.がる', f:'Haut, Monter'},
+  {j:'下', on:'カ, ゲ', kun:'した, さ.がる', f:'Bas, Descendre'},
+  {j:'左', on:'サ', kun:'ひだり', f:'Gauche'},
+  {j:'右', on:'ウ, ユウ', kun:'みぎ', f:'Droite'},
+  {j:'中', on:'チュウ', kun:'なか', f:'Milieu, Intérieur'},
+  {j:'外', on:'ガイ, ゲ', kun:'そと, ほか', f:'Extérieur, Dehors'},
+  {j:'前', on:'ゼン', kun:'まえ', f:'Avant, Devant'},
+  {j:'後', on:'ゴ, コウ', kun:'のち, うし.ろ, あと', f:'Après, Derrière'},
+  {j:'東', on:'トウ', kun:'ひがし', f:'Est'},
+  {j:'西', on:'セイ, サイ', kun:'にし', f:'Ouest'},
+  {j:'南', on:'ナン, ナ', kun:'みなみ', f:'Sud'},
+  {j:'北', on:'ホク', kun:'きた', f:'Nord'},
+  
+  // --- NATURE & ENVIRONNEMENT ---
+  {j:'空', on:'クウ', kun:'そら, あ.く, から', f:'Ciel, Vide'},
+  {j:'山', on:'サン', kun:'やま', f:'Montagne'},
+  {j:'川', on:'セン', kun:'かわ', f:'Rivière'},
+  {j:'天', on:'テン', kun:'あまつ, あめ', f:'Cieux'},
+  {j:'気', on:'キ, ケ', kun:'いき', f:'Esprit, Air, Humeur'},
+  {j:'雨', on:'ウ', kun:'あめ, あま-', f:'Pluie'},
+  {j:'電', on:'デン', kun:'-', f:'Électricité'},
+  
+  // --- ADJECTIFS ---
+  {j:'大', on:'ダイ, タイ', kun:'おお, おお.きい', f:'Grand'},
+  {j:'小', on:'ショウ', kun:'ちい.さい, こ-', f:'Petit'},
+  {j:'高', on:'コウ', kun:'たか.い', f:'Haut, Cher'},
+  {j:'安', on:'アン', kun:'やす.い', f:'Bon marché, Paisible'},
+  {j:'新', on:'シン', kun:'あたら.しい', f:'Nouveau'},
+  {j:'古', on:'コ', kun:'ふる.い', f:'Vieux, Ancien'},
+  {j:'長', on:'チョウ', kun:'なが.い', f:'Long, Chef'},
+  {j:'多', on:'タ', kun:'おお.い', f:'Beaucoup'},
+  {j:'少', on:'ショウ', kun:'すく.ない, すこ.し', f:'Peu'},
+  {j:'白', on:'ハク, ビャク', kun:'しろ, しろ.い', f:'Blanc'},
+  
+  // --- VERBES ---
+  {j:'食', on:'ショク, ジキ', kun:'た.べる, く.う', f:'Manger'},
+  {j:'飲', on:'イン, オン', kun:'の.む', f:'Boire'},
+  {j:'見', on:'ケン', kun:'み.る, み.える', f:'Voir, Regarder'},
+  {j:'聞', on:'ブン, モン', kun:'き.く, き.こえる', f:'Écouter, Entendre'},
+  {j:'話', on:'ワ', kun:'はな.す, はなし', f:'Parler, Histoire'},
+  {j:'読', on:'ドク, トク', kun:'よ.む', f:'Lire'},
+  {j:'書', on:'ショ', kun:'か.く', f:'Écrire'},
+  {j:'買', on:'バイ', kun:'か.う', f:'Acheter'},
+  {j:'行', on:'コウ, ギョウ', kun:'い.く, ゆ.く', f:'Aller'},
+  {j:'出', on:'シュツ, スイ', kun:'で.る, だ.す', f:'Sortir'},
+  {j:'入', on:'ニュウ', kun:'はい.る, い.れる', f:'Entrer, Insérer'},
+  {j:'休', on:'キュウ', kun:'やす.む, やす.み', f:'Se reposer'},
+  {j:'立', on:'リツ, リュウ', kun:'た.つ, た.てる', f:'Se lever'},
+  {j:'生', on:'セイ, ショウ', kun:'い.きる, う.まれる', f:'Vie, Naître'},
+  {j:'学', on:'ガク', kun:'まな.ぶ', f:'Étudier'},
+  {j:'校', on:'コウ, キョウ', kun:'-', f:'École'},
+  
+  // --- DIVERS (Noms communs) ---
+  {j:'何', on:'カ', kun:'なに, なん', f:'Quoi, Comment'},
+  {j:'円', on:'エン', kun:'まる.い', f:'Cercle, Yen'},
+  {j:'語', on:'ゴ', kun:'かた.る, かた.らう', f:'Langue, Mot'},
+  {j:'本', on:'ホン', kun:'もと', f:'Livre, Origine'},
+  {j:'車', on:'シャ', kun:'くるま', f:'Voiture'},
+  {j:'駅', on:'エキ', kun:'-', f:'Gare'},
+  {j:'名', on:'メイ, ミョウ', kun:'な', f:'Nom'},
+  {j:'国', on:'コク', kun:'くに', f:'Pays'},
+  {j:'社', on:'シャ', kun:'やしろ', f:'Société, Sanctuaire'},
+  {j:'店', on:'テン', kun:'みせ', f:'Magasin, Boutique'},
+  {j:'道', on:'ドウ, トウ', kun:'みち', f:'Chemin, Voie'},
+  {j:'間', on:'カン, ケン', kun:'あいだ, ま', f:'Intervalle, Espace'}
+];
 
-  <h3 class="sec-h">⚖ は vs が — la distinction essentielle</h3>
-  <table class="ex-table">
-    <thead><tr><th>は (wa)</th><th>が (ga)</th></tr></thead>
-    <tbody>
-      <tr><td>Sujet <b>connu</b>, déjà mentionné</td><td>Sujet <b>nouveau</b>, info fraîche</td></tr>
-      <tr><td>Présentation générale</td><td>Réponse à une question QUI/QUOI</td></tr>
-      <tr><td class="ex-jp">私は学生です。(je me présente)</td><td class="ex-jp">私が学生です。(c'est MOI)</td></tr>
-    </tbody>
-  </table>
-  <div class="tip-box" style="border-color:#1D9E75;"><b>に vs で pour les lieux :</b> に = destination (on y arrive / on y existe) · で = lieu d'action (on y fait qqch)<br>Ex : 学校<b>に</b>行く (aller à l'école) ≠ 学校<b>で</b>勉強する (étudier à l'école)</div>
-</div>
-` },
-  "g3": { title:"Verbes en \u307e\u3059", icon:"\ud83d\udcd0", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>La forme <b>ます (masu)</b> est la forme polie standard — elle couvre 90% des situations : avec des inconnus, au travail, dans les commerces. C'est la première conjugaison à maîtriser.</p>
-    <div class="tip-box" style="border-color:#1D9E75;"><b>Super simple :</b> le verbe ne change JAMAIS selon la personne. 食べます = je mange / tu manges / il mange — même forme !</div>
-  </div>
-  <h3 class="sec-h">📐 Les 4 formes essentielles</h3>
-  <table class="ex-table">
-    <thead><tr><th>Forme</th><th>Terminaison</th><th>Exemple (manger)</th></tr></thead>
-    <tbody>
-      <tr><td><b>Présent affirmatif</b></td><td class="ex-jp" style="color:#BC002D;">ます</td><td class="ex-jp">食べます</td></tr>
-      <tr><td><b>Présent négatif</b></td><td class="ex-jp" style="color:#BC002D;">ません</td><td class="ex-jp">食べません</td></tr>
-      <tr><td><b>Passé affirmatif</b></td><td class="ex-jp" style="color:#BC002D;">ました</td><td class="ex-jp">食べました</td></tr>
-      <tr><td><b>Passé négatif</b></td><td class="ex-jp" style="color:#BC002D;">ませんでした</td><td class="ex-jp">食べませんでした</td></tr>
-      <tr><td><b>Question</b></td><td class="ex-jp" style="color:#BC002D;">ますか？</td><td class="ex-jp">食べますか？</td></tr>
-    </tbody>
-  </table>
+const KANJI_N4 = [
+  {j:'会', on:'カイ, エ', kun:'あ.う', f:'Réunion, Rencontrer'},
+  {j:'社', on:'シャ', kun:'やしろ', f:'Société, Sanctuaire'},
+  {j:'言', on:'ゲン, ゴン', kun:'い.う, こと', f:'Dire, Mot'},
+  {j:'話', on:'ワ', kun:'はな.す, はなし', f:'Parler, Histoire'},
+  {j:'読', on:'ドク, トク', kun:'よ.む', f:'Lire'},
+  {j:'書', on:'ショ', kun:'か.く', f:'Écrire'},
+  {j:'食', on:'ショク, ジキ', kun:'た.べる, く.う', f:'Manger, Nourriture'},
+  {j:'飲', on:'イン, オン', kun:'の.む', f:'Boire'},
+  {j:'買', on:'バイ', kun:'か.う', f:'Acheter'},
+  {j:'行', on:'コウ, ギョウ', kun:'い.く, ゆ.く', f:'Aller, Ligne'}
+];
 
-  <h3 class="sec-h">📚 20 verbes essentiels N5</h3>
-  <table class="ex-table">
-    <thead><tr><th>Verbe</th><th>Lecture</th><th>Romaji</th><th>Sens</th></tr></thead>
-    <tbody><tr><td class="ex-jp" style="font-size:18px;">食べます</td><td class="ex-jp" style="font-size:13px;color:#888;">たべます</td><td class="ex-rom">tabemasu</td><td>manger</td></tr><tr><td class="ex-jp" style="font-size:18px;">飲みます</td><td class="ex-jp" style="font-size:13px;color:#888;">のみます</td><td class="ex-rom">nomimasu</td><td>boire</td></tr><tr><td class="ex-jp" style="font-size:18px;">行きます</td><td class="ex-jp" style="font-size:13px;color:#888;">いきます</td><td class="ex-rom">ikimasu</td><td>aller</td></tr><tr><td class="ex-jp" style="font-size:18px;">来ます</td><td class="ex-jp" style="font-size:13px;color:#888;">きます</td><td class="ex-rom">kimasu</td><td>venir</td></tr><tr><td class="ex-jp" style="font-size:18px;">見ます</td><td class="ex-jp" style="font-size:13px;color:#888;">みます</td><td class="ex-rom">mimasu</td><td>voir</td></tr><tr><td class="ex-jp" style="font-size:18px;">聞きます</td><td class="ex-jp" style="font-size:13px;color:#888;">ききます</td><td class="ex-rom">kikimasu</td><td>écouter</td></tr><tr><td class="ex-jp" style="font-size:18px;">話します</td><td class="ex-jp" style="font-size:13px;color:#888;">はなします</td><td class="ex-rom">hanashimasu</td><td>parler</td></tr><tr><td class="ex-jp" style="font-size:18px;">書きます</td><td class="ex-jp" style="font-size:13px;color:#888;">かきます</td><td class="ex-rom">kakimasu</td><td>écrire</td></tr><tr><td class="ex-jp" style="font-size:18px;">読みます</td><td class="ex-jp" style="font-size:13px;color:#888;">よみます</td><td class="ex-rom">yomimasu</td><td>lire</td></tr><tr><td class="ex-jp" style="font-size:18px;">します</td><td class="ex-jp" style="font-size:13px;color:#888;">します</td><td class="ex-rom">shimasu</td><td>faire</td></tr><tr><td class="ex-jp" style="font-size:18px;">あります</td><td class="ex-jp" style="font-size:13px;color:#888;">あります</td><td class="ex-rom">arimasu</td><td>il y a (chose)</td></tr><tr><td class="ex-jp" style="font-size:18px;">います</td><td class="ex-jp" style="font-size:13px;color:#888;">います</td><td class="ex-rom">imasu</td><td>il y a (personne)</td></tr><tr><td class="ex-jp" style="font-size:18px;">買います</td><td class="ex-jp" style="font-size:13px;color:#888;">かいます</td><td class="ex-rom">kaimasu</td><td>acheter</td></tr><tr><td class="ex-jp" style="font-size:18px;">起きます</td><td class="ex-jp" style="font-size:13px;color:#888;">おきます</td><td class="ex-rom">okimasu</td><td>se lever</td></tr><tr><td class="ex-jp" style="font-size:18px;">寝ます</td><td class="ex-jp" style="font-size:13px;color:#888;">ねます</td><td class="ex-rom">nemasu</td><td>dormir</td></tr><tr><td class="ex-jp" style="font-size:18px;">帰ります</td><td class="ex-jp" style="font-size:13px;color:#888;">かえります</td><td class="ex-rom">kaerimasu</td><td>rentrer</td></tr><tr><td class="ex-jp" style="font-size:18px;">働きます</td><td class="ex-jp" style="font-size:13px;color:#888;">はたらきます</td><td class="ex-rom">hatarakimasu</td><td>travailler</td></tr><tr><td class="ex-jp" style="font-size:18px;">勉強します</td><td class="ex-jp" style="font-size:13px;color:#888;">べんきょうします</td><td class="ex-rom">benkyō shimasu</td><td>étudier</td></tr><tr><td class="ex-jp" style="font-size:18px;">分かります</td><td class="ex-jp" style="font-size:13px;color:#888;">わかります</td><td class="ex-rom">wakarimasu</td><td>comprendre</td></tr><tr><td class="ex-jp" style="font-size:18px;">できます</td><td class="ex-jp" style="font-size:13px;color:#888;">できます</td><td class="ex-rom">dekimasu</td><td>pouvoir faire</td></tr></tbody>
-  </table>
+const KANJI_NX = [
+  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation (N3)'},
+  {j:'情', on:'ジョウ, セイ', kun:'なさ.け', f:'Émotion, Sympathie (N3)'},
+  {j:'解', on:'カイ, ゲ', kun:'と.く, と.ける', f:'Dénouer, Résoudre (N3)'},
+  {j:'識', on:'シキ', kun:'し.る', f:'Connaissance, Discernement (N2)'},
+  {j:'観', on:'カン', kun:'み.る', f:'Observer, Apparence (N2)'},
+  {j:'響', on:'キョウ', kun:'ひび.く', f:'Écho, Résonner (N1)'},
+  {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris (N1)'}
+];
 
-  <h3 class="sec-h">💬 Phrases modèles</h3>
-  <table class="ex-table"><thead><tr><th>日本語</th><th>Romaji</th><th>Français</th></tr></thead><tbody><tr><td class="ex-jp">私は毎日コーヒーを飲みます。</td><td class="ex-rom">Watashi wa mainichi kōhī wo nomimasu.</td><td class="ex-fr">Je bois du café tous les jours.</td></tr><tr><td class="ex-jp">昨日、映画を見ました。</td><td class="ex-rom">Kinō, eiga wo mimashita.</td><td class="ex-fr">Hier, j'ai regardé un film.</td></tr><tr><td class="ex-jp">今日は学校に行きません。</td><td class="ex-rom">Kyō wa gakkō ni ikimasen.</td><td class="ex-fr">Aujourd'hui je ne vais pas à l'école.</td></tr><tr><td class="ex-jp">日本語を勉強しますか？</td><td class="ex-rom">Nihongo wo benkyō shimasu ka?</td><td class="ex-fr">Étudiez-vous le japonais ?</td></tr><tr><td class="ex-jp">はい、毎日勉強します。</td><td class="ex-rom">Hai, mainichi benkyō shimasu.</td><td class="ex-fr">Oui, j'étudie tous les jours.</td></tr></tbody></table>
-  <div class="tip-box" style="border-color:#1D9E75;">🗣 <b>Speaking tip :</b> prononce chaque conjugaison à voix haute 5 fois. L'oreille retient mieux que les yeux !</div>
-</div>
-` },
-  "kj1": { title:"Kanji 1\u201380", icon:"\u6f22", content: `
-<div class="course-module">
-  <div class="course-intro">
-    <p>Les kanji ont deux types de lectures : <b>ON</b> (lecture sino-japonaise, utilisée dans les mots composés) et <b>KUN</b> (lecture japonaise native, utilisée seul ou avec des hiragana).</p>
-    <div class="tip-box" style="border-color:#1D9E75;"><b>Méthode RTK :</b> associe chaque kanji à une histoire visuelle. Ex : 明 (brillant) = 日 (soleil) + 月 (lune) → le soleil ET la lune ensemble = super brillant ! App recommandée : Kanji Study.</div>
-  </div>
-  <h4 style="margin:14px 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:.05em;">⏰ Jours & Temps</h4><table class="ex-table"><thead><tr><th>漢字</th><th>Lectures</th><th>Sens</th><th>Exemple</th><th>Traduction</th></tr></thead><tbody><tr><td class="ex-jp" style="font-size:28px;text-align:center;">日</td><td style="font-size:11px;color:#888;"><b>ON:</b> にち·び<br><b>KUN:</b> ひ</td><td style="font-weight:600;color:#BC002D;">soleil · jour</td><td class="ex-jp" style="font-size:14px;">日曜日</td><td style="font-size:12px;color:#666;">dimanche</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">月</td><td style="font-size:11px;color:#888;"><b>ON:</b> げつ·がつ<br><b>KUN:</b> つき</td><td style="font-weight:600;color:#BC002D;">lune · mois</td><td class="ex-jp" style="font-size:14px;">月曜日</td><td style="font-size:12px;color:#666;">lundi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">火</td><td style="font-size:11px;color:#888;"><b>ON:</b> か<br><b>KUN:</b> ひ</td><td style="font-weight:600;color:#BC002D;">feu</td><td class="ex-jp" style="font-size:14px;">火曜日</td><td style="font-size:12px;color:#666;">mardi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">水</td><td style="font-size:11px;color:#888;"><b>ON:</b> すい<br><b>KUN:</b> みず</td><td style="font-weight:600;color:#BC002D;">eau</td><td class="ex-jp" style="font-size:14px;">水曜日</td><td style="font-size:12px;color:#666;">mercredi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">木</td><td style="font-size:11px;color:#888;"><b>ON:</b> もく<br><b>KUN:</b> き</td><td style="font-weight:600;color:#BC002D;">arbre</td><td class="ex-jp" style="font-size:14px;">木曜日</td><td style="font-size:12px;color:#666;">jeudi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">金</td><td style="font-size:11px;color:#888;"><b>ON:</b> きん<br><b>KUN:</b> かね</td><td style="font-weight:600;color:#BC002D;">or · argent</td><td class="ex-jp" style="font-size:14px;">金曜日</td><td style="font-size:12px;color:#666;">vendredi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">土</td><td style="font-size:11px;color:#888;"><b>ON:</b> ど<br><b>KUN:</b> つち</td><td style="font-weight:600;color:#BC002D;">terre · sol</td><td class="ex-jp" style="font-size:14px;">土曜日</td><td style="font-size:12px;color:#666;">samedi</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">年</td><td style="font-size:11px;color:#888;"><b>ON:</b> ねん<br><b>KUN:</b> とし</td><td style="font-weight:600;color:#BC002D;">année</td><td class="ex-jp" style="font-size:14px;">今年</td><td style="font-size:12px;color:#666;">cette année</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">時</td><td style="font-size:11px;color:#888;"><b>ON:</b> じ<br><b>KUN:</b> とき</td><td style="font-weight:600;color:#BC002D;">heure</td><td class="ex-jp" style="font-size:14px;">何時</td><td style="font-size:12px;color:#666;">quelle heure</td></tr></tbody></table>
-  <h4 style="margin:14px 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:.05em;">🔢 Nombres</h4><table class="ex-table"><thead><tr><th>漢字</th><th>Lectures</th><th>Sens</th><th>Exemple</th><th>Traduction</th></tr></thead><tbody><tr><td class="ex-jp" style="font-size:28px;text-align:center;">一</td><td style="font-size:11px;color:#888;"><b>ON:</b> いち<br><b>KUN:</b> ひと</td><td style="font-weight:600;color:#BC002D;">1</td><td class="ex-jp" style="font-size:14px;">一月</td><td style="font-size:12px;color:#666;">janvier</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">二</td><td style="font-size:11px;color:#888;"><b>ON:</b> に<br><b>KUN:</b> ふた</td><td style="font-weight:600;color:#BC002D;">2</td><td class="ex-jp" style="font-size:14px;">二月</td><td style="font-size:12px;color:#666;">février</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">三</td><td style="font-size:11px;color:#888;"><b>ON:</b> さん<br><b>KUN:</b> み</td><td style="font-weight:600;color:#BC002D;">3</td><td class="ex-jp" style="font-size:14px;">三月</td><td style="font-size:12px;color:#666;">mars</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">四</td><td style="font-size:11px;color:#888;"><b>ON:</b> し<br><b>KUN:</b> よん</td><td style="font-weight:600;color:#BC002D;">4</td><td class="ex-jp" style="font-size:14px;">四月</td><td style="font-size:12px;color:#666;">avril</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">五</td><td style="font-size:11px;color:#888;"><b>ON:</b> ご<br><b>KUN:</b> いつ</td><td style="font-weight:600;color:#BC002D;">5</td><td class="ex-jp" style="font-size:14px;">五月</td><td style="font-size:12px;color:#666;">mai</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">六</td><td style="font-size:11px;color:#888;"><b>ON:</b> ろく<br><b>KUN:</b> む</td><td style="font-weight:600;color:#BC002D;">6</td><td class="ex-jp" style="font-size:14px;">六月</td><td style="font-size:12px;color:#666;">juin</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">七</td><td style="font-size:11px;color:#888;"><b>ON:</b> しち<br><b>KUN:</b> なな</td><td style="font-weight:600;color:#BC002D;">7</td><td class="ex-jp" style="font-size:14px;">七月</td><td style="font-size:12px;color:#666;">juillet</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">八</td><td style="font-size:11px;color:#888;"><b>ON:</b> はち<br><b>KUN:</b> や</td><td style="font-weight:600;color:#BC002D;">8</td><td class="ex-jp" style="font-size:14px;">八月</td><td style="font-size:12px;color:#666;">août</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">九</td><td style="font-size:11px;color:#888;"><b>ON:</b> く·きゅう<br><b>KUN:</b> ここの</td><td style="font-weight:600;color:#BC002D;">9</td><td class="ex-jp" style="font-size:14px;">九月</td><td style="font-size:12px;color:#666;">septembre</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">十</td><td style="font-size:11px;color:#888;"><b>ON:</b> じゅう<br><b>KUN:</b> とお</td><td style="font-weight:600;color:#BC002D;">10</td><td class="ex-jp" style="font-size:14px;">十月</td><td style="font-size:12px;color:#666;">octobre</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">百</td><td style="font-size:11px;color:#888;"><b>ON:</b> ひゃく<br><b>KUN:</b> </td><td style="font-weight:600;color:#BC002D;">100</td><td class="ex-jp" style="font-size:14px;">三百円</td><td style="font-size:12px;color:#666;">300 yens</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">千</td><td style="font-size:11px;color:#888;"><b>ON:</b> せん<br><b>KUN:</b> </td><td style="font-weight:600;color:#BC002D;">1000</td><td class="ex-jp" style="font-size:14px;">千円</td><td style="font-size:12px;color:#666;">1000 yens</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">万</td><td style="font-size:11px;color:#888;"><b>ON:</b> まん<br><b>KUN:</b> </td><td style="font-weight:600;color:#BC002D;">10000</td><td class="ex-jp" style="font-size:14px;">一万円</td><td style="font-size:12px;color:#666;">10 000 yens</td></tr></tbody></table>
-  <h4 style="margin:14px 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:.05em;">🌿 Nature</h4><table class="ex-table"><thead><tr><th>漢字</th><th>Lectures</th><th>Sens</th><th>Exemple</th><th>Traduction</th></tr></thead><tbody><tr><td class="ex-jp" style="font-size:28px;text-align:center;">山</td><td style="font-size:11px;color:#888;"><b>ON:</b> さん<br><b>KUN:</b> やま</td><td style="font-weight:600;color:#BC002D;">montagne</td><td class="ex-jp" style="font-size:14px;">富士山</td><td style="font-size:12px;color:#666;">Mont Fuji</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">川</td><td style="font-size:11px;color:#888;"><b>ON:</b> せん<br><b>KUN:</b> かわ</td><td style="font-weight:600;color:#BC002D;">rivière</td><td class="ex-jp" style="font-size:14px;">小川</td><td style="font-size:12px;color:#666;">ruisseau</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">海</td><td style="font-size:11px;color:#888;"><b>ON:</b> かい<br><b>KUN:</b> うみ</td><td style="font-weight:600;color:#BC002D;">mer</td><td class="ex-jp" style="font-size:14px;">海外</td><td style="font-size:12px;color:#666;">étranger</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">空</td><td style="font-size:11px;color:#888;"><b>ON:</b> くう<br><b>KUN:</b> そら</td><td style="font-weight:600;color:#BC002D;">ciel · vide</td><td class="ex-jp" style="font-size:14px;">空港</td><td style="font-size:12px;color:#666;">aéroport</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">花</td><td style="font-size:11px;color:#888;"><b>ON:</b> か<br><b>KUN:</b> はな</td><td style="font-weight:600;color:#BC002D;">fleur</td><td class="ex-jp" style="font-size:14px;">花見</td><td style="font-size:12px;color:#666;">hanami</td></tr></tbody></table>
-  <h4 style="margin:14px 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:.05em;">👤 Personnes & Corps</h4><table class="ex-table"><thead><tr><th>漢字</th><th>Lectures</th><th>Sens</th><th>Exemple</th><th>Traduction</th></tr></thead><tbody><tr><td class="ex-jp" style="font-size:28px;text-align:center;">人</td><td style="font-size:11px;color:#888;"><b>ON:</b> じん·にん<br><b>KUN:</b> ひと</td><td style="font-weight:600;color:#BC002D;">personne</td><td class="ex-jp" style="font-size:14px;">日本人</td><td style="font-size:12px;color:#666;">Japonais</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">口</td><td style="font-size:11px;color:#888;"><b>ON:</b> こう<br><b>KUN:</b> くち</td><td style="font-weight:600;color:#BC002D;">bouche · entrée</td><td class="ex-jp" style="font-size:14px;">出口</td><td style="font-size:12px;color:#666;">sortie</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">目</td><td style="font-size:11px;color:#888;"><b>ON:</b> もく<br><b>KUN:</b> め</td><td style="font-weight:600;color:#BC002D;">œil</td><td class="ex-jp" style="font-size:14px;">目標</td><td style="font-size:12px;color:#666;">objectif</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">耳</td><td style="font-size:11px;color:#888;"><b>ON:</b> じ<br><b>KUN:</b> みみ</td><td style="font-weight:600;color:#BC002D;">oreille</td><td class="ex-jp" style="font-size:14px;">耳鳴り</td><td style="font-size:12px;color:#666;">acouphènes</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">手</td><td style="font-size:11px;color:#888;"><b>ON:</b> しゅ<br><b>KUN:</b> て</td><td style="font-weight:600;color:#BC002D;">main</td><td class="ex-jp" style="font-size:14px;">手紙</td><td style="font-size:12px;color:#666;">lettre</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">足</td><td style="font-size:11px;color:#888;"><b>ON:</b> そく<br><b>KUN:</b> あし</td><td style="font-weight:600;color:#BC002D;">pied · jambe</td><td class="ex-jp" style="font-size:14px;">足音</td><td style="font-size:12px;color:#666;">pas</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">心</td><td style="font-size:11px;color:#888;"><b>ON:</b> しん<br><b>KUN:</b> こころ</td><td style="font-weight:600;color:#BC002D;">cœur · esprit</td><td class="ex-jp" style="font-size:14px;">心配</td><td style="font-size:12px;color:#666;">inquiétude</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">国</td><td style="font-size:11px;color:#888;"><b>ON:</b> こく<br><b>KUN:</b> くに</td><td style="font-weight:600;color:#BC002D;">pays</td><td class="ex-jp" style="font-size:14px;">外国</td><td style="font-size:12px;color:#666;">pays étranger</td></tr></tbody></table>
-  <h4 style="margin:14px 0 6px;font-size:13px;color:#888;text-transform:uppercase;letter-spacing:.05em;">🏫 Société & Famille</h4><table class="ex-table"><thead><tr><th>漢字</th><th>Lectures</th><th>Sens</th><th>Exemple</th><th>Traduction</th></tr></thead><tbody><tr><td class="ex-jp" style="font-size:28px;text-align:center;">学</td><td style="font-size:11px;color:#888;"><b>ON:</b> がく<br><b>KUN:</b> まな</td><td style="font-weight:600;color:#BC002D;">apprendre</td><td class="ex-jp" style="font-size:14px;">学校</td><td style="font-size:12px;color:#666;">école</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">校</td><td style="font-size:11px;color:#888;"><b>ON:</b> こう<br><b>KUN:</b> </td><td style="font-weight:600;color:#BC002D;">établissement</td><td class="ex-jp" style="font-size:14px;">高校</td><td style="font-size:12px;color:#666;">lycée</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">先</td><td style="font-size:11px;color:#888;"><b>ON:</b> せん<br><b>KUN:</b> さき</td><td style="font-weight:600;color:#BC002D;">avant · précédent</td><td class="ex-jp" style="font-size:14px;">先週</td><td style="font-size:12px;color:#666;">semaine dernière</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">生</td><td style="font-size:11px;color:#888;"><b>ON:</b> せい<br><b>KUN:</b> い</td><td style="font-weight:600;color:#BC002D;">vie · naître</td><td class="ex-jp" style="font-size:14px;">先生</td><td style="font-size:12px;color:#666;">professeur</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">子</td><td style="font-size:11px;color:#888;"><b>ON:</b> し<br><b>KUN:</b> こ</td><td style="font-weight:600;color:#BC002D;">enfant</td><td class="ex-jp" style="font-size:14px;">子供</td><td style="font-size:12px;color:#666;">enfant</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">女</td><td style="font-size:11px;color:#888;"><b>ON:</b> じょ<br><b>KUN:</b> おんな</td><td style="font-weight:600;color:#BC002D;">femme</td><td class="ex-jp" style="font-size:14px;">女性</td><td style="font-size:12px;color:#666;">femme adulte</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">男</td><td style="font-size:11px;color:#888;"><b>ON:</b> だん<br><b>KUN:</b> おとこ</td><td style="font-weight:600;color:#BC002D;">homme</td><td class="ex-jp" style="font-size:14px;">男性</td><td style="font-size:12px;color:#666;">homme adulte</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">父</td><td style="font-size:11px;color:#888;"><b>ON:</b> ふ<br><b>KUN:</b> ちち</td><td style="font-weight:600;color:#BC002D;">père</td><td class="ex-jp" style="font-size:14px;">お父さん</td><td style="font-size:12px;color:#666;">père (poli)</td></tr><tr><td class="ex-jp" style="font-size:28px;text-align:center;">母</td><td style="font-size:11px;color:#888;"><b>ON:</b> ぼ<br><b>KUN:</b> はは</td><td style="font-weight:600;color:#BC002D;">mère</td><td class="ex-jp" style="font-size:14px;">お母さん</td><td style="font-size:12px;color:#666;">mère (poli)</td></tr></tbody></table>
-  <div class="tip-box" style="border-color:#1D9E75;">📱 <b>Apps :</b> Anki (deck JLPT N5 gratuit) · Kanji Study (tracé des traits) · WaniKani (mémorisation par histoires)</div>
-</div>
-` },
-};
+/* ─── RENDERING DE TABLEAUX ET LEÇONS ──────────────────────── */
+function generateKanaGrid(dataArray) {
+  let html = `<div class="kana-grid">`;
+  dataArray.forEach(c => {
+    if(c.e) html += `<div class="kana-cell empty"></div>`;
+    else html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
+  });
+  return html + `</div>`;
+}
 
-// ═══════════════════════════════════════════════════════════
-// QUIZ DATA
-// ═══════════════════════════════════════════════════════════
-const QUIZZES = {
-  'h1': {
-    title:'Quiz — Hiragana complet',kanji:'あ',
-    questions:[
-      {q:'Quel hiragana représente le son "ka" ?',jp:null,choices:['か','が','さ','た'],correct:0,exp:'か est le premier caractère de la rangée か行 (ka, ki, ku, ke, ko).'},
-      {q:'Quel son correspond à ce hiragana ?',jp:'し',choices:['si','shi','chi','ji'],correct:1,exp:'し se prononce "shi" (comme "chi" en anglais) — c\'est une exception dans la rangée さ行.'},
-      {q:'Quel hiragana représente le son "tsu" ?',jp:null,choices:['つ','ち','て','と'],correct:0,exp:'つ = tsu, son difficile unique au japonais — pense à "tsar" + "ou".'},
-      {q:'Comment se prononce を dans la langue moderne ?',jp:'を',choices:['wo','wa','o','we'],correct:2,exp:'を se prononce "o" dans le japonais moderne. Il est utilisé presque uniquement comme particule d\'objet.'},
-      {q:'Quel est le son de ce hiragana voicé ?',jp:'が',choices:['ka','ga','da','ba'],correct:1,exp:'が = ga. Le dakuten (") sur か transforme k → g : か (ka) → が (ga).'},
-      {q:'Que représente la combinaison きゃ ?',jp:null,choices:['kiya','kya','ki-ya','gya'],correct:1,exp:'きゃ = kya. Le petit ゃ fusionne avec き pour créer un son unique : "kya".'},
-      {q:'Quel mot signifie "chien" en hiragana ?',jp:null,choices:['いぬ','うみ','はな','つき'],correct:0,exp:'いぬ (inu) = chien. Un mot N5 classique écrit entièrement en hiragana.'},
-      {q:'Quel est le hiragana qui se prononce seul, sans voyelle ?',jp:null,choices:['の','ん','に','ね'],correct:1,exp:'ん est le seul hiragana sans voyelle. Il représente un "n" nasal, comme dans "bon" en français.'},
-      {q:'Quel hiragana est utilisé pour la particule grammaticale "wa" ?',jp:null,choices:['わ','は','ゐ','ふ'],correct:1,exp:'は se prononce "ha" normalement, mais "wa" quand c\'est la particule de thème. C\'est une exception historique.'},
-      {q:'Quel est le son du hiragana ふ ?',jp:'ふ',choices:['hu','fu','bu','pu'],correct:1,exp:'ふ = fu. C\'est une exception de la rangée は行 : ha, hi, fu (pas "hu"), he, ho.'},
-    ]
-  },
-  'k1': {
-    title:'Quiz — Katakana complet',kanji:'ア',
-    questions:[
-      {q:'Quel katakana représente le son "ko" ?',jp:null,choices:['コ','ク','カ','ケ'],correct:0,exp:'コ = ko. Retiens : コ ressemble à un "C" avec un toit — c\'est le ko de "koala".'},
-      {q:'Que signifie ce mot en katakana ?',jp:'コーヒー',choices:['thé','café','lait','jus'],correct:1,exp:'コーヒー (kōhī) = café. Le ー allonge la voyelle précédente.'},
-      {q:'Quel katakana représente "re" ?',jp:null,choices:['レ','ル','ラ','ロ'],correct:0,exp:'レ = re. Sa forme angulaire le distingue du hiragana れ.'},
-      {q:'Que signifie テレビ ?',jp:'テレビ',choices:['radio','télévision','cinéma','téléphone'],correct:1,exp:'テレビ (terebi) = télévision. C\'est un gairaigo (mot emprunté à l\'anglais "TV").'},
-      {q:'Que représente le symbole ー en katakana ?',jp:'ー',choices:['Stop','Allongement de la voyelle','Son "n"','Pause'],correct:1,exp:'ー est le signe d\'allongement. コーヒー = kō-hī (le ō est un "o" long).'},
-      {q:'Comment écrit-on "pain" en katakana ?',jp:null,choices:['パン','ハン','バン','マン'],correct:0,exp:'パン (pan) = pain, emprunté au portugais "pão". Le handakuten ° crée le son "p".'},
-      {q:'Quelle est la principale utilisation du katakana ?',jp:null,choices:['Mots japonais natifs','Particules grammaticales','Mots empruntés aux langues étrangères','Kanji simplifiés'],correct:2,exp:'Le katakana sert principalement à transcrire les gairaigo (mots empruntés), les onomatopées et les noms étrangers.'},
-      {q:'Quel son correspond à シ ?',jp:'シ',choices:['si','chi','shi','ji'],correct:2,exp:'シ = shi. Attention : ツ (tsu) et シ (shi) se ressemblent ! ツ a les traits vers le bas, シ vers la droite.'},
-      {q:'Comment écrit-on "France" en katakana ?',jp:null,choices:['フランス','プランス','ブランス','ドランス'],correct:0,exp:'フランス (Furansu) = France. フ = fu, ラ = ra, ン = n, ス = su.'},
-      {q:'Quel mot katakana désigne un "hôtel" ?',jp:null,choices:['ホテル','ボテル','モテル','ホデル'],correct:0,exp:'ホテル (hoteru) = hôtel, emprunté à l\'anglais "hotel".'},
-    ]
-  },
-  'g1': {
-    title:'Quiz — Structure de phrase SOV',kanji:'文',
-    questions:[
-      {q:'Dans quelle position se trouve toujours le verbe en japonais ?',jp:null,choices:['Au début','Au milieu','À la fin','N\'importe où'],correct:2,exp:'Le verbe est TOUJOURS en fin de phrase en japonais. C\'est la règle absolue de la structure SOV (Sujet-Objet-Verbe).'},
-      {q:'SOV signifie ?',jp:null,choices:['Son-Objet-Verbe','Sujet-Objet-Verbe','Sujet-Ordre-Voix','Son-Ordre-Valeur'],correct:1,exp:'SOV = Sujet-Objet-Verbe. En français c\'est SVO (Sujet-Verbe-Objet). Exemple : 私はすしを食べます (Je-sushi-mange).'},
-      {q:'Comment dit-on "Je mange des sushis" en japonais ?',jp:null,choices:['食べます私はすしを','私は食べますすしを','私はすしを食べます','すしを食べます私は'],correct:2,exp:'私はすしを食べます = Je (sujet は) + sushis (objet を) + mange (verbe en dernier).'},
-      {q:'Comment former une phrase négative avec ます ?',jp:null,choices:['ます → まさない','ます → ません','ます → まして','ます → ますか'],correct:1,exp:'La forme négative de ます est ません : 食べます (je mange) → 食べません (je ne mange pas).'},
-      {q:'Comment former une question en japonais poli ?',jp:null,choices:['Inverser sujet et verbe','Ajouter ? à la fin','Ajouter か à la fin','Changer の intonation'],correct:2,exp:'On ajoute か à la fin : 食べますか？ = "Mangez-vous ?" Pas besoin de changer l\'ordre des mots !'},
-      {q:'Quelle phrase est correctement structurée ?',jp:null,choices:['東京に私は行きます','私は東京に行きます','東京行きます私に','行きます私は東京に'],correct:1,exp:'私は東京に行きます = Je vais à Tokyo. Sujet は + complément に + verbe EN DERNIER.'},
-      {q:'Peut-on omettre le sujet en japonais ?',jp:null,choices:['Jamais','Toujours','Oui, si le contexte est clair','Seulement au passé'],correct:2,exp:'Oui ! Le sujet s\'omet souvent : 東京に行きますか？ = (vous) allez à Tokyo ? C\'est naturel en japonais.'},
-      {q:'La structure flexible des phrases japonaises est possible grâce à ?',jp:null,choices:['La conjugaison des verbes','Les particules grammaticales','L\'ordre des adjectifs','Les kanji'],correct:1,exp:'Les particules définissent le rôle de chaque mot. On peut donc réorganiser la phrase sans perdre le sens.'},
-    ]
-  },
-  'g2': {
-    title:'Quiz — Particules は が を に で',kanji:'助',
-    questions:[
-      {q:'Quelle particule marque le thème général de la phrase ?',jp:null,choices:['が','は','を','で'],correct:1,exp:'は (wa) marque le thème ou sujet connu. C\'est la particule la plus fréquente — "quant à X...".'},
-      {q:'Quelle particule marque l\'objet direct ?',jp:null,choices:['に','が','を','は'],correct:2,exp:'を (wo/o) marque l\'objet direct, ce qui subit l\'action. Exemple : すしを食べます (manger des sushis).'},
-      {q:'Quelle particule indique la direction ou la destination ?',jp:null,choices:['で','は','に','が'],correct:2,exp:'に indique la direction/destination : 東京に行きます (aller À Tokyo). Aussi utilisé pour indiquer le moment.'},
-      {q:'Quelle particule indique le lieu où se déroule une action ?',jp:null,choices:['に','を','で','は'],correct:2,exp:'で indique le lieu d\'action : カフェで勉強します (étudier AU café). で = "dans/au" pour les actions.'},
-      {q:'Quelle est la différence entre に et で pour les lieux ?',jp:null,choices:['Aucune différence','に = destination/existence, で = lieu d\'action','に = lieu d\'action, で = destination','に = formel, で = casual'],correct:1,exp:'に = destination (on y va) ou existence (いる/ある). で = lieu où se déroule l\'action. Ex: 学校に行く vs 学校で勉強する.'},
-      {q:'Dans 私は学生です、が ou は est correct ? Pourquoi ?',jp:null,choices:['が, c\'est le sujet','は, c\'est une présentation','を, c\'est l\'objet','で, c\'est le lieu'],correct:1,exp:'は car "je suis étudiant" est une présentation de soi (thème connu). が serait "c\'est MOI l\'étudiant" (emphase sur qui).'},
-      {q:'Complétez : 電車___東京に行きます (Je vais à Tokyo en train)',jp:null,choices:['は','が','を','で'],correct:3,exp:'電車で = en train. で marque le moyen/instrument utilisé pour une action. Très courant pour les transports !'},
-      {q:'Quelle phrase est correcte pour "Il y a un chat" ?',jp:null,choices:['猫はいます','猫がいます','猫をいます','猫でいます'],correct:1,exp:'猫がいます. が s\'utilise avec いる/ある pour exprimer l\'existence — c\'est une information nouvelle.'},
-      {q:'Complétez : 毎日コーヒー___飲みます',jp:null,choices:['は','に','を','が'],correct:2,exp:'コーヒーを飲みます. を marque l\'objet direct de 飲む (boire). 毎日 = tous les jours.'},
-      {q:'何時___来ますか？ — Quelle particule pour "à quelle heure" ?',jp:null,choices:['で','に','は','を'],correct:1,exp:'に pour les moments dans le temps : 三時に来ます (je viens À 3 heures). に = heure/moment précis.'},
-    ]
-  },
-  'g3': {
-    title:'Quiz — Verbes en ます',kanji:'動',
-    questions:[
-      {q:'Quelle est la forme négative de 食べます ?',jp:'食べます',choices:['食べません','食べまさない','食べませんでした','食べないます'],correct:0,exp:'食べます → 食べません. La règle : ます → ません pour le négatif présent.'},
-      {q:'Quelle est la forme passée de 行きます ?',jp:'行きます',choices:['行きません','行きました','行きまして','行きますでした'],correct:1,exp:'行きます → 行きました. La règle : ます → ました pour le passé affirmatif.'},
-      {q:'Comment dit-on "Je n\'ai pas bu" (passé négatif) ?',jp:null,choices:['飲みません','飲みませんでした','飲みました','飲まない'],correct:1,exp:'飲む → 飲みませんでした. Passé négatif = ませんでした.'},
-      {q:'Quel verbe signifie "aller" ?',jp:null,choices:['来ます','帰ります','行きます','歩きます'],correct:2,exp:'行きます (ikimasu) = aller. À ne pas confondre avec 来ます (kimasu) = venir.'},
-      {q:'Comment dit-on "Vous lisez ?" en japonais poli ?',jp:null,choices:['読みますか？','読みます！','読みませんか？','読みましたか？'],correct:0,exp:'読みますか？= Vous lisez ? / Lisez-vous ? か en fin de phrase = question.'},
-      {q:'Quel verbe signifie "il y a" pour une chose inanimée ?',jp:null,choices:['います','あります','します','できます'],correct:1,exp:'あります = il y a (inanimé : objets, plantes). います = il y a (animé : personnes, animaux).'},
-      {q:'Complétez : 昨日、映画___見___。(Hier j\'ai regardé un film)',jp:null,choices:['を/ました','が/ました','は/ました','を/ません'],correct:0,exp:'映画を見ました. を = objet direct, ました = passé affirmatif.'},
-      {q:'Comment dit-on "Je comprends" en japonais ?',jp:null,choices:['できます','分かります','聞きます','知ります'],correct:1,exp:'分かります (wakarimasu) = comprendre, saisir. できます = pouvoir faire, être capable.'},
-      {q:'La forme ます ne change JAMAIS selon ?',jp:null,choices:['Le temps (passé/présent)','La polarité (pos/nég)','La personne (je/tu/il)','Le sujet'],correct:2,exp:'En japonais, les verbes ne se conjuguent PAS selon la personne ! 食べます = je mange / tu manges / il mange.'},
-      {q:'Quel verbe utilise-t-on pour "étudier" ?',jp:null,choices:['します','勉強します','読みます','学びます'],correct:1,exp:'勉強します (benkyō shimasu) = étudier. します seul = faire (verbe passe-partout).'},
-    ]
-  },
-  'kj1': {
-    title:'Quiz — Kanji 1–80',kanji:'漢',
-    questions:[
-      {q:'Que signifie ce kanji ?',jp:'山',choices:['mer','montagne','rivière','forêt'],correct:1,exp:'山 (yama/san) = montagne. Sa forme ressemble à 3 pics de montagne ! Ex: 富士山 (Mont Fuji).'},
-      {q:'Quelle est la lecture de ce kanji pour "aujourd\'hui" ?',jp:'今日',choices:['ima hi','kyō','konichi','ima nichi'],correct:1,exp:'今日 se lit "kyō" = aujourd\'hui. Lecture irrégulière à mémoriser absolument (très courant) !'},
-      {q:'Que signifie 先生 ?',jp:'先生',choices:['étudiant','ami','professeur','patron'],correct:2,exp:'先生 (sensei) = professeur. 先 = avant/précédent + 生 = vie/naître → "celui qui est né avant".'},
-      {q:'Quel kanji représente "eau" ?',jp:null,choices:['火','水','木','金'],correct:1,exp:'水 (mizu/sui) = eau. C\'est aussi le mercredi (水曜日, suiyōbi). Pense aux vagues !'},
-      {q:'Combien vaut 三百円 ?',jp:'三百円',choices:['30 yens','300 yens','3000 yens','30000 yens'],correct:1,exp:'三 (3) + 百 (100) = 三百 (300). 円 = yen. 三百円 = 300 yens.'},
-      {q:'Que signifie 花火 ?',jp:'花火',choices:['bouquet de fleurs','feux d\'artifice','feu de bois','fleur de feu'],correct:1,exp:'花 (fleur) + 火 (feu) = 花火 (hanabi) = feux d\'artifice ! Les hanami et les hanabi sont deux traditions japonaises majeures.'},
-      {q:'Quel est le kanji pour "personne, humain" ?',jp:null,choices:['子','女','人','男'],correct:2,exp:'人 (hito/jin/nin) = personne. Ex: 日本人 (Nihonjin) = Japonais, 外国人 (gaikokujin) = étranger.'},
-      {q:'Que signifie 学校 ?',jp:'学校',choices:['université','école','bibliothèque','bureau'],correct:1,exp:'学校 (gakkō) = école. 学 = apprendre + 校 = établissement scolaire.'},
-      {q:'Quel kanji représente "lune" ET "mois" ?',jp:null,choices:['日','月','星','天'],correct:1,exp:'月 (tsuki/getsu/gatsu) = lune ET mois. Lundi = 月曜日 (getsuyōbi). Très polyvalent !'},
-      {q:'Que signifie le kanji 心 ?',jp:'心',choices:['corps','main','cœur/esprit','force'],correct:2,exp:'心 (kokoro/shin) = cœur, esprit, âme. Ex: 心配 (shinpai) = inquiétude, 心 = cœur (le sentiment).'},
-    ]
-  },
-  'mois12': {
-    title:'Révision Chapitre — Mois 1–2',kanji:'復',
-    questions:[
-      {q:'Quel son correspond au hiragana し ?',jp:'し',choices:['si','shi','chi','ji'],correct:1,exp:'し = shi. Exception de la rangée さ行.'},
-      {q:'Que signifie コーヒー ?',jp:'コーヒー',choices:['thé','café','lait','eau'],correct:1,exp:'コーヒー (kōhī) = café. Gairaigo (mot emprunté).'},
-      {q:'Le verbe est toujours en quelle position en japonais ?',jp:null,choices:['Début','Milieu','Fin','Variable'],correct:2,exp:'Toujours en fin de phrase — règle absolue du japonais.'},
-      {q:'Quelle particule marque l\'objet direct ?',jp:null,choices:['は','が','を','に'],correct:2,exp:'を (wo/o) marque l\'objet direct. Ex: すしを食べます.'},
-      {q:'Comment dit-on "je ne mange pas" ?',jp:null,choices:['食べます','食べません','食べました','食べませんでした'],correct:1,exp:'食べません = forme négative présente (ます → ません).'},
-      {q:'Que signifie 山川 ?',jp:'山川',choices:['soleil et lune','montagne et rivière','mer et lac','forêt et champ'],correct:1,exp:'山 (yama) = montagne + 川 (kawa) = rivière.'},
-      {q:'Quelle particule utilise-t-on pour le lieu d\'action ?',jp:null,choices:['に','は','が','で'],correct:3,exp:'で = lieu d\'action. Exemple : カフェで勉強します.'},
-      {q:'Le katakana ー signifie ?',jp:'ー',choices:['fin de phrase','allongement de voyelle','son "n"','virgule'],correct:1,exp:'ー allonge la voyelle précédente : コーヒー = kō-hī.'},
-      {q:'Quelle est la forme passée de 行きます ?',jp:null,choices:['行きません','行きました','行きまして','行きますでした'],correct:1,exp:'行きます → 行きました (ます → ました).'},
-      {q:'先生 signifie ?',jp:'先生',choices:['étudiant','médecin','professeur','patron'],correct:2,exp:'先生 (sensei) = professeur. Incontournable !'},
-      {q:'Quel hiragana représente "tsu" ?',jp:null,choices:['て','と','つ','ち'],correct:2,exp:'つ = tsu. Son unique au japonais — "tsar" + "ou".'},
-      {q:'Le japonais se conjugue-t-il selon la personne ?',jp:null,choices:['Oui, comme le français','Non, le verbe reste identique','Seulement pour la 1ère personne','Seulement au passé'],correct:1,exp:'Non ! 食べます = je mange / tu manges / il mange. Pas de conjugaison selon la personne.'},
-    ]
+function generateKanjiGrid(dataArray) {
+  let html = `<div class="kanji-grid">`;
+  dataArray.forEach(k => {
+    html += `
+      <div class="kanji-tile" onclick="speak('${k.j}')">
+        <span class="kt-char">${k.j}</span>
+        <div class="kt-readings">
+          <span class="kt-on">${k.on}</span>
+          <span class="kt-kun">${k.kun}</span>
+        </div>
+        <span class="kt-fr">${k.f}</span>
+      </div>`;
+  });
+  return html + `</div>`;
+}
+
+function loadContent(id) {
+  const contentDiv = document.getElementById('content');
+  const titleHeader = document.getElementById('page-title');
+  document.getElementById('sidebar').classList.remove('open');
+  
+  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
+  if(activeBtn) activeBtn.classList.add('active');
+
+  if(id === 'hira') {
+    titleHeader.innerText = "Tableau Complet des Hiragana";
+    contentDiv.innerHTML = `
+      <div class="card"><p>Cliquez sur n'importe quel caractère pour entendre sa prononciation. Les Hiragana sont utilisés pour les mots d'origine japonaise et la grammaire.</p></div>
+      <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten (Dérivés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>`;
+  } 
+  else if(id === 'kata') {
+    titleHeader.innerText = "Tableau Complet des Katakana";
+    contentDiv.innerHTML = `
+      <div class="card"><p>Les Katakana sont utilisés principalement pour transcrire les mots d'origine étrangère (gairaigo), les noms scientifiques et les onomatopées.</p></div>
+      <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten (Dérivés)</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>`;
   }
-};
-
-
-
-// ═══════════════════════════════════════════════════════════
-// INDEXEDDB — persistance des PDFs entre sessions
-// ═══════════════════════════════════════════════════════════
-const DB_NAME = 'JapaneseParcours', DB_VER = 1, DB_STORE = 'pdfs';
-
-function openDB() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open(DB_NAME, DB_VER);
-    req.onupgradeneeded = e => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(DB_STORE))
-        db.createObjectStore(DB_STORE, {keyPath:'id'});
-    };
-    req.onsuccess = e => res(e.target.result);
-    req.onerror = e => rej(e);
-  });
-}
-async function savePDF(id, name, arrayBuffer) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction([DB_STORE], 'readwrite');
-    tx.objectStore(DB_STORE).put({id, name, data: arrayBuffer});
-    tx.oncomplete = res; tx.onerror = rej;
-  });
-}
-async function deletePDF(id) {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction([DB_STORE], 'readwrite');
-    tx.objectStore(DB_STORE).delete(id);
-    tx.oncomplete = res; tx.onerror = rej;
-  });
-}
-async function loadAllPDFs() {
-  const db = await openDB();
-  return new Promise((res, rej) => {
-    const tx = db.transaction([DB_STORE], 'readonly');
-    const req = tx.objectStore(DB_STORE).getAll();
-    req.onsuccess = e => res(e.target.result);
-    req.onerror = rej;
-  });
-}
-
-
-const LS={
-  get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}},
-  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}},
-};
-const ST={
-  tab:'accueil',vtab:'liste',
-  done:new Set(LS.get('done',[])),
-  learned:new Set(LS.get('learned',[])),
-  timeline:LS.get('timeline',[]),
-  fcIdx:0,fcFlipped:false,fcFilter:'todo',
-  pdfUrls:{},activeModule:null,
-  search:'',cat:'Tous',lv:'Tous',selKana:null,
-  quiz:{id:null,idx:0,answered:null,score:0,done:false},
-  quizScores:LS.get('quizScores',{}),
-};
-// ═══════════════════════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════════════════════
-const HIRAGANA_ROWS=[
-  [{jp:'あ',rom:'a'},{jp:'い',rom:'i'},{jp:'う',rom:'u'},{jp:'え',rom:'e'},{jp:'お',rom:'o'}],
-  [{jp:'か',rom:'ka'},{jp:'き',rom:'ki'},{jp:'く',rom:'ku'},{jp:'け',rom:'ke'},{jp:'こ',rom:'ko'}],
-  [{jp:'さ',rom:'sa'},{jp:'し',rom:'shi'},{jp:'す',rom:'su'},{jp:'せ',rom:'se'},{jp:'そ',rom:'so'}],
-  [{jp:'た',rom:'ta'},{jp:'ち',rom:'chi'},{jp:'つ',rom:'tsu'},{jp:'て',rom:'te'},{jp:'と',rom:'to'}],
-  [{jp:'な',rom:'na'},{jp:'に',rom:'ni'},{jp:'ぬ',rom:'nu'},{jp:'ね',rom:'ne'},{jp:'の',rom:'no'}],
-  [{jp:'は',rom:'ha'},{jp:'ひ',rom:'hi'},{jp:'ふ',rom:'fu'},{jp:'へ',rom:'he'},{jp:'ほ',rom:'ho'}],
-  [{jp:'ま',rom:'ma'},{jp:'み',rom:'mi'},{jp:'む',rom:'mu'},{jp:'め',rom:'me'},{jp:'も',rom:'mo'}],
-  [{jp:'や',rom:'ya'},{jp:'',rom:''},{jp:'ゆ',rom:'yu'},{jp:'',rom:''},{jp:'よ',rom:'yo'}],
-  [{jp:'ら',rom:'ra'},{jp:'り',rom:'ri'},{jp:'る',rom:'ru'},{jp:'れ',rom:'re'},{jp:'ろ',rom:'ro'}],
-  [{jp:'わ',rom:'wa'},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''},{jp:'を',rom:'wo'}],
-  [{jp:'ん',rom:'n'},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''}],
-];
-const KATAKANA_ROWS=[
-  [{jp:'ア',rom:'a'},{jp:'イ',rom:'i'},{jp:'ウ',rom:'u'},{jp:'エ',rom:'e'},{jp:'オ',rom:'o'}],
-  [{jp:'カ',rom:'ka'},{jp:'キ',rom:'ki'},{jp:'ク',rom:'ku'},{jp:'ケ',rom:'ke'},{jp:'コ',rom:'ko'}],
-  [{jp:'サ',rom:'sa'},{jp:'シ',rom:'shi'},{jp:'ス',rom:'su'},{jp:'セ',rom:'se'},{jp:'ソ',rom:'so'}],
-  [{jp:'タ',rom:'ta'},{jp:'チ',rom:'chi'},{jp:'ツ',rom:'tsu'},{jp:'テ',rom:'te'},{jp:'ト',rom:'to'}],
-  [{jp:'ナ',rom:'na'},{jp:'ニ',rom:'ni'},{jp:'ヌ',rom:'nu'},{jp:'ネ',rom:'ne'},{jp:'ノ',rom:'no'}],
-  [{jp:'ハ',rom:'ha'},{jp:'ヒ',rom:'hi'},{jp:'フ',rom:'fu'},{jp:'ヘ',rom:'he'},{jp:'ホ',rom:'ho'}],
-  [{jp:'マ',rom:'ma'},{jp:'ミ',rom:'mi'},{jp:'ム',rom:'mu'},{jp:'メ',rom:'me'},{jp:'モ',rom:'mo'}],
-  [{jp:'ヤ',rom:'ya'},{jp:'',rom:''},{jp:'ユ',rom:'yu'},{jp:'',rom:''},{jp:'ヨ',rom:'yo'}],
-  [{jp:'ラ',rom:'ra'},{jp:'リ',rom:'ri'},{jp:'ル',rom:'ru'},{jp:'レ',rom:'re'},{jp:'ロ',rom:'ro'}],
-  [{jp:'ワ',rom:'wa'},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''},{jp:'ヲ',rom:'wo'}],
-  [{jp:'ン',rom:'n'},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''},{jp:'',rom:''}],
-];
-const VOCAB=[
-  {id:1,jp:'おはようございます',hira:'おはようございます',rom:'ohayō gozaimasu',fr:'bonjour (matin, formel)',level:'n5',cat:'Salutations'},
-  {id:2,jp:'おはよう',hira:'おはよう',rom:'ohayō',fr:'bonjour (matin, casual)',level:'n5',cat:'Salutations'},
-  {id:3,jp:'こんにちは',hira:'こんにちは',rom:'konnichiwa',fr:'bonjour (journée)',level:'n5',cat:'Salutations'},
-  {id:4,jp:'こんばんは',hira:'こんばんは',rom:'konbanwa',fr:'bonsoir',level:'n5',cat:'Salutations'},
-  {id:5,jp:'さようなら',hira:'さようなら',rom:'sayōnara',fr:'au revoir',level:'n5',cat:'Salutations'},
-  {id:6,jp:'じゃあね',hira:'じゃあね',rom:'jā ne',fr:'ciao / à plus (casual)',level:'n5',cat:'Salutations'},
-  {id:7,jp:'ありがとうございます',hira:'ありがとうございます',rom:'arigatō gozaimasu',fr:'merci (formel)',level:'n5',cat:'Politesse'},
-  {id:8,jp:'ありがとう',hira:'ありがとう',rom:'arigatō',fr:'merci (casual)',level:'n5',cat:'Politesse'},
-  {id:9,jp:'すみません',hira:'すみません',rom:'sumimasen',fr:'excusez-moi / pardon',level:'n5',cat:'Politesse'},
-  {id:10,jp:'ごめんなさい',hira:'ごめんなさい',rom:'gomen nasai',fr:'je suis désolé(e)',level:'n5',cat:'Politesse'},
-  {id:11,jp:'どうぞ',hira:'どうぞ',rom:'dōzo',fr:'je vous en prie',level:'n5',cat:'Politesse'},
-  {id:12,jp:'どういたしまして',hira:'どういたしまして',rom:'dō itashimashite',fr:'de rien',level:'n5',cat:'Politesse'},
-  {id:13,jp:'私',hira:'わたし',rom:'watashi',fr:'je, moi',level:'n5',cat:'Pronoms'},
-  {id:14,jp:'あなた',hira:'あなた',rom:'anata',fr:'tu, vous',level:'n5',cat:'Pronoms'},
-  {id:15,jp:'彼',hira:'かれ',rom:'kare',fr:'il, lui',level:'n5',cat:'Pronoms'},
-  {id:16,jp:'彼女',hira:'かのじょ',rom:'kanojo',fr:'elle',level:'n5',cat:'Pronoms'},
-  {id:17,jp:'一',hira:'いち',rom:'ichi',fr:'1',level:'n5',cat:'Nombres'},
-  {id:18,jp:'二',hira:'に',rom:'ni',fr:'2',level:'n5',cat:'Nombres'},
-  {id:19,jp:'三',hira:'さん',rom:'san',fr:'3',level:'n5',cat:'Nombres'},
-  {id:20,jp:'四',hira:'よん',rom:'yon',fr:'4',level:'n5',cat:'Nombres'},
-  {id:21,jp:'五',hira:'ご',rom:'go',fr:'5',level:'n5',cat:'Nombres'},
-  {id:22,jp:'六',hira:'ろく',rom:'roku',fr:'6',level:'n5',cat:'Nombres'},
-  {id:23,jp:'七',hira:'なな',rom:'nana',fr:'7',level:'n5',cat:'Nombres'},
-  {id:24,jp:'八',hira:'はち',rom:'hachi',fr:'8',level:'n5',cat:'Nombres'},
-  {id:25,jp:'九',hira:'きゅう',rom:'kyū',fr:'9',level:'n5',cat:'Nombres'},
-  {id:26,jp:'十',hira:'じゅう',rom:'jū',fr:'10',level:'n5',cat:'Nombres'},
-  {id:27,jp:'百',hira:'ひゃく',rom:'hyaku',fr:'100',level:'n5',cat:'Nombres'},
-  {id:28,jp:'千',hira:'せん',rom:'sen',fr:'1 000',level:'n5',cat:'Nombres'},
-  {id:29,jp:'お父さん',hira:'おとうさん',rom:'otōsan',fr:'père',level:'n5',cat:'Famille'},
-  {id:30,jp:'お母さん',hira:'おかあさん',rom:'okāsan',fr:'mère',level:'n5',cat:'Famille'},
-  {id:31,jp:'ご飯',hira:'ごはん',rom:'gohan',fr:'riz / repas',level:'n5',cat:'Nourriture'},
-  {id:32,jp:'水',hira:'みず',rom:'mizu',fr:'eau',level:'n5',cat:'Nourriture'},
-  {id:33,jp:'お茶',hira:'おちゃ',rom:'ocha',fr:'thé',level:'n5',cat:'Nourriture'},
-  {id:34,jp:'コーヒー',hira:'コーヒー',rom:'kōhī',fr:'café',level:'n5',cat:'Nourriture'},
-  {id:35,jp:'パン',hira:'パン',rom:'pan',fr:'pain',level:'n5',cat:'Nourriture'},
-  {id:36,jp:'食べます',hira:'たべます',rom:'tabemasu',fr:'manger',level:'n5',cat:'Verbes'},
-  {id:37,jp:'飲みます',hira:'のみます',rom:'nomimasu',fr:'boire',level:'n5',cat:'Verbes'},
-  {id:38,jp:'行きます',hira:'いきます',rom:'ikimasu',fr:'aller',level:'n5',cat:'Verbes'},
-  {id:39,jp:'来ます',hira:'きます',rom:'kimasu',fr:'venir',level:'n5',cat:'Verbes'},
-  {id:40,jp:'見ます',hira:'みます',rom:'mimasu',fr:'voir',level:'n5',cat:'Verbes'},
-  {id:41,jp:'聞きます',hira:'ききます',rom:'kikimasu',fr:'écouter',level:'n5',cat:'Verbes'},
-  {id:42,jp:'話します',hira:'はなします',rom:'hanashimasu',fr:'parler',level:'n5',cat:'Verbes'},
-  {id:43,jp:'大きい',hira:'おおきい',rom:'ōkii',fr:'grand',level:'n5',cat:'Adjectifs'},
-  {id:44,jp:'小さい',hira:'ちいさい',rom:'chīsai',fr:'petit',level:'n5',cat:'Adjectifs'},
-  {id:45,jp:'かわいい',hira:'かわいい',rom:'kawaii',fr:'mignon',level:'n5',cat:'Adjectifs'},
-  {id:46,jp:'今日',hira:'きょう',rom:'kyō',fr:"aujourd'hui",level:'n5',cat:'Temps'},
-  {id:47,jp:'明日',hira:'あした',rom:'ashita',fr:'demain',level:'n5',cat:'Temps'},
-  {id:48,jp:'昨日',hira:'きのう',rom:'kinō',fr:'hier',level:'n5',cat:'Temps'},
-  {id:49,jp:'友達',hira:'ともだち',rom:'tomodachi',fr:'ami(e)',level:'n4',cat:'Relations'},
-  {id:50,jp:'仕事',hira:'しごと',rom:'shigoto',fr:'travail',level:'n4',cat:'Travail'},
-  {id:51,jp:'会社',hira:'かいしゃ',rom:'kaisha',fr:'entreprise',level:'n4',cat:'Travail'},
-  {id:52,jp:'電車',hira:'でんしゃ',rom:'densha',fr:'train',level:'n4',cat:'Transport'},
-  {id:53,jp:'やばい',hira:'やばい',rom:'yabai',fr:'incroyable / terrible (argot)',level:'n4',cat:'Argot'},
-  {id:54,jp:'まじ',hira:'まじ',rom:'maji',fr:'vraiment / sérieux ?',level:'n4',cat:'Argot'},
-  {id:55,jp:'ちょっと',hira:'ちょっと',rom:'chotto',fr:'un peu / attends',level:'n4',cat:'Argot'},
-];
-const MODULES=[
-  {id:'h1',period:'Mois 1–2',jlpt:'N5',icon:'✍',title:'Hiragana complet',desc:'46 hiragana, sons voicés, combinaisons'},
-  {id:'k1',period:'Mois 1–2',jlpt:'N5',icon:'✍',title:'Katakana complet',desc:'46 katakana, mots empruntés'},
-  {id:'g1',period:'Mois 1–2',jlpt:'N5',icon:'📐',title:'Structure de phrase (SOV)',desc:"L'ordre des mots en japonais"},
-  {id:'g2',period:'Mois 1–2',jlpt:'N5',icon:'📐',title:'Particules は が を に で',desc:'Les 5 particules fondamentales'},
-  {id:'g3',period:'Mois 1–2',jlpt:'N5',icon:'📐',title:'Verbes en ます',desc:'Conjugaison polie : présent, passé, négatif'},
-  {id:'kj1',period:'Mois 1–2',jlpt:'N5',icon:'漢',title:'Kanji 1–80',desc:'Jours, nombres, nature, corps'},
-  {id:'g4',period:'Mois 3–4',jlpt:'N4',icon:'📐',title:'Adjectifs en い et な',desc:'Deux classes, conjugaison'},
-  {id:'g5',period:'Mois 3–4',jlpt:'N4',icon:'📐',title:'Forme て',desc:'Enchaînement d\'actions'},
-  {id:'g6',period:'Mois 3–4',jlpt:'N4',icon:'📐',title:'Forme ている',desc:'Progressif, actions en cours'},
-  {id:'g7',period:'Mois 3–4',jlpt:'N4',icon:'💬',title:'Langage casual (forme courte)',desc:'Parler naturellement'},
-  {id:'g8',period:'Mois 5–6',jlpt:'N4',icon:'💼',title:'Keigo — introduction',desc:'Politesse professionnelle 丁寧語'},
-  {id:'g9',period:'Mois 5–6',jlpt:'N4',icon:'📐',title:'Forme たい',desc:'Exprimer ses désirs'},
-  {id:'g10',period:'Mois 5–6',jlpt:'N4',icon:'📐',title:'Potentiel (できる)',desc:"Ce qu'on peut faire"},
-  {id:'g11',period:'Mois 7–8',jlpt:'N3',icon:'💼',title:'Keigo — 3 niveaux',desc:'丁寧語 尊敬語 謙譲語'},
-  {id:'g12',period:'Mois 7–8',jlpt:'N3',icon:'📐',title:'Connecteurs logiques',desc:'から ので けど しかし'},
-  {id:'g13',period:'Mois 7–8',jlpt:'N3',icon:'📐',title:'Passif et causatif',desc:'られる et させる'},
-  {id:'g14',period:'Mois 9–12',jlpt:'N2',icon:'🎯',title:'Expressions avancées N2',desc:'Nuances, implicite culturel'},
-  {id:'g15',period:'Mois 9–12',jlpt:'N2',icon:'🎧',title:'Médias authentiques',desc:'NHK, journaux, podcasts'},
-];
-const CHECKLIST=[
-  {id:'c1',label:'Hiragana あ→ん (46)',level:'n5',jp:'あ'},
-  {id:'c2',label:'Sons voicés (が ざ だ ば ぱ)',level:'n5',jp:'が'},
-  {id:'c3',label:'Sons combinés (きゃ しゅ ちょ)',level:'n5',jp:'きゃ'},
-  {id:'c4',label:'Katakana ア→ン (46)',level:'n5',jp:'ア'},
-  {id:'c5',label:'Structure SOV + particule は',level:'n5',jp:'は'},
-  {id:'c6',label:'Particules が · を · に · で',level:'n5',jp:'を'},
-  {id:'c7',label:'Verbes ます (présent / passé / négatif)',level:'n5',jp:'ます'},
-  {id:'c8',label:'Adjectifs en い',level:'n5',jp:'い'},
-  {id:'c9',label:'Adjectifs en な',level:'n5',jp:'な'},
-  {id:'c10',label:'Kanji 1–80',level:'n5',jp:'漢'},
-  {id:'c11',label:'500 mots de vocabulaire N5',level:'n5',jp:'語'},
-  {id:'c12',label:'Se présenter en japonais',level:'n5',jp:'自'},
-  {id:'c13',label:'Verbes irréguliers する et くる',level:'n4',jp:'す'},
-  {id:'c14',label:'Forme て (enchaînement)',level:'n4',jp:'て'},
-  {id:'c15',label:'Forme ている (progressif)',level:'n4',jp:'て'},
-  {id:'c16',label:'Forme たい (désir)',level:'n4',jp:'たい'},
-  {id:'c17',label:'Potentiel できる / られる',level:'n4',jp:'可'},
-  {id:'c18',label:'Langage casual — forme courte',level:'n4',jp:'話'},
-  {id:'c19',label:'Argot jeune (やばい まじ)',level:'n4',jp:'俗'},
-  {id:'c20',label:'Kanji 81–300',level:'n4',jp:'漢'},
-  {id:'c21',label:'1 000 mots N4',level:'n4',jp:'千'},
-  {id:'c22',label:'Keigo — 丁寧語 (poli)',level:'n3',jp:'丁'},
-  {id:'c23',label:'Keigo — 尊敬語 (respectueux)',level:'n3',jp:'尊'},
-  {id:'c24',label:'Keigo — 謙譲語 (humble)',level:'n3',jp:'謙'},
-  {id:'c25',label:'Connecteurs logiques',level:'n3',jp:'論'},
-  {id:'c26',label:'Passif (られる)',level:'n3',jp:'受'},
-  {id:'c27',label:'Causatif (させる)',level:'n3',jp:'使'},
-  {id:'c28',label:'Kanji 301–500',level:'n3',jp:'漢'},
-  {id:'c29',label:'2 500 mots N3',level:'n3',jp:'語'},
-  {id:'c30',label:'Rédiger un e-mail formel',level:'n3',jp:'文'},
-  {id:'c31',label:'Expressions idiomatiques N2',level:'n2',jp:'慣'},
-  {id:'c32',label:'Vocabulaire business complet',level:'n2',jp:'業'},
-  {id:'c33',label:'Kanji 501–1000',level:'n2',jp:'漢'},
-  {id:'c34',label:'Lire NHK sans dictionnaire',level:'n2',jp:'読'},
-  {id:'c35',label:'Compréhension orale native',level:'n2',jp:'聞'},
-  {id:'c36',label:'Références culturelles et implicite',level:'n2',jp:'文'},
-];
-const LV_META={
-  n5:{label:'N5 — 基礎 Débutant',color:'#BC002D',kanji:'初',jp:'基礎'},
-  n4:{label:'N4 — 初級 Élémentaire',color:'#e8673a',kanji:'初',jp:'初級'},
-  n3:{label:'N3 — 中級 Intermédiaire',color:'#c9922a',kanji:'中',jp:'中級'},
-  n2:{label:'N2 — 上級 Avancé',color:'#6b4fa0',kanji:'上',jp:'上級'},
-};
-
-
-
-
-const NAV=[
-  {id:'accueil',icon:'🏠',label:'Accueil',group:'principal'},
-  {id:'cours',  icon:'📖',label:'Cours Mois 1–2',group:'principal',children:[
-    {id:'cours_h1', label:'Hiragana complet'},
-    {id:'cours_k1', label:'Katakana complet'},
-    {id:'cours_g1', label:'Structure SOV'},
-    {id:'cours_g2', label:'Particules は が を に で'},
-    {id:'cours_g3', label:'Verbes en ます'},
-    {id:'cours_kj1',label:'Kanji 1–80'},
-  ]},
-  {id:'vocab',    icon:'🗂', label:'Vocabulaire',group:'principal'},
-  {id:'quiz',     icon:'🎯', label:'Quiz',       group:'principal'},
-  {id:'checklist',icon:'✅', label:'Checklist',  group:'suivi'},
-  {id:'timeline', icon:'📈', label:'Chronologie',group:'suivi'},
-];
-const PAGE_META={
-  accueil:   {title:'Accueil',sub:'日本語の道 — Bienvenue'},
-  cours:     {title:'Cours',sub:'Mois 1–2 · JLPT N5'},
-  cours_h1:  {title:'Hiragana complet',sub:'✍ Écriture · N5'},
-  cours_k1:  {title:'Katakana complet',sub:'✍ Écriture · N5'},
-  cours_g1:  {title:'Structure de phrase SOV',sub:'📐 Grammaire · N5'},
-  cours_g2:  {title:'Particules は が を に で',sub:'📐 Grammaire · N5'},
-  cours_g3:  {title:'Verbes en ます',sub:'📐 Conjugaison · N5'},
-  cours_kj1: {title:'Kanji 1–80',sub:'漢 Kanji · N5'},
-  vocab:     {title:'Vocabulaire',sub:'Flashcards · Liste · Kana'},
-  quiz:      {title:'Quiz & Révisions',sub:'Teste tes connaissances'},
-  checklist: {title:'Checklist',sub:'Compétences à valider'},
-  timeline:  {title:'Chronologie',sub:'Tes étapes et victoires'},
-};
-function renderSidebar(){
-  const done=ST.done.size,total=CHECKLIST.length,pct=Math.round(done/total*100);
-  const lvl=pct<15?'N5 Débutant':pct<35?'N5 Fondations':pct<55?'N4 Élémentaire':pct<75?'N3 Intermédiaire':'N2 Avancé';
-  const fill=document.getElementById('sb-fill');if(fill)fill.style.width=pct+'%';
-  const lbl=document.getElementById('sb-level');if(lbl)lbl.textContent=lvl;
-  const pctEl=document.getElementById('sb-pct');if(pctEl)pctEl.textContent=pct+'%';
-  const nav=document.getElementById('sidebar-nav');if(!nav)return;
-  const groups={principal:'MENU PRINCIPAL',suivi:'MON SUIVI'};
-  let html='',lastGroup=null;
-  for(const item of NAV){
-    if(item.group!==lastGroup){html+=`<div class="nav-group-label">${groups[item.group]}</div>`;lastGroup=item.group;}
-    const isActive=ST.tab===item.id||(item.children&&item.children.some(c=>c.id===ST.tab));
-    html+=`<button class="nav-item ${isActive?'active':''}" onclick="go('${item.id}')"><span class="nav-icon">${item.icon}</span>${item.label}</button>`;
-    if(item.children&&isActive){
-      html+='<div class="nav-sub">';
-      for(const ch of item.children)html+=`<div class="nav-sub-item ${ST.tab===ch.id?'active':''}" onclick="go('${ch.id}')"><span class="dot"></span>${ch.label}</div>`;
-      html+='</div>';
-    }
+  else if(id === 'kanji-n5') {
+    titleHeader.innerText = "Kanjis JLPT N5 (Fondations)";
+    contentDiv.innerHTML = `<div class="card"><p>Voici les Kanjis essentiels pour débuter. Les lectures <strong>ON</strong> (Onyomi, lecture chinoise) sont en Katakana/Rouge. Les lectures <strong>KUN</strong> (Kunyomi, lecture japonaise) sont en Hiragana/Bleu.</p></div>` + generateKanjiGrid(KANJI_N5);
   }
-  nav.innerHTML=html;
-}
-function updateHeader(){
-  const meta=PAGE_META[ST.tab]||{title:ST.tab,sub:''};
-  const pt=document.getElementById('page-title');if(pt)pt.textContent=meta.title;
-  const ps=document.getElementById('page-sub');if(ps)ps.textContent=meta.sub;
-  const hs=document.getElementById('header-stats');
-  if(hs)hs.innerHTML=`<span style="color:var(--aka);">🌸 ${ST.learned.size}</span> mots &nbsp;·&nbsp; <span style="color:#1D9E75;">✓ ${ST.done.size}</span>/${CHECKLIST.length}`;
-}
-function render(){
-  renderSidebar();updateHeader();
-  const c=document.getElementById('content');if(!c)return;
-  c.innerHTML='';c.className='main-body fade-in';
-  if(ST.tab==='accueil')               renderAccueil(c);
-  else if(ST.tab==='cours')            renderCoursMenu(c);
-  else if(ST.tab.startsWith('cours_')) renderCourseInline(c,ST.tab.replace('cours_',''));
-  else if(ST.tab==='vocab')            renderVocab(c);
-  else if(ST.tab==='quiz')             {if(ST.quiz&&ST.quiz.id){if(ST.quiz.done)renderQuizScore(c,QUIZZES[ST.quiz.id]);else renderQuizActive(c);}else renderQuizMenu(c);}
-  else if(ST.tab==='checklist')        renderChecklist(c);
-  else if(ST.tab==='timeline')         renderTimeline(c);
-}
-function go(tabId){
-  ST.tab=tabId;
-  const sb=document.getElementById('sidebar');if(sb)sb.classList.remove('open');
-  const ov=document.getElementById('sidebar-overlay');if(ov)ov.classList.remove('open');
-  window.scrollTo(0,0);render();
-}
-function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('open');
-}
-function renderCoursMenu(c){
-  const mods=[
-    {id:'h1', icon:'✍', title:'Hiragana complet',       sub:'46 hiragana · sons voicés · combinaisons'},
-    {id:'k1', icon:'✍', title:'Katakana complet',       sub:'46 katakana · mots empruntés'},
-    {id:'g1', icon:'📐',title:'Structure de phrase SOV', sub:"L'ordre des mots en japonais"},
-    {id:'g2', icon:'📐',title:'Particules は が を に で', sub:'Les 5 particules fondamentales'},
-    {id:'g3', icon:'📐',title:'Verbes en ます',          sub:'Présent · passé · négatif · questions'},
-    {id:'kj1',icon:'漢',title:'Kanji 1–80',             sub:'Jours · nombres · nature · famille'},
-  ];
-  c.innerHTML=`
-    <div class="card card-sakura" style="margin-bottom:16px;">
-      <div style="font-family:var(--font-title);font-size:16px;font-weight:700;margin-bottom:4px;">📖 Mois 1–2 — JLPT N5</div>
-      <div style="font-size:13px;color:#666;">Clique sur un module pour ouvrir le cours complet intégré.</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px;">
-    ${mods.map(m=>`<div onclick="go('cours_${m.id}')" style="display:flex;align-items:flex-start;gap:12px;padding:16px;background:white;border:1.5px solid rgba(188,0,45,.1);border-radius:10px;cursor:pointer;transition:all .15s;box-shadow:0 1px 6px rgba(0,0,0,.05);" onmouseover="this.style.borderColor='#FF8FAB';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(188,0,45,.1)';this.style.transform='none'">
-      <span style="font-size:28px;flex-shrink:0;">${m.icon}</span>
-      <div><div style="font-weight:700;font-size:14px;margin-bottom:3px;">${m.title}</div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:6px;">${m.sub}</div>
-      ${QUIZZES[m.id]?'<span style="font-size:11px;background:#BC002D;color:white;padding:2px 8px;border-radius:20px;font-weight:700;">🎯 Quiz</span>':''}</div>
-    </div>`).join('')}
-    </div>
-    <button class="chapter-quiz-btn" onclick="startQuiz('mois12')">🌸 Quiz de révision Mois 1–2 — 12 questions ✦</button>`;
-}
-function renderCourseInline(c,courseId){
-  const course=COURSES[courseId];
-  if(!course){c.innerHTML='<div class="card"><p>Cours non trouvé.</p></div>';return;}
-  const quizBtn=QUIZZES[courseId]?`<button class="btn-primary" onclick="startQuiz('${courseId}')">🎯 Quiz de ce cours</button>`:'';
-  c.innerHTML=`
-    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <button class="btn btn-sm" onclick="go('cours')">← Retour</button>${quizBtn}
-    </div>
-    <div class="card" style="padding:24px 28px;">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #fff0f5;">
-        <span style="font-size:40px;">${course.icon}</span>
-        <div><h1 style="font-family:var(--font-title);font-size:22px;font-weight:700;margin:0 0 4px;">${course.title}</h1>
-        <div style="font-size:12px;color:#aaa;">JLPT N5 · Mois 1–2</div></div>
-      </div>
-      ${course.content}
-      <div style="margin-top:28px;padding-top:20px;border-top:2px solid #fff0f5;display:flex;gap:10px;flex-wrap:wrap;">
-        ${quizBtn}<button class="btn" onclick="go('cours')">← Retour aux cours</button>
-      </div>
-    </div>`;
-}
-function openCloudModal(){document.getElementById('cloud-modal').style.display='flex';}
-function exportProgress(){
-  const data={version:3,exportDate:new Date().toISOString(),done:[...ST.done],learned:[...ST.learned],timeline:ST.timeline,quizScores:ST.quizScores};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');
-  a.href=url;a.download='japonais_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);
-}
-function importProgress(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      if(data.done){ST.done=new Set(data.done);LS.set('done',data.done);}
-      if(data.learned){ST.learned=new Set(data.learned);LS.set('learned',data.learned);}
-      if(data.timeline){ST.timeline=data.timeline;LS.set('timeline',data.timeline);}
-      if(data.quizScores){ST.quizScores=data.quizScores;LS.set('quizScores',data.quizScores);}
-      document.getElementById('cloud-modal').style.display='none';
-      alert('✓ Progression restaurée !');render();
-    }catch(err){alert('Erreur: '+err.message);}
-  };reader.readAsText(file);
-}
-function speak(text){
-  if(!('speechSynthesis' in window))return;
-  const utt=new SpeechSynthesisUtterance(text);utt.lang='ja-JP';utt.rate=0.85;
-  const voices=speechSynthesis.getVoices().filter(v=>v.lang.startsWith('ja'));
-  if(voices.length)utt.voice=voices[0];
-  speechSynthesis.cancel();speechSynthesis.speak(utt);
-}
-if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{};
-
-
-function renderAccueil(c){
-  const done=ST.done.size,total=CHECKLIST.length,pct=Math.round(done/total*100);
-  const level=pct<15?'N5 Débutant':pct<35?'N5 Fondations':pct<55?'N4 Élémentaire':pct<75?'N3 Intermédiaire':'N2 Avancé';
-  c.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
-      <div class="stat-box" data-kanji="語"><div class="stat-num">${ST.learned.size}</div><div class="stat-lbl">Mots appris</div></div>
-      <div class="stat-box" data-kanji="学"><div class="stat-num">${done}/${total}</div><div class="stat-lbl">Checklist</div></div>
-      <div class="stat-box" data-kanji="道"><div class="stat-num">${pct}%</div><div class="stat-lbl">Progression</div></div>
-    </div>
-    <div class="card card-red" style="margin-bottom:14px;">
-      <div style="font-family:var(--font-title);font-size:15px;font-weight:700;margin-bottom:4px;">おはようございます！ 一緒に頑張りましょう！</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:10px;">Niveau : ${level} · Objectif : 45 min/jour</div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
-    </div>
-    <div class="card" style="margin-bottom:14px;">
-      <h2 style="font-family:var(--font-title);font-size:16px;margin-bottom:12px;">🗓 Feuille de route — 12 mois</h2>
-      ${[{p:'Mois 1–2',j:'N5',col:'#BC002D',g:'Hiragana · Katakana · 500 mots · 80 kanji'},
-         {p:'Mois 3–4',j:'N4',col:'#e8673a',g:'1 000 mots · Adjectifs · Forme て · Casual'},
-         {p:'Mois 5–6',j:'N4',col:'#e8673a',g:'1 500 mots · Keigo intro · E-mails formels'},
-         {p:'Mois 7–8',j:'N3',col:'#c9922a',g:'2 500 mots · Keigo complet · Connecteurs'},
-         {p:'Mois 9–12',j:'N2',col:'#6b4fa0',g:'6 000+ mots · Médias · Niveau affaires'}
-      ].map(r=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(188,0,45,.07);">
-        <div style="min-width:72px;font-size:11px;font-weight:700;color:white;background:${r.col};padding:3px 9px;border-radius:20px;text-align:center;">${r.p}</div>
-        <span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;background:${r.col}22;color:${r.col};">${r.j}</span>
-        <span style="font-size:12px;color:#777;">${r.g}</span>
-      </div>`).join('')}
-    </div>
-    <div class="card" style="margin-bottom:14px;">
-      <h2 style="font-family:var(--font-title);font-size:16px;margin-bottom:12px;">🎯 Méthode d'apprentissage</h2>
-      ${[['🎧','Listening (priorité)','NHK Web Easy · JapanesePod101 · Animelon · dramas JP'],
-         ['💬','Speaking','HelloTalk · Tandem · iTalki · répéter à voix haute'],
-         ['✍','Writing','Kanji Study App · Skritter · écrire chaque mot à la main'],
-         ['🃏','Révision espacée','Anki (JLPT N5) · 10 min/jour minimum'],
-         ['📖','Lecture','Satori Reader · Watanoc (N5-N4) · NHK Web Easy (N3+)']
-      ].map(([ic,lb,ds])=>`<div style="display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(188,0,45,.07);">
-        <span style="font-size:18px;width:26px;text-align:center;">${ic}</span>
-        <div><div style="font-size:13px;font-weight:700;">${lb}</div><div style="font-size:12px;color:#888;">${ds}</div></div>
-      </div>`).join('')}
-    </div>
-    <div style="text-align:center;padding:16px 0;">
-      <button class="btn-primary" onclick="go('cours')" style="font-size:15px;padding:12px 28px;">📖 Commencer les cours →</button>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════════════════════
-// VOCABULAIRE
-// ═══════════════════════════════════════════════════════════
-function renderVocab(c){
-  const vtabs=[['liste','Liste'],['flashcards','Flashcards ✦'],['hiragana','Hiragana'],['katakana','Katakana']];
-  let inner='';
-  if(ST.vtab==='liste')inner=buildVocabList();
-  if(ST.vtab==='flashcards')inner=buildFlashcards();
-  if(ST.vtab==='hiragana')inner=buildKana(HIRAGANA_ROWS,'Hiragana');
-  if(ST.vtab==='katakana')inner=buildKana(KATAKANA_ROWS,'Katakana');
-  c.innerHTML=`
-    <div class="filter-bar" style="margin-bottom:16px;">
-      ${vtabs.map(([id,lb])=>`<button class="filter-btn ${ST.vtab===id?'active':''}" onclick="ST.vtab='${id}';render();">${lb}</button>`).join('')}
-    </div>${inner}`;
-}
-function buildVocabList(){
-  const cats=['Tous',...new Set(VOCAB.map(v=>v.cat))];
-  const filtered=VOCAB.filter(v=>{
-    const s=ST.search.toLowerCase();
-    return(!ST.search||v.jp.includes(ST.search)||v.rom.toLowerCase().includes(s)||v.fr.toLowerCase().includes(s))
-      &&(ST.cat==='Tous'||v.cat===ST.cat)&&(ST.lv==='Tous'||v.level===ST.lv);
-  });
-  return `
-    <input type="search" placeholder="🔍  Rechercher (japonais, romaji, français)…" value="${esc(ST.search)}"
-      oninput="ST.search=this.value;updateVocabList()" style="margin-bottom:10px;"/>
-    <div class="filter-bar">
-      ${['Tous','n5','n4'].map(l=>`<button class="filter-btn ${ST.lv===l?'active':''}" onclick="ST.lv='${l}';render()">${l==='Tous'?'Tous niveaux':l.toUpperCase()}</button>`).join('')}
-    </div>
-    <div class="filter-bar" style="margin-bottom:12px;">
-      ${cats.map(ct=>`<button class="filter-btn ${ST.cat===ct?'active':''}" onclick="ST.cat='${ct}';render()">${ct}</button>`).join('')}
-    </div>
-    <div style="font-size:12px;color:#aaa;margin-bottom:10px;">${filtered.length} mots · ${ST.learned.size} appris</div>
-    <div id="vlist">${vocabRows(filtered)}</div>`;
-}
-function vocabRows(filtered){
-  return filtered.map(w=>`
-    <div class="vocab-card ${ST.learned.has(w.id)?'learned':''}">
-      <span class="vocab-jp">${w.jp}</span>
-      <span class="vocab-rom">${w.hira} · ${w.rom}</span>
-      <span class="vocab-fr">${w.fr}</span>
-      <span class="badge badge-sakura">${w.cat}</span>
-      <span class="badge badge-outline">${w.level.toUpperCase()}</span>
-      <button class="btn btn-sm" style="color:${ST.learned.has(w.id)?'var(--aka)':'#ccc'};font-size:16px;border-color:${ST.learned.has(w.id)?'var(--sakura)':'#eee'};"
-        onclick="toggleLearn(${w.id})">${ST.learned.has(w.id)?'✓':'○'}</button>
-    </div>`).join('');
-}
-function updateVocabList(){
-  const filtered=VOCAB.filter(v=>{
-    const s=ST.search.toLowerCase();
-    return(!ST.search||v.jp.includes(ST.search)||v.rom.toLowerCase().includes(s)||v.fr.toLowerCase().includes(s))
-      &&(ST.cat==='Tous'||v.cat===ST.cat)&&(ST.lv==='Tous'||v.level===ST.lv);
-  });
-  const el=document.getElementById('vlist');
-  if(el)el.innerHTML=vocabRows(filtered);
-}
-function toggleLearn(id){
-  ST.learned.has(id)?ST.learned.delete(id):ST.learned.add(id);
-  LS.set('learned',[...ST.learned]);
-  updateVocabList();updateHeader();
-}
-function buildFlashcards(){
-  const deck=ST.fcFilter==='all'?VOCAB:ST.fcFilter==='todo'?VOCAB.filter(v=>!ST.learned.has(v.id)):VOCAB.filter(v=>ST.learned.has(v.id));
-  if(!deck.length)return`<div class="card" style="text-align:center;padding:48px;"><div style="font-size:48px;margin-bottom:10px;">🌸</div><div style="font-family:var(--font-title);font-size:18px;color:var(--aka);">Toutes les cartes apprises !</div><div style="font-size:13px;color:#aaa;margin-top:6px;">おめでとう！</div></div>`;
-  const card=deck[ST.fcIdx%deck.length];
-  const kanjis='語学日本道心愛花';
-  const deco=kanjis[card.id%kanjis.length];
-  return `
-    <div style="display:flex;gap:8px;margin-bottom:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;">
-      <div class="filter-bar" style="margin:0;">
-        ${[['all','Toutes'],['todo','À apprendre'],['done','Apprises']].map(([k,l])=>`<button class="filter-btn ${ST.fcFilter===k?'active':''}" onclick="ST.fcFilter='${k}';ST.fcIdx=0;ST.fcFlipped=false;render()">${l}</button>`).join('')}
-      </div>
-      <span style="font-size:12px;color:#aaa;">${(ST.fcIdx%deck.length)+1} / ${deck.length}</span>
-    </div>
-    <div class="flashcard-wrap" onclick="ST.fcFlipped=!ST.fcFlipped;render()">
-      <div class="flashcard ${ST.fcFlipped?'flipped':''}" data-kanji="${deco}">
-        ${!ST.fcFlipped
-          ?`<div class="fc-jp">${card.jp}</div>
-             <div class="badge badge-sakura" style="margin-bottom:8px;">${card.cat}</div>
-             <div style="font-size:12px;color:#aaa;">${card.level.toUpperCase()}</div>
-             <div class="fc-hint">✦ cliquer pour retourner ✦</div>`
-          :`<div class="fc-fr">${card.fr}</div>
-             <div style="font-family:var(--font-jp);font-size:18px;color:var(--ink);margin-bottom:4px;">${card.hira}</div>
-             <div style="font-size:13px;color:#aaa;">${card.rom}</div>`
-        }
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
-      <button class="btn" onclick="ST.fcIdx++;ST.fcFlipped=false;render()">↺ Suivante</button>
-      <button class="btn-primary" style="background:${ST.learned.has(card.id)?'linear-gradient(135deg,#888,#666)':'linear-gradient(135deg,var(--sakura-deep),var(--aka))'};"
-        onclick="toggleLearnFC(${card.id})">
-        ${ST.learned.has(card.id)?'✓ Désapprendre':'✦ Marquer appris'}
-      </button>
-    </div>`;
-}
-function toggleLearnFC(id){
-  ST.learned.has(id)?ST.learned.delete(id):ST.learned.add(id);
-  LS.set('learned',[...ST.learned]);
-  ST.fcFlipped=false;render();
-}
-function buildKana(rows,label){
-  const flat=rows.flat();
-  return `
-    <div class="tip-box" style="margin-bottom:12px;">
-      <strong>Cliquez</strong> sur un caractère pour voir sa prononciation détaillée · <strong>${label}</strong>
-    </div>
-    <div class="kana-grid">
-      ${flat.map((c,i)=>`<div class="kana-cell ${ST.selKana&&ST.selKana.jp===c.jp&&c.jp?'sel':''}" onclick="showKana(${i},'${label}')">
-        <span class="kana-jp">${c.jp||''}</span>
-        <span class="kana-rom">${c.rom||''}</span>
-      </div>`).join('')}
-    </div>
-    <div id="kana-info"></div>`;
-}
-function showKana(idx,label){
-  const rows=label==='Hiragana'?HIRAGANA_ROWS:KATAKANA_ROWS;
-  const c=rows.flat()[idx];
-  if(!c||!c.jp)return;
-  ST.selKana=c;
-  const tips={a:'Bouche grande ouverte — "ah !"',i:'Sourire tendu — "i" japonais',u:'Entre "ou" et "u" français',e:'Comme "é" dans "été"',o:'Bouche arrondie — "o" rond',ka:'k + a',ki:'k + i',ku:'k + u',ke:'k + e',ko:'k + o',sa:'s + a',shi:'"chi" proche du français',su:'s + u (lèvres peu arrondies)',se:'s + e',so:'s + o',ta:'t + a',chi:'"tchi" — comme tchien',tsu:'"tsar" + ou — son unique !',te:'t + e',to:'t + o',na:'n + a',ni:'n + i',nu:'n + u',ne:'n + e',no:'n + o',ha:'h + a',hi:'h + i',fu:'f + u (lèvres légères)',he:'h + e',ho:'h + o',ma:'m + a',mi:'m + i',mu:'m + u',me:'m + e',mo:'m + o',ya:'y + a',yu:'y + u',yo:'y + o',ra:'r doux + a',ri:'r doux + i',ru:'r doux + u',re:'r doux + e',ro:'r doux + o',wa:'w + a',wo:'particule grammaticale "o"',n:'n nasal final',};
-  const el=document.getElementById('kana-info');
-  if(el)el.innerHTML=`
-    <div class="card card-red fade-in" style="margin-top:10px;">
-      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-        <div style="font-family:var(--font-jp);font-size:52px;color:var(--aka);line-height:1;">${c.jp}</div>
-        <div>
-          <div style="font-family:var(--font-title);font-size:20px;font-weight:700;color:var(--sumi);">${c.rom}</div>
-          <div style="font-size:13px;color:#666;margin-top:4px;">${label}</div>
+  else if(id === 'kanji-n4') {
+    titleHeader.innerText = "Kanjis JLPT N4 (Basique)";
+    contentDiv.innerHTML = `<div class="card"><p>Kanjis introduisant des concepts d'action et de société.</p></div>` + generateKanjiGrid(KANJI_N4);
+  }
+  else if(id === 'kanji-nx') {
+    titleHeader.innerText = "Kanjis JLPT N3 à N1 (Aperçu Avancé)";
+    contentDiv.innerHTML = `<div class="card"><p>L'architecture de cette application est prête pour accueillir les 2136 Kanjis usuels (Jōyō kanji). Voici un extrait de Kanjis de niveaux supérieurs.</p></div>` + generateKanjiGrid(KANJI_NX);
+  }
+  else if(id === 'les-base') {
+    titleHeader.innerText = "Leçon 1 : La Structure de la Phrase (SOV)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'ordre des mots (S-O-V)</h3>
+        <p>Contrairement au français qui utilise une structure Sujet-Verbe-Objet (SVO), la langue japonaise place <strong>systématiquement le verbe à la toute fin</strong> de la phrase. Sa structure est Sujet-Objet-Verbe (SOV).</p>
+        <div class="example-box">
+          <div class="example-jp">私<span class="grammar-highlight">は</span>りんご<span class="grammar-highlight">を</span>食べます。</div>
+          <div class="example-fr">Watashi wa ringo o tabemasu.<br><br><strong>Analyse :</strong> Moi [thème] / pomme [objet] / manger.<br><strong>Traduction :</strong> Je mange une pomme.</div>
         </div>
-      </div>
-      <hr class="divider" style="margin:12px 0;">
-      <div style="font-size:13px;line-height:1.8;color:var(--ink);">
-        🗣️ <strong>Prononciation :</strong> ${tips[c.rom]||'Son '+c.rom}<br>
-        ✍️ <strong>Conseil :</strong> Écris-le 10 fois en prononçant à voix haute.<br>
-        💡 <strong>Mémo :</strong> Associe le dessin à un objet dont le nom commence par ce son.
-      </div>
-    </div>`;
-  document.querySelectorAll('.kana-cell').forEach((el,i)=>{
-    el.classList.toggle('sel',(rows.flat()[i]||{}).jp===c.jp&&!!c.jp);
-  });
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// CHECKLIST
-// ═══════════════════════════════════════════════════════════
-function renderChecklist(c){
-  const total=CHECKLIST.length,done=ST.done.size,pct=Math.round(done/total*100);
-  let html=`
-    <div class="card card-red" style="margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <div>
-          <div style="font-family:var(--font-title);font-size:16px;font-weight:700;">進歩 · Progression globale</div>
-          <div style="font-size:12px;color:#aaa;margin-top:2px;">${done} compétences validées sur ${total}</div>
-        </div>
-        <div style="font-family:var(--font-title);font-size:28px;font-weight:700;color:var(--aka);">${pct}%</div>
-      </div>
-      <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
-    </div>`;
-  for(const [lv,meta] of Object.entries(LV_META)){
-    const items=CHECKLIST.filter(i=>i.level===lv);
-    const lvDone=items.filter(i=>ST.done.has(i.id)).length;
-    html+=`
-      <div class="check-group">
-        <div class="check-head" style="background:linear-gradient(135deg,${meta.color},${meta.color}cc);">
-          <div>
-            <div style="font-family:var(--font-title);font-weight:700;font-size:15px;">${meta.label}</div>
-            <div style="font-size:12px;opacity:.75;margin-top:2px;">${lvDone} / ${items.length} complétés</div>
-          </div>
-          <div style="margin:0 0 0 auto;">
-            <div class="pbar" style="background:rgba(255,255,255,.2);width:100px;height:5px;margin-bottom:2px;"><div class="pfill" style="width:${Math.round(lvDone/items.length*100)}%;background:white;"></div></div>
-          </div>
-          <div class="check-head-jp">${meta.jp}</div>
-        </div>
-        ${items.map(item=>`
-          <div class="check-item" onclick="toggleDone('${item.id}')">
-            <div class="checkbox ${ST.done.has(item.id)?'done':''}">
-              ${ST.done.has(item.id)?'<span style="color:white;font-size:11px;font-weight:700;">✓</span>':''}
-            </div>
-            <span class="check-label ${ST.done.has(item.id)?'done':''}">${item.label}</span>
-            <span style="font-family:var(--font-jp);font-size:18px;color:${meta.color};opacity:.3;margin-left:auto;">${item.jp||''}</span>
-          </div>`).join('')}
+        <h4>Règle d'Or</h4>
+        <p>Le contexte est roi en japonais. Si le sujet est évident (par exemple, vous parlez de vous-même), il est très souvent omis ! On dira simplement : <em>Ringo o tabemasu.</em></p>
       </div>`;
   }
-  c.innerHTML=html;
-}
-function toggleDone(id){
-  ST.done.has(id)?ST.done.delete(id):ST.done.add(id);
-  LS.set('done',[...ST.done]);
-  render();
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// TIMELINE
-// ═══════════════════════════════════════════════════════════
-function renderTimeline(c){
-  c.innerHTML=`
-    <div class="card card-sakura" style="margin-bottom:16px;">
-      <div style="font-family:var(--font-title);font-size:16px;font-weight:700;margin-bottom:10px;">✦ 記録 · Enregistrer une étape</div>
-      <input type="text" id="tl-input" placeholder="Ex : Fini les hiragana ! Premier quiz réussi 🎉"
-        style="margin-bottom:10px;" onkeydown="if(event.key==='Enter')addTL()"/>
-      <button class="btn-primary" onclick="addTL()">Enregistrer</button>
-    </div>
-    ${ST.timeline.length===0
-      ?`<div style="text-align:center;padding:48px;color:#ccc;">
-          <div style="font-family:var(--font-jp);font-size:48px;margin-bottom:10px;color:var(--sakura);">桜</div>
-          <div>Aucune étape encore — commence et note tes victoires !</div>
-        </div>`
-      :[...ST.timeline].reverse().map((ev,i,arr)=>`
-        <div class="tl-item">
-          <div class="tl-dot">
-            <div class="tl-circle"></div>
-            ${i<arr.length-1?'<div class="tl-line"></div>':''}
-          </div>
-          <div class="card" style="flex:1;padding:12px 16px;margin-bottom:0;">
-            <div style="font-size:11px;color:#aaa;margin-bottom:4px;">${ev.date}</div>
-            <div style="font-size:14px;color:var(--ink);">${ev.text}</div>
-          </div>
-        </div>`).join('')
-    }`;
-}
-function addTL(){
-  const el=document.getElementById('tl-input');
-  if(!el||!el.value.trim())return;
-  ST.timeline.push({text:el.value.trim(),date:new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})});
-  LS.set('timeline',ST.timeline);
-  el.value='';render();
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════
-function esc(s){return (s||'').replace(/"/g,'&quot;');}
-
-
-
-// ═══════════════════════════════════════════════════════════
-// QUIZ ENGINE
-// ═══════════════════════════════════════════════════════════
-function startQuiz(id) {
-  ST.quiz = {id, idx:0, answered:null, score:0, done:false};
-  ST.tab = 'quiz';
-  render();
-}
-
-function renderQuizMenu(c) {
-  if (ST.quiz.id) { renderQuizActive(c); return; }
-  const periods = [...new Set(MODULES.map(m=>m.period))];
-  let html = `
-    <div class="section-head"><span class="kanji-dec">試</span><h2>Quiz & Révisions</h2></div>
-    <div class="card card-sakura" style="margin-bottom:16px;">
-      <div style="font-size:13px;color:#666;line-height:1.7;">
-        Teste tes connaissances après chaque cours. Les quiz sont disponibles module par module 
-        ou en révision complète de chapitre. Ton score est sauvegardé.
-      </div>
-    </div>`;
-  
-  // Module quizzes
-  for(const period of periods){
-    const mods = MODULES.filter(m=>m.period===period);
-    const jlpt = mods[0].jlpt;
-    const cols={'N5':'#BC002D','N4':'#e8673a','N3':'#c9922a','N2':'#6b4fa0'};
-    const col = cols[jlpt]||'#BC002D';
-    html += `<div class="card" style="border-left:4px solid ${col};border-radius:0 var(--radius) var(--radius) 0;margin-bottom:10px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <span style="font-family:var(--font-title);font-size:15px;font-weight:700;">${period}</span>
-        <span class="badge" style="background:${col};color:white;">${jlpt}</span>
-      </div>
-      ${mods.filter(m=>QUIZZES[m.id]).map(mod => {
-        const sc = ST.quizScores[mod.id];
-        const pct = sc ? Math.round(sc.score/sc.total*100) : null;
-        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(188,0,45,.08);">
-          <span style="font-size:18px;">${mod.icon}</span>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:600;">${mod.title}</div>
-            ${sc?`<div style="font-size:11px;color:#888;margin-top:2px;">Dernier score : ${sc.score}/${sc.total} (${pct}%) — ${pct>=80?'✓ Maîtrisé':'↺ À retravailler'}</div>`:'<div style="font-size:11px;color:#aaa;">Quiz non encore fait</div>'}
-          </div>
-          <button class="quiz-module-btn" onclick="startQuiz('${mod.id}')">🎯 ${sc?'Refaire':'Commencer'}</button>
-        </div>`;
-      }).join('')}
-    </div>`;
-  }
-  
-  // Chapter review
-  const chSc = ST.quizScores['mois12'];
-  html += `<div class="card" style="background:linear-gradient(135deg,white,#f3eeff);border:2px solid #9b59b6;margin-top:6px;">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <div style="flex:1;">
-        <div style="font-family:var(--font-title);font-size:16px;font-weight:700;color:#6b4fa0;">🌸 Révision Chapitre — Mois 1–2</div>
-        <div style="font-size:13px;color:#888;margin-top:4px;">12 questions couvrant tous les modules du Mois 1–2</div>
-        ${chSc?`<div style="font-size:12px;color:#6b4fa0;margin-top:4px;font-weight:600;">Dernier score : ${chSc.score}/${chSc.total} (${Math.round(chSc.score/chSc.total*100)}%)</div>`:''}
-      </div>
-      <button class="chapter-quiz-btn" style="width:auto;margin:0;" onclick="startQuiz('mois12')">
-        🎯 ${chSc?'Refaire':'Commencer'}
-      </button>
-    </div>
-  </div>`;
-  
-  c.innerHTML = html;
-}
-
-function renderQuizActive(c) {
-  const qd = QUIZZES[ST.quiz.id];
-  if (!qd) { ST.quiz.id=null; renderQuizMenu(c); return; }
-  
-  if (ST.quiz.done) { renderQuizScore(c, qd); return; }
-  
-  const q = qd.questions[ST.quiz.idx];
-  const total = qd.questions.length;
-  const pct = Math.round(ST.quiz.idx/total*100);
-  const kanjis = '語学道心花愛試験問';
-  const deco = kanjis[ST.quiz.idx % kanjis.length];
-  
-  let choicesHtml = q.choices.map((ch, i) => {
-    let cls = 'quiz-choice';
-    if (ST.quiz.answered !== null) {
-      if (i === q.correct) cls += ' correct';
-      else if (i === ST.quiz.answered && i !== q.correct) cls += ' wrong';
-      else cls += ' reveal';
-    }
-    const hasJP = q.choices.every(c => /[\u3000-\u9fff\uff00-\uffef]/.test(c) || c.length <= 4);
-    return `<button class="${cls}" ${ST.quiz.answered!==null?'disabled':''} onclick="answerQuiz(${i})">
-      ${hasJP ? `<span class="choice-jp">${ch}</span>` : ch}
-    </button>`;
-  }).join('');
-  
-  let feedbackHtml = '';
-  if (ST.quiz.answered !== null) {
-    const ok = ST.quiz.answered === q.correct;
-    feedbackHtml = `
-      <div class="quiz-feedback ${ok?'ok':'ko'}">
-        ${ok ? '✓ Correct !' : `✗ Incorrect — La bonne réponse est : <strong>${q.choices[q.correct]}</strong>`}<br>
-        <span style="opacity:.85;">${q.exp}</span>
-      </div>
-      <button class="quiz-next-btn" onclick="nextQuestion()">
-        ${ST.quiz.idx < total-1 ? 'Question suivante →' : 'Voir mon score 🌸'}
-      </button>`;
-  }
-  
-  c.innerHTML = `
-    <div class="quiz-wrap">
-      <button class="btn btn-sm" onclick="ST.quiz.id=null;render();" style="margin-bottom:14px;">← Retour aux quiz</button>
-      
-      <div class="quiz-progress">
-        <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
-        <span class="quiz-q-num">${ST.quiz.idx+1} / ${total}</span>
-      </div>
-      
-      <div style="font-family:var(--font-title);font-size:13px;color:var(--aka);margin-bottom:8px;font-weight:700;">
-        ${qd.title}
-      </div>
-      
-      <div class="quiz-card" data-kanji="${deco}">
-        ${q.jp ? `<span class="quiz-jp">${q.jp}</span>` : ''}
-        <div class="quiz-question">${q.q}</div>
-        <div class="quiz-choices">${choicesHtml}</div>
-        ${feedbackHtml}
-      </div>
-    </div>`;
-}
-
-function answerQuiz(idx) {
-  if (ST.quiz.answered !== null) return;
-  const qd = QUIZZES[ST.quiz.id];
-  const q = qd.questions[ST.quiz.idx];
-  ST.quiz.answered = idx;
-  if (idx === q.correct) ST.quiz.score++;
-  render();
-}
-
-function nextQuestion() {
-  const qd = QUIZZES[ST.quiz.id];
-  if (ST.quiz.idx >= qd.questions.length - 1) {
-    ST.quiz.done = true;
-    // Save score
-    ST.quizScores[ST.quiz.id] = {score:ST.quiz.score, total:qd.questions.length, date:new Date().toLocaleDateString('fr-FR')};
-    LS.set('quizScores', ST.quizScores);
-  } else {
-    ST.quiz.idx++;
-    ST.quiz.answered = null;
-  }
-  render();
-}
-
-function renderQuizScore(c, qd) {
-  const {score} = ST.quiz;
-  const total = qd.questions.length;
-  const pct = Math.round(score/total*100);
-  const msgs = [
-    [90,'Excellent ! 素晴らしい！','Maîtrise parfaite — tu peux passer au cours suivant.','🌸🌸🌸'],
-    [70,'Très bien ! よくできました！','Bonne maîtrise — revois les points ratés.','🌸🌸'],
-    [50,'Bien ! まあまあです。','Quelques lacunes — relis le cours et refais le quiz.','🌸'],
-    [0,'À retravailler ! もう一度！','Revois le cours complet avant de refaire le quiz.','📖'],
-  ];
-  const [,title,advice,stars] = msgs.find(([min])=>pct>=min);
-  
-  c.innerHTML = `
-    <div class="quiz-wrap">
-      <div class="quiz-score-card">
-        <div style="font-size:48px;margin-bottom:8px;">${stars}</div>
-        <div class="quiz-score-num">${score}/${total}</div>
-        <div style="font-size:20px;font-weight:700;color:var(--aka);margin-bottom:6px;">${pct}%</div>
-        <span class="quiz-score-jp">${title.split('！')[1] || '頑張りました！'}</span>
-        <div class="quiz-score-msg">${title.split('！')[0]+' !'}<br>${advice}</div>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
-          <button class="btn-primary" onclick="startQuiz('${ST.quiz.id}')">↺ Recommencer</button>
-          <button class="btn" onclick="ST.quiz={id:null,idx:0,answered:null,score:0,done:false};render()">← Tous les quiz</button>
-          ${ST.quiz.id!=='mois12'?`<button class="chapter-quiz-btn" style="width:auto;" onclick="startQuiz('mois12')">🌸 Quiz chapitre</button>`:''}
+  else if(id === 'les-particules') {
+    titleHeader.innerText = "Leçon 2 : Le système de Particules";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Qu'est-ce qu'une particule ?</h3>
+        <p>Les particules (joshi) sont de petits mots invariables placés <strong>après</strong> le nom pour définir son rôle grammatical dans la phrase.</p>
+        
+        <h4>1. La particule は (Wa)</h4>
+        <p>Elle indique le <strong>thème</strong> de la phrase. Attention, bien qu'elle s'écrive avec le hiragana "ha", elle se prononce "wa" en tant que particule.</p>
+        <div class="example-box">
+          <div class="example-jp">田中さん<span class="grammar-highlight">は</span>学生です。</div>
+          <div class="example-fr">Tanaka-san wa gakusei desu. (Quant à Tanaka, il est étudiant.)</div>
         </div>
-      </div>
-    </div>`;
+
+        <h4>2. La particule を (O)</h4>
+        <p>Elle marque le <strong>Complément d'Objet Direct (COD)</strong> de l'action.</p>
+        <div class="example-box">
+          <div class="example-jp">本<span class="grammar-highlight">を</span>読みます。</div>
+          <div class="example-fr">Hon o yomimasu. (Je lis un livre.)</div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'les-verbes') {
+    titleHeader.innerText = "Leçon 3 : Les Verbes (Forme Polie MASU)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>La conjugaison de politesse</h3>
+        <p>La forme en <strong>~ます (masu)</strong> est la forme polie standard, utilisée avec des inconnus ou dans un cadre formel. Les verbes japonais ne s'accordent ni en genre (masculin/féminin) ni en nombre (singulier/pluriel) !</p>
+        <ul>
+          <li><strong>Présent / Futur affirmatif :</strong> ~ます (masu)</li>
+          <li><strong>Présent / Futur négatif :</strong> ~ません (masen)</li>
+          <li><strong>Passé affirmatif :</strong> ~ました (mashita)</li>
+          <li><strong>Passé négatif :</strong> ~ませんでした (masen deshita)</li>
+        </ul>
+        <div class="example-box">
+          <div class="example-jp">食べます (Tabemasu)</div>
+          <div class="example-fr">Je mange / Je mangerai</div>
+          <br>
+          <div class="example-jp">食べませんでした (Tabemasen deshita)</div>
+          <div class="example-fr">Je n'ai pas mangé</div>
+        </div>
+      </div>`;
+  }
 }
 
+/* ─── MODULE QUIZ INTERACTIFS RÉINTÉGRÉ & ÉTENDU ──────────────── */
+const QUIZ_BANK = {
+  kana: [
+    {q: "Quel est le son du caractère 'あ' ?", o: ["a", "i", "u", "e"], c: 0},
+    {q: "Lequel de ces caractères est le hiragana 'ki' ?", o: ["さ", "き", "ち", "け"], c: 1},
+    {q: "Identifiez le son du katakana 'ツ' (Attention au 'shi' シ) :", o: ["shi", "so", "tsu", "n"], c: 2},
+    {q: "Que donne le son 'ka' avec un dakuten (が) ?", o: ["pa", "za", "da", "ga"], c: 3}
+  ],
+  kanji: [
+    {q: "Que signifie le kanji '日' ?", o: ["Lune", "Eau", "Soleil / Jour", "Arbre"], c: 2},
+    {q: "Quelle est la lecture KUN (japonaise) du kanji '人' (Personne) ?", o: ["ひと (hito)", "ジン (jin)", "おお (oo)", "き (ki)"], c: 0},
+    {q: "Que signifie '食' ?", o: ["Boire", "Acheter", "Manger", "Lire"], c: 2},
+    {q: "Quelle est la lecture ON (chinoise) du kanji '水' (Eau) ?", o: ["カ (ka)", "スイ (sui)", "モク (moku)", "キン (kin)"], c: 1}
+  ]
+};
 
-// ═══════════════════════════════════════════════════════════
-// SAKURA PETALS
-// ═══════════════════════════════════════════════════════════
-(function(){
-  const container = document.getElementById('petals');
-  const colors = ['#ffb7c5','#ffd6e0','#ff8fab','#ffccd5','#ffe0e9'];
-  for(let i=0;i<22;i++){
-    const p = document.createElement('div');
-    p.className = 'petal';
-    p.style.left = (Math.random()*105-5)+'%';
-    p.style.width = p.style.height = (Math.random()*10+8)+'px';
-    p.style.background = `linear-gradient(${Math.random()*360}deg,${colors[i%colors.length]},${colors[(i+2)%colors.length]})`;
-    p.style.animationDuration = (Math.random()*10+8)+'s';
-    p.style.animationDelay = (Math.random()*12-4)+'s';
-    p.style.opacity = '0';
-    p.style.transform = `rotate(${Math.random()*45}deg)`;
-    container.appendChild(p);
+let currentQuizType = "";
+let currentQuestionIndex = 0;
+let quizScore = 0;
+
+function startQuiz(type) {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('page-title').innerText = type === 'kana' ? "Quiz : Lecture des Kana" : "Quiz : Maîtrise des Kanji";
+  currentQuizType = type;
+  currentQuestionIndex = 0;
+  quizScore = 0;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const qList = QUIZ_BANK[currentQuizType];
+  const contentDiv = document.getElementById('content');
+  
+  if(currentQuestionIndex >= qList.length) {
+    contentDiv.innerHTML = `
+      <div class="quiz-container quiz-score-screen">
+        <h3>Session Terminée !</h3>
+        <div class="quiz-score-num">${quizScore} / ${qList.length}</div>
+        <p>Excellente session. Répétez ces quiz quotidiennement pour ancrer les caractères dans votre mémoire à long terme.</p>
+        <button class="quiz-opt-btn" style="margin-top:20px; background:var(--aka); color:white; width: 100%;" onclick="loadContent('hira')">Retourner au tableau de bord</button>
+      </div>`;
+    return;
   }
-})();
 
+  const data = qList[currentQuestionIndex];
+  let optionsHtml = "";
+  data.o.forEach((opt, idx) => {
+    optionsHtml += `<button class="quiz-opt-btn" onclick="submitAnswer(${idx})">${opt}</button>`;
+  });
 
-// ═══════════════════════════════════════════════════════════
-// BACKGROUND KANJI
-// ═══════════════════════════════════════════════════════════
+  contentDiv.innerHTML = `
+    <div class="quiz-container">
+      <div class="quiz-question">Question ${currentQuestionIndex + 1} / ${qList.length} :<br><br>${data.q}</div>
+      <div class="quiz-options">${optionsHtml}</div>
+    </div>
+  `;
+}
+
+function submitAnswer(chosenIdx) {
+  const data = QUIZ_BANK[currentQuizType][currentQuestionIndex];
+  if(chosenIdx === data.c) {
+    quizScore++;
+  } else {
+    alert(`Oups ! Mauvaise réponse. La bonne réponse était : ${data.o[data.c]}`);
+  }
+  currentQuestionIndex++;
+  renderQuestion();
+}
+
+/* ─── INITIALIZATION BACKGROUND ────────────────────────────────── */
 (function(){
-  const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間言葉書読見聞話友愛';
+  const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
   const bg = document.getElementById('bg-kanji');
-  for(let i=0;i<30;i++){
-    const s = document.createElement('span');
-    s.textContent = KANJIS[i%KANJIS.length];
-    s.style.fontSize = (Math.random()*140+80)+'px';
-    s.style.left = (Math.random()*95)+'%';
-    s.style.top = (Math.random()*95)+'%';
-    s.style.transform = `rotate(${(Math.random()-.5)*40}deg)`;
-    s.style.opacity = (Math.random()*.04+.015).toFixed(3);
-    bg.appendChild(s);
-  }
-})();
-
-
-
-(async function init(){
-  try{
-    const saved=await loadAllPDFs();
-    for(const entry of saved){
-      const blob=new Blob([entry.data],{type:'application/pdf'});
-      ST.pdfUrls[entry.id]=URL.createObjectURL(blob);
-      ST.pdfUrls[entry.id+'_name']=entry.name;
+  if(bg){
+    for(let i=0; i<30; i++){
+      const s = document.createElement('span');
+      s.textContent = KANJIS[i % KANJIS.length];
+      s.style.fontSize = (Math.random() * 90 + 40) + 'px';
+      s.style.left = (Math.random() * 95) + '%';
+      s.style.top = (Math.random() * 95) + '%';
+      bg.appendChild(s);
     }
-  }catch(e){console.warn('IndexedDB:',e);}
-  render();
+  }
+  // Charger la page d'accueil par défaut
+  setTimeout(() => loadContent('hira'), 100);
 })();
-
 </script>
 </body>
 </html>
