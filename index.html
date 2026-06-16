@@ -199,27 +199,21 @@ body{
     </div>
     
     <nav class="sidebar-nav">
-      <div class="nav-group-label">Syllabaires (Kana)</div>
-      <button class="nav-item active" onclick="loadContent('hira')"><span class="nav-icon">あ</span> Hiragana Complet <span class="nav-badge">71</span></button>
-      <button class="nav-item" onclick="loadContent('kata')"><span class="nav-icon">ア</span> Katakana Complet <span class="nav-badge">71</span></button>
+      <div class="nav-group-label">Module 1 : Écriture & Base</div>
+      <button class="nav-item active" onclick="loadContent('cours-01')"><span class="nav-icon">あ</span> Cours 1 : Hiragana</button>
+      <button class="nav-item" onclick="loadContent('cours-02')"><span class="nav-icon">ア</span> Cours 2 : Katakana</button>
+      <button class="nav-item" onclick="loadContent('cours-06')"><span class="nav-icon">⛩</span> Cours 6 : Kanji N5</button>
       
       <div class="sidebar-section-divider"></div>
       
-      <div class="nav-group-label">Dictionnaire Kanji (On/Kun)</div>
-      <button class="nav-item" onclick="loadContent('kanji-n5')"><span class="nav-icon">⛩</span> Kanjis N5 (Fondations)</button>
-      <button class="nav-item" onclick="loadContent('kanji-n4')"><span class="nav-icon">⛩</span> Kanjis N4 (Basique)</button>
-      <button class="nav-item" onclick="loadContent('kanji-nx')"><span class="nav-icon">⛩</span> Kanjis N3-N1 (Avancés)</button>
+      <div class="nav-group-label">Module 2 : Grammaire Essentielle</div>
+      <button class="nav-item" onclick="loadContent('cours-03')"><span class="nav-icon">📚</span> Cours 3 : Structure SOV</button>
+      <button class="nav-item" onclick="loadContent('cours-04')"><span class="nav-icon">📚</span> Cours 4 : Particules</button>
+      <button class="nav-item" onclick="loadContent('cours-05')"><span class="nav-icon">📚</span> Cours 5 : Verbes (Masu)</button>
       
       <div class="sidebar-section-divider"></div>
       
-      <div class="nav-group-label">Leçons de Grammaire</div>
-      <button class="nav-item" onclick="loadContent('les-base')"><span class="nav-icon">📚</span> 1. Structure de la phrase</button>
-      <button class="nav-item" onclick="loadContent('les-particules')"><span class="nav-icon">📚</span> 2. Les Particules (Wa, O, Ni)</button>
-      <button class="nav-item" onclick="loadContent('les-verbes')"><span class="nav-icon">📚</span> 3. Les Verbes (Forme MASU)</button>
-      
-      <div class="sidebar-section-divider"></div>
-      
-      <div class="nav-group-label">Évaluations</div>
+      <div class="nav-group-label">Évaluations interactives</div>
       <button class="nav-item" onclick="startQuiz('kana')"><span class="nav-icon">🎯</span> Quiz : Lecture Kana</button>
       <button class="nav-item" onclick="startQuiz('kanji')"><span class="nav-icon">🎯</span> Quiz : Sens des Kanji</button>
     </nav>
@@ -481,88 +475,140 @@ function loadContent(id) {
   const activeBtn = Array.from(document.querySelectorAll('.nav-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
   if(activeBtn) activeBtn.classList.add('active');
 
-  if(id === 'hira') {
-    titleHeader.innerText = "Tableau Complet des Hiragana";
-    contentDiv.innerHTML = `
-      <div class="card"><p>Cliquez sur n'importe quel caractère pour entendre sa prononciation. Les Hiragana sont utilisés pour les mots d'origine japonaise et la grammaire.</p></div>
-      <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
-      <div class="kana-section"><h4>Dakuten & Handakuten (Dérivés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>`;
-  } 
-  else if(id === 'kata') {
-    titleHeader.innerText = "Tableau Complet des Katakana";
-    contentDiv.innerHTML = `
-      <div class="card"><p>Les Katakana sont utilisés principalement pour transcrire les mots d'origine étrangère (gairaigo), les noms scientifiques et les onomatopées.</p></div>
-      <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
-      <div class="kana-section"><h4>Dakuten & Handakuten (Dérivés)</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>`;
-  }
-  else if(id === 'kanji-n5') {
-    titleHeader.innerText = "Kanjis JLPT N5 (Fondations)";
-    contentDiv.innerHTML = `<div class="card"><p>Voici les Kanjis essentiels pour débuter. Les lectures <strong>ON</strong> (Onyomi, lecture chinoise) sont en Katakana/Rouge. Les lectures <strong>KUN</strong> (Kunyomi, lecture japonaise) sont en Hiragana/Bleu.</p></div>` + generateKanjiGrid(KANJI_N5);
-  }
-  else if(id === 'kanji-n4') {
-    titleHeader.innerText = "Kanjis JLPT N4 (Basique)";
-    contentDiv.innerHTML = `<div class="card"><p>Kanjis introduisant des concepts d'action et de société.</p></div>` + generateKanjiGrid(KANJI_N4);
-  }
-  else if(id === 'kanji-nx') {
-    titleHeader.innerText = "Kanjis JLPT N3 à N1 (Aperçu Avancé)";
-    contentDiv.innerHTML = `<div class="card"><p>L'architecture de cette application est prête pour accueillir les 2136 Kanjis usuels (Jōyō kanji). Voici un extrait de Kanjis de niveaux supérieurs.</p></div>` + generateKanjiGrid(KANJI_NX);
-  }
-  else if(id === 'les-base') {
-    titleHeader.innerText = "Leçon 1 : La Structure de la Phrase (SOV)";
+  if(id === 'cours-01') {
+    titleHeader.innerText = "Cours 01 : Hiragana Complet";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>L'ordre des mots (S-O-V)</h3>
-        <p>Contrairement au français qui utilise une structure Sujet-Verbe-Objet (SVO), la langue japonaise place <strong>systématiquement le verbe à la toute fin</strong> de la phrase. Sa structure est Sujet-Objet-Verbe (SOV).</p>
-        <div class="example-box">
-          <div class="example-jp">私<span class="grammar-highlight">は</span>りんご<span class="grammar-highlight">を</span>食べます。</div>
-          <div class="example-fr">Watashi wa ringo o tabemasu.<br><br><strong>Analyse :</strong> Moi [thème] / pomme [objet] / manger.<br><strong>Traduction :</strong> Je mange une pomme.</div>
-        </div>
-        <h4>Règle d'Or</h4>
-        <p>Le contexte est roi en japonais. Si le sujet est évident (par exemple, vous parlez de vous-même), il est très souvent omis ! On dira simplement : <em>Ringo o tabemasu.</em></p>
-      </div>`;
-  }
-  else if(id === 'les-particules') {
-    titleHeader.innerText = "Leçon 2 : Le système de Particules";
-    contentDiv.innerHTML = `
-      <div class="card">
-        <h3>Qu'est-ce qu'une particule ?</h3>
-        <p>Les particules (joshi) sont de petits mots invariables placés <strong>après</strong> le nom pour définir son rôle grammatical dans la phrase.</p>
+        <h3>1. Pourquoi apprendre les hiragana en premier ?</h3>
+        <p>Les hiragana sont l'alphabet phonétique natif du japonais. Contrairement au rōmaji, ils vous permettront de lire n'importe quel texte, de mémoriser avec la bonne prononciation et d'accéder aux <em>furigana</em> (petits caractères d'aide au-dessus des kanji).</p>
+        <p><strong>Méthode :</strong> Observez le caractère > Écoutez le son (cliquez sur les grilles ci-dessous) > Tracez-le 10 fois.</p>
         
-        <h4>1. La particule は (Wa)</h4>
-        <p>Elle indique le <strong>thème</strong> de la phrase. Attention, bien qu'elle s'écrive avec le hiragana "ha", elle se prononce "wa" en tant que particule.</p>
-        <div class="example-box">
-          <div class="example-jp">田中さん<span class="grammar-highlight">は</span>学生です。</div>
-          <div class="example-fr">Tanaka-san wa gakusei desu. (Quant à Tanaka, il est étudiant.)</div>
+        <h3>2. Les sons combinés et modifiés</h3>
+        <p>En ajoutant des <strong>Dakuten</strong> (les deux petits traits) ou des <strong>Handakuten</strong> (le petit rond), un son change (ex: KA か devient GA が). De plus, en ajoutant un petit <em>ya, yu, yo</em> (や, ゆ, よ), on crée des sons fusionnés comme <em>kya, shu, cho</em>.</p>
+        <div class="alert-box"><strong>Règle spéciale :</strong> La particule は se prononce "wa", et を se prononce "o".</div>
+        
+        <h3>3. Vocabulaire de base (100% Hiragana)</h3>
+        <div class="vocab-grid">
+          <div class="vocab-card"><span class="vocab-jp">あさ</span><span class="vocab-fr">asa (matin)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">いぬ</span><span class="vocab-fr">inu (chien)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">さかな</span><span class="vocab-fr">sakana (poisson)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">くるま</span><span class="vocab-fr">kuruma (voiture)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">せんせい</span><span class="vocab-fr">sensei (professeur)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">たべます</span><span class="vocab-fr">tabemasu (manger)</span></div>
         </div>
+      </div>
+      <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>`;
+  } 
+  else if(id === 'cours-02') {
+    titleHeader.innerText = "Cours 02 : Katakana Complet";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le rôle des Katakana</h3>
+        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères (<strong>gairaigo</strong>), les onomatopées et les noms étrangers. Il partage exactement les mêmes sons que le hiragana, mais avec des formes plus angulaires.</p>
+        
+        <h3>2. Hiragana vs Katakana</h3>
+        <table class="course-table">
+          <tr><th>Son</th><th>Hiragana (Japonais natif)</th><th>Katakana (Étranger)</th><th>Exemple</th></tr>
+          <tr><td>a</td><td>あ</td><td>ア</td><td>アイスクリーム (Glace)</td></tr>
+          <tr><td>ko</td><td>こ</td><td>コ</td><td>コーヒー (Café)</td></tr>
+          <tr><td>te</td><td>て</td><td>テ</td><td>テレビ (Télévision)</td></tr>
+        </table>
+        
+        <div class="alert-box"><strong>Astuce :</strong> La barre horizontale (ー) allonge la voyelle précédente. Ex: コーヒー (kō-hī).</div>
+      </div>
+      <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>`;
+  }
+  else if(id === 'cours-03') {
+    titleHeader.innerText = "Cours 03 : Structure de Phrase (SOV)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le grand choc : le verbe à la fin</h3>
+        <p>Contrairement au français (Sujet-Verbe-Objet), la langue japonaise place <strong>systématiquement le verbe à la toute fin</strong> de la phrase. L'ordre est Sujet-Objet-Verbe (SOV).</p>
+        
+        <h3>2. Exemples progressifs</h3>
+        <table class="course-table">
+          <tr><th>Niveau</th><th>Phrase (Japonais)</th><th>Structure & Traduction</th></tr>
+          <tr><td>Niveau 1 (S+V)</td><td>私は 学生 です。<br><em>Watashi wa gakusei desu.</em></td><td>Moi [thème] étudiant suis.<br><strong>Je suis étudiant.</strong></td></tr>
+          <tr><td>Niveau 2 (S+O+V)</td><td>私は すしを 食べます。<br><em>Watashi wa sushi wo tabemasu.</em></td><td>Moi [thème] sushis [objet] mange.<br><strong>Je mange des sushis.</strong></td></tr>
+          <tr><td>Niveau 3 (Lieu)</td><td>彼女は 学校で 勉強します。<br><em>Kanojo wa gakkō de benkyō shimasu.</em></td><td>Elle [thème] école [lieu] étudie.<br><strong>Elle étudie à l'école.</strong></td></tr>
+        </table>
 
-        <h4>2. La particule を (O)</h4>
-        <p>Elle marque le <strong>Complément d'Objet Direct (COD)</strong> de l'action.</p>
-        <div class="example-box">
-          <div class="example-jp">本<span class="grammar-highlight">を</span>読みます。</div>
-          <div class="example-fr">Hon o yomimasu. (Je lis un livre.)</div>
+        <h3>3. Négations et Questions</h3>
+        <ul>
+          <li><strong>Négatif :</strong> Remplacez <em>ます (masu)</em> par <em>ません (masen)</em>. Ex: 食べません (Je ne mange pas).</li>
+          <li><strong>Question :</strong> Ajoutez simplement la particule <em>か (ka)</em> à la fin. Ex: 行きますか？ (Allez-vous ?).</li>
+        </ul>
+      </div>`;
+  }
+  else if(id === 'cours-04') {
+    titleHeader.innerText = "Cours 04 : Les Particules (Joshi)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Qu'est-ce qu'une particule ?</h3>
+        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom. Elles définissent le rôle grammatical du mot précédent. Sans elles, la phrase est incompréhensible car le japonais n'a pas de conjugaison de personne.</p>
+        
+        <h3>2. Tableau récapitulatif essentiel</h3>
+        <table class="course-table">
+          <tr><th>Particule</th><th>Rôle principal</th><th>Exemple clé</th></tr>
+          <tr><td><strong>は (wa)</strong></td><td>Marque le thème (ce dont on parle).</td><td>私<strong>は</strong>学生です (Je suis étudiant)</td></tr>
+          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau, accent mis sur LE sujet.</td><td>猫<strong>が</strong>います (Il y a un chat)</td></tr>
+          <tr><td><strong>を (o)</strong></td><td>Objet direct (ce qui subit l'action).</td><td>すし<strong>を</strong>食べます (Je mange des sushis)</td></tr>
+          <tr><td><strong>に (ni)</strong></td><td>Direction, destination, temps précis.</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo)</td></tr>
+          <tr><td><strong>で (de)</strong></td><td>Lieu de l'action, moyen, instrument.</td><td>電車<strong>で</strong>行きます (J'y vais en train)</td></tr>
+        </table>
+        
+        <div class="alert-box"><strong>は vs が :</strong> "は" est pour les présentations générales, "が" est pour une information nouvelle ou répondre à la question "Qui ?".</div>
+      </div>`;
+  }
+  else if(id === 'cours-05') {
+    titleHeader.innerText = "Cours 05 : Les Verbes en MASU";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La conjugaison polie universelle</h3>
+        <p>La forme en <strong>~ます (masu)</strong> est la forme standard polie. Elle ne change jamais selon la personne (je/tu/il). Il n'y a que 4 combinaisons temporelles à retenir :</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Terminaison</th><th>Exemple (Manger)</th></tr>
+          <tr><td>Présent / Futur affirmatif</td><td><strong>~ます</strong> (masu)</td><td>食べます (Je mange)</td></tr>
+          <tr><td>Présent / Futur négatif</td><td><strong>~ません</strong> (masen)</td><td>食べません (Je ne mange pas)</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>~ました</strong> (mashita)</td><td>食べました (J'ai mangé)</td></tr>
+          <tr><td>Passé négatif</td><td><strong>~ませんでした</strong> (masen deshita)</td><td>食べませんでした (Je n'ai pas mangé)</td></tr>
+        </table>
+
+        <h3>2. Les 20 verbes essentiels (JLPT N5)</h3>
+        <div class="vocab-grid">
+          <div class="vocab-card"><span class="vocab-jp">食べます</span><span class="vocab-fr">tabemasu (Manger)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">飲みます</span><span class="vocab-fr">nomimasu (Boire)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">行きます</span><span class="vocab-fr">ikimasu (Aller)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">来ます</span><span class="vocab-fr">kimasu (Venir)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">見ます</span><span class="vocab-fr">mimasu (Voir)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">聞きます</span><span class="vocab-fr">kikimasu (Écouter)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">書きます</span><span class="vocab-fr">kakimasu (Écrire)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">読みます</span><span class="vocab-fr">yomimasu (Lire)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">話します</span><span class="vocab-fr">hanashimasu (Parler)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">買います</span><span class="vocab-fr">kaimasu (Acheter)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">起きます</span><span class="vocab-fr">okimasu (Se lever)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">寝ます</span><span class="vocab-fr">nemasu (Dormir)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">帰ります</span><span class="vocab-fr">kaerimasu (Rentrer)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">します</span><span class="vocab-fr">shimasu (Faire)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">勉強します</span><span class="vocab-fr">benkyō shimasu (Étudier)</span></div>
         </div>
       </div>`;
   }
-  else if(id === 'les-verbes') {
-    titleHeader.innerText = "Leçon 3 : Les Verbes (Forme Polie MASU)";
+  else if(id === 'cours-06') {
+    titleHeader.innerText = "Cours 06 : Introduction aux Kanji (N5)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>La conjugaison de politesse</h3>
-        <p>La forme en <strong>~ます (masu)</strong> est la forme polie standard, utilisée avec des inconnus ou dans un cadre formel. Les verbes japonais ne s'accordent ni en genre (masculin/féminin) ni en nombre (singulier/pluriel) !</p>
+        <h3>1. Comprendre les Kanji</h3>
+        <p>Les kanji sont des idéogrammes empruntés au chinois. Chaque kanji possède :</p>
         <ul>
-          <li><strong>Présent / Futur affirmatif :</strong> ~ます (masu)</li>
-          <li><strong>Présent / Futur négatif :</strong> ~ません (masen)</li>
-          <li><strong>Passé affirmatif :</strong> ~ました (mashita)</li>
-          <li><strong>Passé négatif :</strong> ~ませんでした (masen deshita)</li>
+          <li><strong>Une lecture ON (Onyomi) :</strong> prononciation d'origine chinoise, souvent utilisée dans les mots composés (ex: 水曜日 - <em>SUI-yōbi</em>).</li>
+          <li><strong>Une lecture KUN (Kunyomi) :</strong> prononciation japonaise native, souvent utilisée quand le kanji est seul (ex: 水 - <em>mizu</em>).</li>
         </ul>
-        <div class="example-box">
-          <div class="example-jp">食べます (Tabemasu)</div>
-          <div class="example-fr">Je mange / Je mangerai</div>
-          <br>
-          <div class="example-jp">食べませんでした (Tabemasen deshita)</div>
-          <div class="example-fr">Je n'ai pas mangé</div>
-        </div>
-      </div>`;
+        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. Ex: 明 (brillant) = 日 (soleil) + 月 (lune). Le soleil et la lune ensemble, c'est très brillant !</p>
+      </div>
+      <div class="kana-section"><h4>Vos Kanji JLPT N5 à maîtriser (Cliquez pour écouter)</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
   }
 }
 
