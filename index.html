@@ -209,10 +209,31 @@ body{
 <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 
 <div class="app-shell">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">
-      <span class="jp-title">日本語の道</span>
-      <span class="sub">TABLEAU DE BORD COMPLET</span>
+  <div class="sidebar-logo">
+      <!-- Logo Sakura SVG -->
+      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sakuraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFB7C5" />
+            <stop offset="100%" stop-color="#e75480" />
+          </linearGradient>
+        </defs>
+        <g transform="translate(50, 50)">
+          <!-- 5 Pétales -->
+          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" />
+          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(72)" />
+          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(144)" />
+          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(216)" />
+          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(288)" />
+          <!-- Cœur de la fleur -->
+          <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.9"/>
+          <circle cx="0" cy="0" r="2.5" fill="#BC002D"/>
+        </g>
+      </svg>
+      <div class="logo-text-container">
+        <span class="jp-title">日本語の道</span>
+        <span class="sub">TABLEAU DE BORD</span>
+      </div>
     </div>
     
     <nav class="sidebar-nav">
