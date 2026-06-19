@@ -422,7 +422,17 @@ const KANJI_N2 = [
 ];
 
 const KANJI_N1 = [
-  {j:'響', on:'キョウ', kun:'ひび.く', f:'Résonner, Écho'}, {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris'}, {j:'嘆', on:'タン', kun:'なげ.く', f:'Soupirer, Déplorer'}, {j:'慰', on:'イ', kun:'なぐさ.める', f:'Consoler'}, {j:'躍', on:'ヤク', kun:'おど.る', f:'Sauter, Bondir'}, {j:'輝', on:'キ', kun:'かがや.く', f:'Briller'}, {j:'瞬', on:'シュン', kun:'またた.く', f:'Cligner, Instant'}, {j:'魅', on:'ミ', kun:'みせ.る', f:'Fasciner'}, {j:'嫌', on:'ケン', kun:'きら.う', f:'Détester'}
+  // Émotions intenses et Psychologie
+  {j:'響', on:'キョウ', kun:'ひび.く', f:'Résonner, Écho'}, {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Surprise'}, {j:'嘆', on:'タン', kun:'なげ.く', f:'Déplorer'}, {j:'慰', on:'イ', kun:'なぐさ.める', f:'Consoler'}, {j:'嫌', on:'ケン', kun:'きら.う', f:'Détester'}, {j:'憾', on:'カン', kun:'-', f:'Regret'}, {j:'憤', on:'フン', kun:'いきどお.る', f:'Indignation'}, {j:'悟', on:'ゴ', kun:'さと.る', f:'Comprendre, Éveil'}, {j:'哀', on:'アイ', kun:'あわ.れ', f:'Pitié, Tristesse'}, {j:'狂', on:'キョウ', kun:'くる.う', f:'Folie'},
+  
+  // Abstraction et Concepts
+  {j:'幻', on:'ゲン', kun:'まぼろし', f:'Illusion'}, {j:'魂', on:'コン', kun:'たましい', f:'Âme'}, {j:'魅', on:'ミ', kun:'みせ.る', f:'Fasciner'}, {j:'矛', on:'ム', kun:'ほこ', f:'Lance'}, {j:'盾', on:'ジュン', kun:'たて', f:'Bouclier'}, {j:'覆', on:'フク', kun:'おお.う', f:'Couvrir, Renverser'}, {j:'覇', on:'ハ', kun:'-', f:'Hégémonie'}, {j:'劣', on:'レツ', kun:'おと.る', f:'Inférieur'}, {j:'崩', on:'ホウ', kun:'くず.れる', f:'S\'effondrer'}, {j:'陥', on:'カン', kun:'おちい.る', f:'Sombrer, Chute'},
+  
+  // Société et Justice
+  {j:'殉', on:'ジュン', kun:'-', f:'Martyr'}, {j:'拘', on:'コウ', kun:'こだわ.る', f:'Saisir, S\'attacher'}, {j:'逮', on:'タイ', kun:'-', f:'Appréhender'}, {j:'糾', on:'キュウ', kun:'-', f:'Enquêter, Blâmer'}, {j:'紛', on:'フン', kun:'まぎ.れる', f:'Confusion, Conflit'}, {j:'錯', on:'サク', kun:'-', f:'Mélangé, Illusion'}, {j:'妥', on:'ダ', kun:'-', f:'Compromis'}, {j:'脅', on:'キョウ', kun:'おどか.す', f:'Menacer'}, {j:'犠', on:'ギ', kun:'-', f:'Sacrifice'}, {j:'牲', on:'セイ', kun:'-', f:'Victime'},
+  
+  // Action, Mouvement et Temps
+  {j:'躍', on:'ヤク', kun:'おど.る', f:'Bondir'}, {j:'瞬', on:'シュン', kun:'またた.く', f:'Instant'}, {j:'駆', on:'ク', kun:'か.ける', f:'Courir, Chasser'}, {j:'漏', on:'ロウ', kun:'も.れる', f:'Fuir (liquide)'}, {j:'縛', on:'バク', kun:'しば.る', f:'Attacher'}, {j:'奪', on:'ダツ', kun:'うば.う', f:'Priver, Voler'}, {j:'獲', on:'カク', kun:'え.る', f:'Capturer'}, {j:'絞', on:'コウ', kun:'しぼ.る', f:'Essorer'}, {j:'遮', on:'シャ', kun:'さえぎ.る', f:'Intercepter'}, {j:'頻', on:'ヒン', kun:'-', f:'Fréquence'}
 ];
 
 /* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
@@ -980,23 +990,59 @@ function loadContent(id) {
     titleHeader.innerText = "Cours 16 : Kanjis du niveau N1";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Le niveau de fluidité totale</h3>
-        <p>Les kanjis du N1 sont rares, poétiques, ou très techniques. Ils se retrouvent dans la littérature classique, les contrats juridiques et la médecine.</p>
+        <h3>L'ultime étape : Littérature et Spécialisation</h3>
+        <p>Le JLPT N1 couvre l'ensemble des ~2136 Kanjis d'usage courant (Jōyō Kanji). Ce sont des idéogrammes que l'on retrouve dans la littérature classique, les documents juridiques, les thèses universitaires ou les journaux très spécialisés.</p>
+        <p>Ils expriment souvent des émotions complexes, des concepts philosophiques abstraits ou des actions extrêmement précises.</p>
       </div>
-      <div class="kana-section"><h4>Sélection de Kanji N1</h4>${generateKanjiGrid(KANJI_N1)}</div>`;
+      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(KANJI_N1)}</div>`;
   }
   else if(id === 'cours-17') {
     titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Les tournures de la littérature japonaise</h3>
-        <p>La grammaire N1 est souvent méconnue de certains Japonais natifs s'ils ne lisent pas beaucoup. Elle est archaïque, emphatique et hautement poétique.</p>
+        <h3>1. Les tournures de la littérature japonaise</h3>
+        <p>La grammaire N1 est si poussée que même de nombreux Japonais natifs hésitent sur certaines nuances s'ils ne lisent pas régulièrement. Elle est archaïque, emphatique et souvent très poétique ou dramatique.</p>
+        
+        <h3>2. Succession immédiate et dramatique</h3>
+        <p>En français, on dirait "À peine eut-il fait ceci, que cela se produisit". Le N1 adore ces expressions au timing serré.</p>
         <table class="course-table">
-          <tr><th>Expression N1</th><th>Sens et Contexte</th></tr>
-          <tr><td><strong>〜や否や (ya ina ya)</strong></td><td>"Dès que...". Exprime une succession immédiate et dramatique d'événements.</td></tr>
-          <tr><td><strong>〜ばこそ (ba koso)</strong></td><td>"C'est précisément parce que...". Met une forte emphase sur la raison d'un acte.</td></tr>
-          <tr><td><strong>〜ごとき / ごとく (gotoki)</strong></td><td>"Tel que... / Comme...". Variante archaïque et élégante de <em>yō na</em> ou <em>mitai na</em>.</td></tr>
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜や否や (ya ina ya)</strong></td>
+            <td>Dès que... (Succession immédiate, souvent surprenante). Verbe au dictionnaire.</td>
+            <td>彼は私の顔を見る<strong>や否や</strong>、逃げ出した。<br><em>(Dès qu'il a vu mon visage, il s'est enfui).</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜が早いか (ga hayai ka)</strong></td>
+            <td>À peine... que. (Action presque simultanée, souvent intentionnelle).</td>
+            <td>ベルが鳴る<strong>が早いか</strong>、生徒たちは教室を飛び出した。<br><em>(À peine la cloche a-t-elle sonné que les élèves ont bondi hors de la classe).</em></td>
+          </tr>
         </table>
+
+        <h3>3. L'emphase et l'extrême</h3>
+        <p>Pour insister sur la rareté, l'évidence ou le caractère extrême d'une situation.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜だに (dani)</strong></td>
+            <td>"Rien que de..." (Souvent utilisé avec imaginer, penser, entendre).</td>
+            <td>そんなことが起きるなんて、想像する<strong>だに</strong>恐ろしい。<br><em>(Rien que d'imaginer qu'une telle chose puisse arriver, c'est terrifiant).</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜すら (sura)</strong></td>
+            <td>"Même" (Équivalent très soutenu et littéraire de さえ - sae). Indique qu'un cas extrême n'est pas rempli.</td>
+            <td>彼は自分の名前<strong>すら</strong>書けない。<br><em>(Il ne peut même pas écrire son propre nom).</em></td>
+          </tr>
+        </table>
+
+        <h3>4. Les causes formelles (C'est précisément parce que...)</h3>
+        <div class="example-box">
+          <p><strong>〜ばこそ (ba koso) :</strong> Met en lumière la raison unique et paradoxale d'un acte.</p>
+          <p><em>Ex: 愛していれ<strong>ばこそ</strong>、厳しく叱るのです。</em><br>(C'est précisément parce que je l'aime que je le gronde sévèrement).</p>
+          <br>
+          <p><strong>〜ゆえに (yue ni) :</strong> "En raison de". Très utilisé dans les dissertations académiques ou les démonstrations mathématiques.</p>
+          <p><em>Ex: 悪天候<strong>ゆえに</strong>、試合は中止となった。</em><br>(En raison du mauvais temps, le match a été annulé).</p>
+        </div>
       </div>`;
   }
 
