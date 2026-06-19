@@ -121,12 +121,18 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 
 .hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 300; background: var(--aka); border: none; border-radius: 8px; width: 42px; height: 42px; cursor: pointer; color: white; font-size: 20px; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 
-/* --- STYLES DES FLASHCARDS SRS --- */
+/* --- STYLES DES FLASHCARDS SRS (CORRIGÉ) --- */
 .fc-container { perspective: 1000px; width: 100%; max-width: 450px; margin: 30px auto; height: 280px; }
 .fc-card { width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; cursor: pointer; position: relative; }
 .fc-card.is-flipped { transform: rotateY(180deg); }
-.fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background: white; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid var(--sakura-pale); padding: 20px; text-align: center; }
-.fc-back { transform: rotateY(180deg); border-color: var(--sakura); background: var(--washi); }
+
+/* La règle d'or pour cacher le dos : ajout de -webkit- et top/left absolus */
+.fc-face { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background: white; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid var(--sakura-pale); padding: 20px; text-align: center; }
+
+/* La face avant est au-dessus (z-index: 2) */
+.fc-front { z-index: 2; transform: rotateY(0deg); }
+/* La face arrière est en-dessous (z-index: 1) et déjà tournée à 180° */
+.fc-back { transform: rotateY(180deg); border-color: var(--sakura); background: var(--washi); z-index: 1; }
 
 .fc-front-text { font-family: var(--font-jp); font-size: 80px; font-weight: bold; color: var(--sumi); line-height: 1; }
 .fc-back-jp { font-family: var(--font-jp); font-size: 24px; color: var(--sumi); margin-bottom: 10px; font-weight: bold; }
@@ -135,9 +141,9 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .srs-controls { display: none; gap: 15px; justify-content: center; margin-top: 30px; }
 .srs-btn { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: all 0.2s; max-width: 140px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .srs-btn:hover { transform: translateY(-2px); }
-.srs-btn.fail { background: #e74c3c; } /* Rouge : Raté */
-.srs-btn.hard { background: #f39c12; } /* Orange : Difficile */
-.srs-btn.easy { background: #2ecc71; } /* Vert : Facile */
+.srs-btn.fail { background: #e74c3c; } 
+.srs-btn.hard { background: #f39c12; } 
+.srs-btn.easy { background: #2ecc71; } 
 
 .flip-hint { text-align: center; color: #888; margin-top: 20px; font-size: 14px; animation: pulse 2s infinite; }
 @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }  
