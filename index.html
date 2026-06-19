@@ -172,6 +172,9 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-03')">3: Structure SOV</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-04')">4: Particules</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05')">5: Verbes (Masu)</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
       </div>
 
@@ -541,6 +544,87 @@ function loadContent(id) {
         <p>Pour préciser quand l'action se passe, ajoutez ces mots : 今日 (Aujourd'hui), 昨日 (Hier), 明日 (Demain), 毎日 (Tous les jours)[cite: 83].</p>
       </div>`;
   }
+  else if(id === 'cours-05-1') {
+    titleHeader.innerText = "Cours 5.1 : Les Adjectifs (い et な)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les deux familles d'adjectifs</h3>
+        <p>En japonais, les adjectifs se divisent en deux groupes stricts qui ne se conjuguent pas du tout de la même manière. Ils se placent toujours <strong>avant</strong> le nom qu'ils qualifient.</p>
+        
+        <h3>2. Les Adjectifs en い (i)</h3>
+        <p>Ils se terminent toujours par la syllabe い (i). Ils portent en eux-mêmes la notion de temps et de négation, c'est donc l'adjectif lui-même qui se conjugue, pas le verbe "être" !</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 高い (takai - grand/cher)</th></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>高いです (takai desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Remplacer le い par <strong>くないです (kunai desu)</strong></td><td>高<strong>くないです</strong> (taka<strong>kunai desu</strong>)</td></tr>
+          <tr><td>Passé affirmatif</td><td>Remplacer le い par <strong>かったです (katta desu)</strong></td><td>高<strong>かったです</strong> (taka<strong>katta desu</strong>)</td></tr>
+          <tr><td>Passé négatif</td><td>Remplacer le い par <strong>くなかったです (kunakatta desu)</strong></td><td>高<strong>くなかったです</strong> (taka<strong>kunakatta desu</strong>)</td></tr>
+        </table>
+        <div class="alert-box"><strong>Exception absolue :</strong> L'adjectif いい (ii - bon/bien) devient よくない (yokunai) au négatif et よかった (yokatta) au passé.</div>
+
+        <h3>3. Les Adjectifs en な (na)</h3>
+        <p>Ils fonctionnent comme des noms. Ils ne se conjuguent pas ; c'est le verbe "être" (desu) qui fait tout le travail de conjugaison. On utilise la particule "na" uniquement pour les relier à un nom.</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 静か (shizuka - calme)</th></tr>
+          <tr><td>Modification d'un nom</td><td>Ajouter な (na) + Nom</td><td>静か<strong>な</strong>部屋 (shizuka <strong>na</strong> heya - une chambre calme)</td></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>静かです (shizuka desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Adjectif + じゃありません (ja arimasen)</td><td>静か<strong>じゃありません</strong> (shizuka <strong>ja arimasen</strong>)</td></tr>
+          <tr><td>Passé affirmatif</td><td>Adjectif + でした (deshita)</td><td>静か<strong>でした</strong> (shizuka <strong>deshita</strong>)</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-05-2') {
+    titleHeader.innerText = "Cours 5.2 : Existence et Possession (あります / います)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Distinguer l'animé de l'inanimé</h3>
+        <p>Le verbe français "Il y a" ou "Avoir" se traduit par deux verbes distincts en japonais. Le choix dépend de la nature de l'objet ou du sujet.</p>
+        <ul>
+          <li><strong>あります (Arimasu) :</strong> Utilisé pour les objets inanimés et les plantes (livre, voiture, arbre, idée).</li>
+          <li><strong>います (Imasu) :</strong> Utilisé pour les êtres vivants doués de mouvement (humains, animaux).</li>
+        </ul>
+        
+        <h3>2. Structure grammaticale de l'existence</h3>
+        <p>Pour indiquer l'existence d'une chose dans un lieu, on utilise une structure stricte avec les particules に (ni) pour le lieu et が (ga) pour le sujet.</p>
+        <div class="example-box">
+          <p><strong>[Lieu] に [Sujet] が あります/います。</strong></p>
+          <p>部屋<strong>に</strong>机<strong>が</strong>あります。(Heya ni tsukue ga arimasu) ➔ Il y a un bureau dans la chambre.</p>
+          <p>庭<strong>に</strong>犬<strong>が</strong>います。(Niwa ni inu ga imasu) ➔ Il y a un chien dans le jardin.</p>
+        </div>
+
+        <h3>3. Exprimer la possession</h3>
+        <p>Ces mêmes verbes sont utilisés pour dire "J'ai...". Dans ce cas, on utilise la particule は (wa) pour le propriétaire.</p>
+        <div class="example-box">
+          <p>私<strong>は</strong>車<strong>が</strong>あります。(Watashi wa kuruma ga arimasu) ➔ J'ai une voiture.</p>
+          <p>私<strong>は</strong>兄弟<strong>が</strong>います。(Watashi wa kyōdai ga imasu) ➔ J'ai des frères et sœurs.</p>
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-05-3') {
+    titleHeader.innerText = "Cours 5.3 : Mots interrogatifs et Compteurs";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les mots interrogatifs essentiels (N5)</h3>
+        <p>En japonais, l'ordre des mots ne change pas quand on pose une question. On remplace simplement l'élément inconnu par le mot interrogatif et on ajoute か (ka) à la fin.</p>
+        <div class="vocab-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="vocab-card"><span class="vocab-jp">何</span><span class="vocab-fr">Nani / Nan (Quoi)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">誰</span><span class="vocab-fr">Dare (Qui)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">どこ</span><span class="vocab-fr">Doko (Où)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">いつ</span><span class="vocab-fr">Itsu (Quand)</span></div>
+        </div>
+
+        <h3>2. Le cauchemar des compteurs (助数詞 - Josūshi)</h3>
+        <p>On ne peut pas simplement dire "Deux cafés" ou "Trois chats". Il faut insérer un "compteur" spécifique à la forme ou la nature de l'objet compté. Le compteur se place <strong>après</strong> la particule.</p>
+        <table class="course-table">
+          <tr><th>Compteur</th><th>Utilisation</th><th>Exemple</th></tr>
+          <tr><td><strong>〜つ (tsu)</strong></td><td>Compteur générique universel pour les objets de petite taille ou abstraits (1: hitotsu, 2: futatsu, 3: mittsu...)</td><td>りんごを二<strong>つ</strong>買います。(J'achète deux pommes).</td></tr>
+          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (Exception : 1 personne = hitori, 2 personnes = futari)</td><td>学生が三<strong>人</strong>います。(Il y a trois étudiants).</td></tr>
+          <tr><td><strong>〜枚 (mai)</strong></td><td>Pour les objets plats et fins (feuilles, billets, t-shirts)</td><td>紙を五<strong>枚</strong>ください。(Cinq feuilles de papier SVP).</td></tr>
+          <tr><td><strong>〜本 (hon)</strong></td><td>Pour les objets longs et cylindriques (bouteilles, stylos, parapluies)</td><td>ペンが四<strong>本</strong>あります。(Il y a quatre stylos).</td></tr>
+          <tr><td><strong>〜匹 (hiki)</strong></td><td>Pour les petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。(Il y a deux chats).</td></tr>
+        </table>
+      </div>`;
+  }  
   else if(id === 'cours-06') {
     titleHeader.innerText = "Cours 06 : Kanjis du niveau N5";
     contentDiv.innerHTML = `
