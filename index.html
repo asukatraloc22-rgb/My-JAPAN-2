@@ -153,34 +153,69 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
     
     <nav class="sidebar-nav">
       
-      <button class="nav-item menu-toggle" onclick="toggleMenu('cours-menu')">
-        <span><span class="nav-icon">📚</span> Cours Complets</span>
-        <span class="chevron" id="chevron-cours-menu">▼</span>
-      </button>
+      <div class="nav-group-label">Apprentissage JLPT</div>
       
-      <div id="cours-menu" class="submenu" style="display: block;">
-        <div class="nav-group-label" style="padding: 8px 20px 4px 36px; opacity: 0.6;">Niveau N5</div>
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
+        <span><span class="nav-icon">🎓</span> JLPT N5 (Débutant)</span>
+        <span class="chevron" id="chevron-jlpt5-menu">▼</span>
+      </button>
+      <div id="jlpt5-menu" class="submenu" style="display: block;">
         <button class="nav-item sub-item active" onclick="loadContent('cours-01')">1: Hiragana</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-02')">2: Katakana</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-03')">3: Structure SOV</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-04')">4: Particules</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05')">5: Verbes (Masu)</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
-        
-        <div class="nav-group-label" style="padding: 12px 20px 4px 36px; opacity: 0.6; border-top: 1px solid rgba(255,255,255,0.05);">Niveau N4</div>
+      </div>
+
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
+        <span><span class="nav-icon">🗻</span> JLPT N4 (Élémentaire)</span>
+        <span class="chevron" id="chevron-jlpt4-menu" style="transform: rotate(-90deg);">▼</span>
+      </button>
+      <div id="jlpt4-menu" class="submenu" style="display: none;">
         <button class="nav-item sub-item" onclick="loadContent('cours-07')">7: Kanji N4</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Forme TE</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Forme NAI</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Forme TA</button>
       </div>
 
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
+        <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
+        <span class="chevron" id="chevron-jlpt3-menu" style="transform: rotate(-90deg);">▼</span>
+      </button>
+      <div id="jlpt3-menu" class="submenu" style="display: none;">
+        <button class="nav-item sub-item" onclick="loadContent('cours-11')">11: Kanji N3</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-12')">12: Passif & Causatif</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13')">13: Le Keigo (Politesse)</button>
+      </div>
+
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt2-menu')">
+        <span><span class="nav-icon">🚄</span> JLPT N2 (Avancé)</span>
+        <span class="chevron" id="chevron-jlpt2-menu" style="transform: rotate(-90deg);">▼</span>
+      </button>
+      <div id="jlpt2-menu" class="submenu" style="display: none;">
+        <button class="nav-item sub-item" onclick="loadContent('cours-14')">14: Kanji N2</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-15')">15: Grammaire N2</button>
+      </div>
+
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt1-menu')">
+        <span><span class="nav-icon">⛩️</span> JLPT N1 (Expert)</span>
+        <span class="chevron" id="chevron-jlpt1-menu" style="transform: rotate(-90deg);">▼</span>
+      </button>
+      <div id="jlpt1-menu" class="submenu" style="display: none;">
+        <button class="nav-item sub-item" onclick="loadContent('cours-16')">16: Kanji N1</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-17')">17: Grammaire Experte</button>
+      </div>
+
       <div class="sidebar-section-divider"></div>
       
+      <div class="nav-group-label">Pratique & Évaluation</div>
       <button class="nav-item" onclick="loadContent('exercices')"><span class="nav-icon">💪</span> Exercices</button>
       <button class="nav-item" onclick="loadContent('examens')"><span class="nav-icon">🎓</span> Examens JLPT</button>
       
       <div class="sidebar-section-divider"></div>
       
+      <div class="nav-group-label">Mon Compte</div>
       <button class="nav-item" onclick="loadContent('progression')"><span class="nav-icon">📈</span> Progression</button>
       <button class="nav-item" onclick="loadContent('parametres')"><span class="nav-icon">⚙️</span> Paramètres</button>
       
