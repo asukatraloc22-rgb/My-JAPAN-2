@@ -405,7 +405,20 @@ const KANJI_N3 = [
 ];
 
 const KANJI_N2 = [
-  {j:'識', on:'シキ', kun:'し.る', f:'Discernement'}, {j:'観', on:'カン', kun:'み.る', f:'Observer'}, {j:'察', on:'サツ', kun:'-', f:'Inspecter'}, {j:'判', on:'ハン', kun:'わか.る', f:'Juger'}, {j:'断', on:'ダン', kun:'ことわ.る', f:'Couper, Refuser'}, {j:'認', on:'ニン', kun:'みと.める', f:'Reconnaître'}, {j:'確', on:'カク', kun:'たし.か', f:'Certain, Sûr'}, {j:'想', on:'ソウ', kun:'おも.う', f:'Pensée'}, {j:'像', on:'ゾウ', kun:'-', f:'Image, Statue'}, {j:'現', on:'ゲン', kun:'あらわ.れる', f:'Apparaître'}
+  // Connaissance et Jugement
+  {j:'識', on:'シキ', kun:'し.る', f:'Discernement'}, {j:'観', on:'カン', kun:'み.る', f:'Observer'}, {j:'察', on:'サツ', kun:'-', f:'Inspecter'}, {j:'判', on:'ハン', kun:'わか.る', f:'Juger'}, {j:'断', on:'ダン', kun:'ことわ.る', f:'Couper, Refuser'}, {j:'認', on:'ニン', kun:'みと.める', f:'Reconnaître'}, {j:'確', on:'カク', kun:'たし.か', f:'Certain, Sûr'}, {j:'想', on:'ソウ', kun:'おも.う', f:'Pensée, Idée'}, {j:'像', on:'ゾウ', kun:'-', f:'Image, Statue'}, {j:'視', on:'シ', kun:'み.る', f:'Vision, Regarder'},
+
+  // Affaires et Économie
+  {j:'務', on:'ム', kun:'つと.める', f:'Tâche, Devoir'}, {j:'営', on:'エイ', kun:'いとな.む', f:'Gérer, Diriger'}, {j:'績', on:'セキ', kun:'-', f:'Exploit, Bilan'}, {j:'価', on:'カ', kun:'あたい', f:'Valeur, Prix'}, {j:'値', on:'チ', kun:'ね', f:'Prix, Valeur'}, {j:'額', on:'ガク', kun:'ひたい', f:'Montant, Front'}, {j:'割', on:'カツ', kun:'わ.る', f:'Diviser, Proportion'}, {j:'財', on:'ザイ', kun:'-', f:'Richesse, Fortune'}, {j:'産', on:'サン', kun:'う.む', f:'Produire, Accoucher'}, {j:'費', on:'ヒ', kun:'つい.やす', f:'Dépense'},
+
+  // Communication et Informations
+  {j:'報', on:'ホウ', kun:'むく.いる', f:'Rapport, Récompenser'}, {j:'告', on:'コク', kun:'つ.げる', f:'Annoncer'}, {j:'伝', on:'デン', kun:'つた.わる', f:'Transmettre'}, {j:'記', on:'キ', kun:'しる.す', f:'Chronique, Écrire'}, {j:'録', on:'ロク', kun:'-', f:'Enregistrer'}, {j:'議', on:'ギ', kun:'-', f:'Débat, Délibération'}, {j:'論', on:'ロン', kun:'-', f:'Théorie, Argument'}, {j:'述', on:'ジュツ', kun:'の.べる', f:'Mentionner, Déclarer'}, {j:'訳', on:'ヤク', kun:'わけ', f:'Raison, Traduction'}, {j:'刊', on:'カン', kun:'-', f:'Publier'},
+
+  // Société et Situations
+  {j:'態', on:'タイ', kun:'-', f:'Condition, État'}, {j:'状', on:'ジョウ', kun:'-', f:'Condition, Forme'}, {j:'況', on:'キョウ', kun:'-', f:'Situation'}, {j:'境', on:'キョウ', kun:'さかい', f:'Frontière, Milieu'}, {j:'防', on:'ボウ', kun:'ふせ.ぐ', f:'Défendre, Prévenir'}, {j:'守', on:'シュ', kun:'まも.る', f:'Protéger'}, {j:'救', on:'キュウ', kun:'すく.う', f:'Sauver'}, {j:'援', on:'エン', kun:'-', f:'Aider, Assister'}, {j:'護', on:'ゴ', kun:'-', f:'Protéger'}, {j:'武', on:'ブ, ム', kun:'-', f:'Militaire, Arme'},
+
+  // Évolution et Mouvement
+  {j:'達', on:'タツ', kun:'たち', f:'Atteindre, Pluriel'}, {j:'展', on:'テン', kun:'-', f:'Déployer, Étendre'}, {j:'導', on:'ドウ', kun:'みちび.く', f:'Guider'}, {j:'派', on:'ハ', kun:'-', f:'Faction, Groupe'}, {j:'過', on:'カ', kun:'す.ぎる', f:'Passer, Dépasser'}, {j:'程', on:'テイ', kun:'ほど', f:'Degré, Limite'}, {j:'歴', on:'レキ', kun:'-', f:'Parcours, Histoire'}, {j:'史', on:'シ', kun:'-', f:'Histoire'}, {j:'期', on:'キ', kun:'-', f:'Période, Attente'}, {j:'限', on:'ゲン', kun:'かぎ.る', f:'Limite'}
 ];
 
 const KANJI_N1 = [
@@ -924,23 +937,41 @@ function loadContent(id) {
     titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Comprendre la presse japonaise</h3>
-        <p>Le niveau N2 permet de lire des journaux et des documents professionnels. Les kanjis abordent des concepts intellectuels, de jugement et de perception avancée.</p>
+        <h3>Comprendre la presse et le monde professionnel</h3>
+        <p>Le JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le passeport pour travailler dans une entreprise japonaise.</p>
+        <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion d'entreprise, la justice et l'économie.</p>
       </div>
-      <div class="kana-section"><h4>Sélection de Kanji N2</h4>${generateKanjiGrid(KANJI_N2)}</div>`;
+      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(KANJI_N2)}</div>`;
   }
   else if(id === 'cours-15') {
-    titleHeader.innerText = "Cours 15 : Grammaire N2";
+    titleHeader.innerText = "Cours 15 : Grammaire N2 (Rigidité et Nuances)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Grammaire Professionnelle et Écrite</h3>
-        <p>La grammaire N2 remplace souvent des expressions basiques par des tournures plus rigides ou professionnelles.</p>
+        <h3>1. Le japonais formel (堅い表現 - Katai hyōgen)</h3>
+        <p>Le N2 est rempli de tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors de discours d'entreprise.</p>
         <table class="course-table">
           <tr><th>Expression N2</th><th>Sens / Équivalent basique</th><th>Exemple d'utilisation</th></tr>
           <tr><td><strong>〜に際して (ni saishite)</strong></td><td>À l'occasion de... (très formel)</td><td>ご案内に際して (À l'occasion de votre visite...)</td></tr>
-          <tr><td><strong>〜に違いない (ni chigainai)</strong></td><td>Il n'y a pas d'erreur, c'est certain</td><td>彼が犯人に違いない (Il est certain que c'est lui le coupable)</td></tr>
-          <tr><td><strong>〜つつある (tsutsu aru)</strong></td><td>Être en train de (remplace ~te imasu)</td><td>改善されつつある (C'est en cours d'amélioration)</td></tr>
+          <tr><td><strong>〜にあたって (ni atatte)</strong></td><td>Au moment de... (pour une occasion spéciale)</td><td>開会にあたって、一言ご挨拶申し上げます。(À l'occasion de l'ouverture, je voudrais dire un mot.)</td></tr>
+          <tr><td><strong>〜つつある (tsutsu aru)</strong></td><td>Être en train de (processus de changement)</td><td>景気は改善されつつある (L'économie est en cours d'amélioration)</td></tr>
         </table>
+
+        <h3>2. L'impossibilité psychologique ou de situation</h3>
+        <p>En N2, on n'utilise plus seulement le verbe "ne pas pouvoir" (dekinai), on ajoute des nuances pour expliquer <em>pourquoi</em> on ne peut pas. C'est très utile en clientèle.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Sens et Nuance</th><th>Exemple d'utilisation</th></tr>
+          <tr><td><strong>〜かねる (kaneru)</strong></td><td>Ne pas pouvoir (car la position ou la morale l'interdit). Utilisé pour refuser poliment.</td><td>そのご意見には賛成しかねます。(Je ne peux me résoudre à approuver cette opinion.)</td></tr>
+          <tr><td><strong>〜ざるを得ない (zaru o enai)</strong></td><td>Être obligé de... (malgré soi). On n'a pas d'autre choix.</td><td>予定を変更せざるを得ない。(Nous sommes obligés de modifier le programme.)</td></tr>
+        </table>
+
+        <h3>3. L'affirmation forte et la conviction</h3>
+        <div class="example-box">
+          <p><strong>〜に違いない (ni chigainai) :</strong> "Il est certain que / Il n'y a pas d'erreur, c'est..."<br>
+          <em>Ex: 犯人は彼に違いない。(Il est certain que c'est lui le coupable).</em></p>
+          <br>
+          <p><strong>〜に決まっている (ni kimatte iru) :</strong> "Il est évident que / C'est couru d'avance". Plus subjectif et oral que chigainai.<br>
+          <em>Ex: そんなの嘘に決まっている！ (C'est évident que c'est un mensonge !).</em></p>
+        </div>
       </div>`;
   }
 
