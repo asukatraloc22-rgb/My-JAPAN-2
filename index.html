@@ -121,6 +121,26 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 
 .hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 300; background: var(--aka); border: none; border-radius: 8px; width: 42px; height: 42px; cursor: pointer; color: white; font-size: 20px; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 
+/* --- STYLES DES FLASHCARDS SRS --- */
+.fc-container { perspective: 1000px; width: 100%; max-width: 450px; margin: 30px auto; height: 280px; }
+.fc-card { width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; cursor: pointer; position: relative; }
+.fc-card.is-flipped { transform: rotateY(180deg); }
+.fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background: white; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid var(--sakura-pale); padding: 20px; text-align: center; }
+.fc-back { transform: rotateY(180deg); border-color: var(--sakura); background: var(--washi); }
+
+.fc-front-text { font-family: var(--font-jp); font-size: 80px; font-weight: bold; color: var(--sumi); line-height: 1; }
+.fc-back-jp { font-family: var(--font-jp); font-size: 24px; color: var(--sumi); margin-bottom: 10px; font-weight: bold; }
+.fc-back-fr { font-size: 18px; color: var(--aka); font-weight: bold; border-top: 1px dashed rgba(188,0,45,0.2); padding-top: 10px; margin-top: 5px; width: 80%; }
+
+.srs-controls { display: none; gap: 15px; justify-content: center; margin-top: 30px; }
+.srs-btn { flex: 1; padding: 14px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; transition: all 0.2s; max-width: 140px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.srs-btn:hover { transform: translateY(-2px); }
+.srs-btn.fail { background: #e74c3c; } /* Rouge : Raté */
+.srs-btn.hard { background: #f39c12; } /* Orange : Difficile */
+.srs-btn.easy { background: #2ecc71; } /* Vert : Facile */
+
+.flip-hint { text-align: center; color: #888; margin-top: 20px; font-size: 14px; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }  
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
   .sidebar.open{ transform:none; }
@@ -1054,27 +1074,83 @@ function loadContent(id) {
         <h3>Choisissez votre exercice</h3>
         <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" style="padding: 24px;">
+          
+          <!-- BOUTON FLASHCARDS ACTIF -->
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
-            <span class="vocab-jp" style="font-size: 18px;">Flashcards</span>
-            <span class="vocab-fr">Révisez par catégorie (Kana, Vocabulaire, Kanji)</span>
+            <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
+            <span class="vocab-fr">Algorithme de répétition espacée</span>
           </div>
-          <div class="vocab-card" style="padding: 24px;">
+          
+          <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
             <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
-            <span class="vocab-fr">Pratiquez la grammaire et les particules</span>
+            <span class="vocab-fr">Bientôt disponible</span>
           </div>
-          <div class="vocab-card" style="padding: 24px;">
-            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">❓</span>
-            <span class="vocab-jp" style="font-size: 18px;">Q&A Rapide</span>
-            <span class="vocab-fr">Questions chronométrées pour la fluidité</span>
+          <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏗️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Constructeur SOV</span>
+            <span class="vocab-fr">Bientôt disponible</span>
           </div>
-          <div class="vocab-card" style="padding: 24px;">
-            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏆</span>
-            <span class="vocab-jp" style="font-size: 18px;">Test Global</span>
-            <span class="vocab-fr">Évaluation complète de votre niveau</span>
+          <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎧</span>
+            <span class="vocab-jp" style="font-size: 18px;">Dictée Aveugle</span>
+            <span class="vocab-fr">Bientôt disponible</span>
           </div>
         </div>
+      </div>`;
+  }
+  else if(id === 'flashcards-menu') {
+    titleHeader.innerText = "Configuration du Paquet";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Que voulez-vous réviser aujourd'hui ?</h3>
+        <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startFlashcards('kana')">
+            <span class="vocab-jp">あ / ア</span>
+            <span class="vocab-fr">Tous les Kanas (Hiragana + Katakana)</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji5')">
+            <span class="vocab-jp">N5</span>
+            <span class="vocab-fr">Kanjis Débutant (~100 cartes)</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji4')">
+            <span class="vocab-jp">N4</span>
+            <span class="vocab-fr">Kanjis Élémentaire (~160 cartes)</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji3')">
+            <span class="vocab-jp">N3</span>
+            <span class="vocab-fr">Kanjis Intermédiaire (~120 cartes)</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'flashcards-run') {
+    titleHeader.innerText = "Entraînement SRS en cours...";
+    contentDiv.innerHTML = `
+      <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+        
+        <div class="fc-container" onclick="flipFlashcard()">
+          <div class="fc-card" id="fc-card-element">
+            <div class="fc-face fc-front">
+              <span class="fc-front-text" id="fc-front-text">語</span>
+            </div>
+            <div class="fc-face fc-back">
+              <span class="fc-back-jp" id="fc-back-jp">ゴ</span>
+              <span class="fc-back-fr" id="fc-back-fr">Langue</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flip-hint" id="flip-hint">Cliquez sur la carte pour la retourner</div>
+        
+        <div class="srs-controls" id="srs-controls">
+          <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
+          <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
+          <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
+        </div>
+        
       </div>`;
   }
   else if(id === 'examens') {
@@ -1141,6 +1217,94 @@ function loadContent(id) {
   }
 }
 
+/* ─── MOTEUR SRS (FLASHCARDS) ─── */
+let activeDeck = [];
+let currentCard = null;
+
+// Initialise un paquet de cartes
+function startFlashcards(deckType) {
+  let sourceData = [];
+  
+  if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
+  else if(deckType === 'kanji5') sourceData = KANJI_N5;
+  else if(deckType === 'kanji4') sourceData = KANJI_N4;
+  else if(deckType === 'kanji3') sourceData = KANJI_N3;
+  
+  // Prépare les cartes avec les variables de l'algorithme
+  activeDeck = sourceData.map(item => ({
+    jp: item.j,
+    reading: item.on ? `ON: ${item.on}<br>KUN: ${item.kun}` : item.r,
+    meaning: item.f || 'Syllabe',
+    rep: 0 // Nombre de répétitions réussies
+  }));
+  
+  // Mélange aléatoire (Fisher-Yates)
+  for (let i = activeDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+  }
+  
+  loadContent('flashcards-run');
+  nextFlashcard();
+}
+
+function nextFlashcard() {
+  const area = document.getElementById('flashcard-area');
+  
+  if(activeDeck.length === 0) {
+    area.innerHTML = `
+      <div style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🎉</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Session Terminée !</h3>
+        <p>Excellent travail. L'algorithme a validé toutes vos cartes pour aujourd'hui.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+  
+  currentCard = activeDeck.shift(); // Prend la première carte de la file
+  
+  document.getElementById('fc-front-text').innerText = currentCard.jp;
+  document.getElementById('fc-back-jp').innerHTML = currentCard.reading;
+  document.getElementById('fc-back-fr').innerText = currentCard.meaning;
+  
+  // Réinitialise l'interface
+  document.getElementById('fc-card-element').classList.remove('is-flipped');
+  document.getElementById('srs-controls').style.display = 'none';
+  document.getElementById('flip-hint').style.display = 'block';
+}
+
+function flipFlashcard() {
+  const card = document.getElementById('fc-card-element');
+  if(card.classList.contains('is-flipped')) return; // Déjà retournée
+  
+  card.classList.add('is-flipped');
+  document.getElementById('flip-hint').style.display = 'none';
+  document.getElementById('srs-controls').style.display = 'flex';
+  
+  speak(currentCard.jp); // Prononce le mot au moment où on retourne
+}
+
+// Algorithme d'évaluation
+function answerCard(quality) {
+  // quality : 0 (Raté), 1 (Difficile), 2 (Facile)
+  if(quality === 0) {
+    // Si raté, on remet la carte dans le paquet (à quelques cartes de distance)
+    currentCard.rep = 0;
+    const insertIndex = Math.min(activeDeck.length, 3); // La revoir très vite
+    activeDeck.splice(insertIndex, 0, currentCard);
+  } 
+  else if(quality === 1) {
+    // Si difficile, on la remet à la toute fin du paquet
+    currentCard.rep++;
+    activeDeck.push(currentCard);
+  }
+  else {
+    // Si facile, la carte est validée pour la session, elle n'est pas remise dans le paquet
+    currentCard.rep++;
+  }
+  nextFlashcard();
+}  
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
