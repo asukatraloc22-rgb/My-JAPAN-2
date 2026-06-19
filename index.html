@@ -1545,10 +1545,8 @@ function nextQuizQuestion() {
       bg.appendChild(s);
     }
   }
+
   // Lance le premier cours après un court délai pour être sûr que le DOM est prêt
-  setTimeout(() => loadContent('cours-01'), 100);
-})();
-// Lancement de l'application
   setTimeout(() => loadContent('cours-01'), 100);
 
   // ENREGISTREMENT DU SERVICE WORKER (Mode Hors Ligne)
@@ -1559,7 +1557,7 @@ function nextQuizQuestion() {
           console.log('ServiceWorker enregistré avec succès !', registration.scope);
         })
         .catch(error => {
-          console.log('Échec de l\'enregistrement du ServiceWorker :', error);
+          console.log('Échec de l\\'enregistrement du ServiceWorker :', error);
         });
     });
   }
