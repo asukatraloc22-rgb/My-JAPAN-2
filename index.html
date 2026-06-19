@@ -30,7 +30,8 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 /* LAYOUT PRINCIPAL */
 .app-shell { display: flex; min-height: 100vh; width: 100%; }
 .sidebar { width: 280px; flex-shrink: 0; background: linear-gradient(180deg, #2a0000 0%, #4a0000 50%, #6e0000 100%); position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; overflow-x: hidden; z-index: 200; display: flex; flex-direction: column; box-shadow: 4px 0 25px rgba(0,0,0,0.4); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-/* --- STYLES SIDEBAR RÉDUITE (CORRIGÉ) --- */
+
+/* SIDEBAR RÉDUITE */
 .sidebar.collapsed { width: 70px; }
 .sidebar.collapsed .jp-title, 
 .sidebar.collapsed .sub, 
@@ -38,10 +39,8 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .sidebar.collapsed .chevron { display: none !important; }
 .sidebar.collapsed .sidebar-logo { padding: 24px 10px; justify-content: center; }
 .sidebar.collapsed .logo-svg { width: 32px; height: 32px; }
-/* Rend le texte transparent mais garde l'icône visible */
 .sidebar.collapsed .nav-item { justify-content: center !important; padding: 14px 0 !important; color: transparent !important; }
 .sidebar.collapsed .nav-item .nav-icon { margin: 0; font-size: 22px; color: rgba(255,255,255,0.85) !important; }
-/* Force la fermeture des sous-menus pour ne garder que les icônes principales */
 .sidebar.collapsed .submenu { display: none !important; }
 
 .toggle-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 300; font-size: 12px; }
@@ -103,6 +102,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .card p { font-size: 15.5px; line-height: 1.8; color: #333; margin-bottom: 16px; }
 .card ul { margin-left: 20px; margin-bottom: 16px; line-height: 1.8; color: #333; }
 .card li { margin-bottom: 6px; }
+.example-box { background: var(--kinari); border-left: 4px solid var(--aka); padding: 16px 20px; margin: 16px 0; border-radius: 0 8px 8px 0; }
 
 .course-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14.5px; background: white; }
 .course-table th { background: var(--sakura-pale); color: var(--aka); padding: 14px; text-align: left; border: 1px solid rgba(188,0,45,.15); font-family: var(--font-title); }
@@ -159,7 +159,6 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
     </div>
     
     <nav class="sidebar-nav">
-      
       <div class="nav-group-label">Apprentissage JLPT</div>
       
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
@@ -172,9 +171,6 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-03')">3: Structure SOV</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-04')">4: Particules</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05')">5: Verbes (Masu)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
@@ -194,7 +190,6 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
       </div>
 
-      <!-- MENU N3 : INTERMÉDIAIRE -->
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
         <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
         <span class="chevron" id="chevron-jlpt3-menu" style="transform: rotate(-90deg);">▼</span>
@@ -286,7 +281,7 @@ function createPetal() {
 }
 setInterval(createPetal, 300);
 
-/* ─── DATA KANA (Format sécurisé multilignes) ──────────────── */
+/* ─── DATA KANA ────────────────────────────────────────────── */
 const HIRAGANA_BASE = [
   {j:'あ',r:'a'},{j:'い',r:'i'},{j:'う',r:'u'},{j:'え',r:'e'},{j:'お',r:'o'},
   {j:'か',r:'ka'},{j:'き',r:'ki'},{j:'く',r:'ku'},{j:'け',r:'ke'},{j:'こ',r:'ko'},
@@ -315,7 +310,7 @@ const HIRAGANA_YOON = [
   {j:'ちゃ',r:'cha'}, {j:'ちゅ',r:'chu'}, {j:'ちょ',r:'cho'},
   {j:'にゃ',r:'nya'}, {j:'にゅ',r:'nyu'}, {j:'にょ',r:'nyo'},
   {j:'ひゃ',r:'hya'}, {j:'ひゅ',r:'hyu'}, {j:'ひょ',r:'hyo'},
-  {j:'みゃ',r:'mya'}, {j:'みゅ',r:'myu'}, {j:'みょ',r:'myo'},
+  {j:'みゃ',r:'mya'}, {j:'ミュ',r:'myu'}, {j:'みょ',r:'myo'},
   {j:'りゃ',r:'rya'}, {j:'りゅ',r:'ryu'}, {j:'りょ',r:'ryo'},
   {j:'ぎゃ',r:'gya'}, {j:'ぎゅ',r:'gyu'}, {j:'ぎょ',r:'gyo'},
   {j:'じゃ',r:'ja'}, {j:'じゅ',r:'ju'}, {j:'じょ',r:'jo'},
@@ -359,7 +354,7 @@ const KATAKANA_YOON = [
   {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
 ];
 
-/* ─── DATA KANJI COMPLÈTE N5 & N4 ────────────────────────── */
+/* ─── DATA KANJI COMPLÈTE N5 À N1 ────────────────────────── */
 const KANJI_N5 = [
   {j:'一', on:'イチ', kun:'ひと', f:'Un'}, {j:'二', on:'ニ', kun:'ふた', f:'Deux'}, {j:'三', on:'サン', kun:'み', f:'Trois'}, {j:'四', on:'シ', kun:'よん', f:'Quatre'}, {j:'五', on:'ゴ', kun:'いつ', f:'Cinq'}, {j:'六', on:'ロク', kun:'む', f:'Six'}, {j:'七', on:'シチ', kun:'なな', f:'Sept'}, {j:'八', on:'ハチ', kun:'や', f:'Huit'}, {j:'九', on:'キュウ', kun:'ここの', f:'Neuf'}, {j:'十', on:'ジュウ', kun:'とお', f:'Dix'}, {j:'百', on:'ヒャク', kun:'もも', f:'Cent'}, {j:'千', on:'セン', kun:'ち', f:'Mille'}, {j:'万', on:'マン', kun:'よろず', f:'Dix-mille'},
   {j:'日', on:'ニチ', kun:'ひ', f:'Jour, Soleil'}, {j:'月', on:'ゲツ', kun:'つき', f:'Lune, Mois'}, {j:'火', on:'カ', kun:'ひ', f:'Feu'}, {j:'水', on:'スイ', kun:'みず', f:'Eau'}, {j:'木', on:'モク', kun:'き', f:'Bois'}, {j:'金', on:'キン', kun:'かね', f:'Or'}, {j:'土', on:'ド', kun:'つち', f:'Terre'},
@@ -371,82 +366,26 @@ const KANJI_N5 = [
   {j:'山', on:'サン', kun:'やま', f:'Montagne'}, {j:'川', on:'セン', kun:'かわ', f:'Rivière'}, {j:'空', on:'クウ', kun:'そら', f:'Ciel'}, {j:'気', on:'キ', kun:'-', f:'Esprit, Air'}, {j:'雨', on:'ウ', kun:'あめ', f:'Pluie'}, {j:'電', on:'デン', kun:'-', f:'Électricité'}, {j:'車', on:'シャ', kun:'くるま', f:'Voiture'}, {j:'学', on:'ガク', kun:'まな.ぶ', f:'Étudier'}, {j:'校', on:'コウ', kun:'-', f:'École'}, {j:'語', on:'ゴ', kun:'-', f:'Langue'}, {j:'本', on:'ホン', kun:'もと', f:'Livre'}
 ];
 
-/* ─── BASE DE DONNÉES KANJI N3 ─── */
-const KANJI_N3 = [
-  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'},
-  {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'},
-  {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'},
-  {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'},
-  {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'},
-  {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'},
-  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'},
-  {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'},
-  {j:'決', on:'ケツ', kun:'き.める', f:'Décider'},
-  {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
-  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer, Économie'},
-  {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'},
-  {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'},
-  {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'},
-  {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'},
-  {j:'原', on:'ゲン', kun:'はら', f:'Origine, Plaine'},
-  {j:'因', on:'イン', kun:'よ.る', f:'Cause'},
-  {j:'求', on:'キュウ', kun:'もと.める', f:'Demander, Exiger'},
-  {j:'受', on:'ジュ', kun:'う.ける', f:'Recevoir'},
-  {j:'辞', on:'ジ', kun:'や.める', f:'Démissionner, Mot'},
-  {j:'関', on:'カン', kun:'せき', f:'Lien, Barrière'},
-  {j:'係', on:'ケイ', kun:'かか.る', f:'Relation, Préposé'},
-  {j:'役', on:'ヤク', kun:'-', f:'Rôle, Service'},
-  {j:'投', on:'トウ', kun:'な.げる', f:'Jeter, Lancer'},
-  {j:'打', on:'ダ', kun:'う.つ', f:'Frapper'},
-  {j:'勝', on:'ショウ', kun:'か.つ', f:'Gagner'},
-  {j:'負', on:'フ', kun:'ま.ける', f:'Perdre'},
-  {j:'残', on:'ザン', kun:'のこ.る', f:'Rester, Laisser'},
-  {j:'念', on:'ネン', kun:'-', f:'Pensée, Regret'},
-  {j:'苦', on:'ク', kun:'くる.しい', f:'Souffrance, Amer'}
+const KANJI_N4 = [
+  {j:'会', on:'カイ', kun:'あ.う', f:'Se rencontrer'}, {j:'同', on:'ドウ', kun:'おな.じ', f:'Même'}, {j:'事', on:'ジ', kun:'こと', f:'Chose'}, {j:'自', on:'ジ', kun:'みずか.ら', f:'Soi-même'}, {j:'社', on:'シャ', kun:'やしろ', f:'Société'}, {j:'発', on:'ハツ', kun:'-', f:'Émettre'}, {j:'者', on:'シャ', kun:'もの', f:'Personne'}, {j:'地', on:'チ', kun:'-', f:'Terrain'}, {j:'業', on:'ギョウ', kun:'わざ', f:'Profession'}, {j:'方', on:'ホウ', kun:'かた', f:'Direction'}, 
+  {j:'新', on:'シン', kun:'あたら.しい', f:'Nouveau'}, {j:'場', on:'ジョウ', kun:'ば', f:'Endroit'}, {j:'員', on:'イン', kun:'-', f:'Membre'}, {j:'開', on:'カイ', kun:'あ.く', f:'Ouvrir'}, {j:'力', on:'リョク', kun:'ちから', f:'Force'}, {j:'問', on:'モン', kun:'と.う', f:'Question'}, {j:'代', on:'ダイ', kun:'か.わる', f:'Remplacer'}, {j:'明', on:'メイ', kun:'あか.るい', f:'Clair'}, {j:'動', on:'ドウ', kun:'うご.く', f:'Bouger'}, {j:'京', on:'キョウ', kun:'みやこ', f:'Capitale'}, 
+  {j:'通', on:'ツウ', kun:'とお.る', f:'Passer'}, {j:'言', on:'ゲン', kun:'い.う', f:'Dire'}, {j:'理', on:'リ', kun:'-', f:'Raison'}, {j:'体', on:'タイ', kun:'からだ', f:'Corps'}, {j:'田', on:'デン', kun:'た', f:'Rizière'}, {j:'作', on:'サク', kun:'つく.る', f:'Fabriquer'}, {j:'用', on:'ヨウ', kun:'もち.いる', f:'Utiliser'}, {j:'強', on:'キョウ', kun:'つよ.い', f:'Fort'}, {j:'公', on:'コウ', kun:'おおやけ', f:'Public'}, {j:'野', on:'ヤ', kun:'の', f:'Champ'},
+  {j:'思', on:'シ', kun:'おも.う', f:'Penser'}, {j:'家', on:'カ', kun:'いえ', f:'Maison'}, {j:'起', on:'キ', kun:'お.きる', f:'Se lever'}, {j:'歩', on:'ホ', kun:'ある.く', f:'Marcher'}, {j:'待', on:'タイ', kun:'ま.つ', f:'Attendre'}, {j:'知', on:'チ', kun:'し.る', f:'Savoir'}, {j:'売', on:'バイ', kun:'う.る', f:'Vendre'}, {j:'着', on:'チャク', kun:'き.る', f:'Porter'}, {j:'乗', on:'ジョウ', kun:'の.る', f:'Monter'}, {j:'答', on:'トウ', kun:'こた.え', f:'Répondre'},
+  {j:'夜', on:'ヤ', kun:'よる', f:'Nuit'}, {j:'朝', on:'チョウ', kun:'あさ', f:'Matin'}, {j:'昼', on:'チュウ', kun:'ひる', f:'Midi'}, {j:'春', on:'シュン', kun:'はる', f:'Printemps'}, {j:'夏', on:'カ', kun:'なつ', f:'Été'}, {j:'秋', on:'シュウ', kun:'あき', f:'Automne'}, {j:'冬', on:'トウ', kun:'ふゆ', f:'Hiver'}, {j:'花', on:'カ', kun:'はな', f:'Fleur'}, {j:'海', on:'カイ', kun:'うみ', f:'Mer'}, {j:'風', on:'フウ', kun:'かぜ', f:'Vent'},
+  {j:'音', on:'オン', kun:'おと', f:'Son'}, {j:'楽', on:'ガク', kun:'たの.しい', f:'Musique'}, {j:'歌', on:'カ', kun:'うた', f:'Chanson'}, {j:'画', on:'ガ', kun:'-', f:'Image'}, {j:'紙', on:'シ', kun:'かみ', f:'Papier'}, {j:'映', on:'エイ', kun:'うつ.す', f:'Projeter'}, {j:'急', on:'キュウ', kun:'いそ.ぐ', f:'Dépêcher'}, {j:'教', on:'キョウ', kun:'おし.える', f:'Enseigner'}, {j:'黒', on:'コク', kun:'くろ', f:'Noir'}, {j:'茶', on:'チャ', kun:'-', f:'Thé'}
 ];
 
-/* ─── NOUVELLES BASES DE DONNÉES JLPT N3, N2, N1 ─── */
 const KANJI_N3 = [
-  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'},
-  {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'},
-  {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'},
-  {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'},
-  {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'},
-  {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'},
-  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'},
-  {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'},
-  {j:'決', on:'ケツ', kun:'き.める', f:'Décider'},
-  {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
-  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer (temps), Économie'},
-  {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'},
-  {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'},
-  {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'},
-  {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'}
+  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'}, {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'}, {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'}, {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'}, {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'}, {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'}, {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'}, {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'}, {j:'決', on:'ケツ', kun:'き.める', f:'Décider'}, {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
+  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer (temps)'}, {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'}, {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'}, {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'}, {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'}
 ];
 
 const KANJI_N2 = [
-  {j:'識', on:'シキ', kun:'し.る', f:'Discernement'},
-  {j:'観', on:'カン', kun:'み.る', f:'Observer'},
-  {j:'察', on:'サツ', kun:'-', f:'Deviner, Inspecter'},
-  {j:'判', on:'ハン', kun:'わか.る', f:'Juger'},
-  {j:'断', on:'ダン', kun:'ことわ.る', f:'Couper, Refuser'},
-  {j:'認', on:'ニン', kun:'みと.める', f:'Reconnaître'},
-  {j:'確', on:'カク', kun:'たし.か', f:'Certain, Sûr'},
-  {j:'想', on:'ソウ', kun:'おも.う', f:'Idée, Pensée'},
-  {j:'像', on:'ゾウ', kun:'-', f:'Statue, Image'},
-  {j:'現', on:'ゲン', kun:'あらわ.れる', f:'Apparaître, Présent'}
+  {j:'識', on:'シキ', kun:'し.る', f:'Discernement'}, {j:'観', on:'カン', kun:'み.る', f:'Observer'}, {j:'察', on:'サツ', kun:'-', f:'Inspecter'}, {j:'判', on:'ハン', kun:'わか.る', f:'Juger'}, {j:'断', on:'ダン', kun:'ことわ.る', f:'Couper, Refuser'}, {j:'認', on:'ニン', kun:'みと.める', f:'Reconnaître'}, {j:'確', on:'カク', kun:'たし.か', f:'Certain, Sûr'}, {j:'想', on:'ソウ', kun:'おも.う', f:'Pensée'}, {j:'像', on:'ゾウ', kun:'-', f:'Image, Statue'}, {j:'現', on:'ゲン', kun:'あらわ.れる', f:'Apparaître'}
 ];
 
 const KANJI_N1 = [
-  {j:'響', on:'キョウ', kun:'ひび.く', f:'Résonner, Écho'},
-  {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris'},
-  {j:'嘆', on:'タン', kun:'なげ.く', f:'Soupirer, Déplorer'},
-  {j:'慰', on:'イ', kun:'なぐさ.める', f:'Consoler'},
-  {j:'躍', on:'ヤク', kun:'おど.る', f:'Sauter, Bondir'},
-  {j:'輝', on:'キ', kun:'かがや.く', f:'Briller'},
-  {j:'瞬', on:'シュン', kun:'またた.く', f:'Cligner, Instant'},
-  {j:'魅', on:'ミ', kun:'みせ.る', f:'Fasciner'},
-  {j:'嫌', on:'ケン', kun:'きら.う', f:'Détester'}
+  {j:'響', on:'キョウ', kun:'ひび.く', f:'Résonner, Écho'}, {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris'}, {j:'嘆', on:'タン', kun:'なげ.く', f:'Soupirer, Déplorer'}, {j:'慰', on:'イ', kun:'なぐさ.める', f:'Consoler'}, {j:'躍', on:'ヤク', kun:'おど.る', f:'Sauter, Bondir'}, {j:'輝', on:'キ', kun:'かがや.く', f:'Briller'}, {j:'瞬', on:'シュン', kun:'またた.く', f:'Cligner, Instant'}, {j:'魅', on:'ミ', kun:'みせ.る', f:'Fasciner'}, {j:'嫌', on:'ケン', kun:'きら.う', f:'Détester'}
 ];
 
 /* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
@@ -475,7 +414,6 @@ function loadContent(id) {
   const titleHeader = document.getElementById('page-title');
   if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
   
-  // Highlight actif dans la sidebar
   document.querySelectorAll('.sub-item, .nav-item').forEach(btn => btn.classList.remove('active'));
   const activeBtn = Array.from(document.querySelectorAll('.sub-item, .nav-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
   if(activeBtn) activeBtn.classList.add('active');
@@ -486,14 +424,13 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. L'Alphabet Phonétique Natif</h3>
-        <p>Les hiragana sont la base absolue du japonais[cite: 319]. Ils vous permettent de lire sans rōmaji et d'accéder aux <em>furigana</em> (aides de lecture)[cite: 321]. Chaque caractère = 1 consonne + 1 voyelle, sauf <strong>ん (n)</strong> qui est la seule consonne seule[cite: 333].</p>
-        
+        <p>Les hiragana sont la base absolue du japonais. Ils vous permettent de lire sans rōmaji et d'accéder aux <em>furigana</em>. Chaque caractère = 1 consonne + 1 voyelle, sauf <strong>ん (n)</strong>.</p>
         <h3>2. Sons modifiés et combinés</h3>
         <ul>
-          <li><strong>Sons voicés :</strong> L'ajout de <em>dakuten</em> (") ou <em>handakuten</em> (°) modifie le son d'une syllabe (ex: KA か devient GA が)[cite: 337].</li>
-          <li><strong>Yōon :</strong> Les petites syllabes <em>ya, yu, yo</em> (や, ゆ, よ) fusionnent avec le son précédent pour créer de nouveaux sons (ex: <em>kya, shu, cho</em>)[cite: 353, 354, 356].</li>
+          <li><strong>Sons voicés :</strong> L'ajout de <em>dakuten</em> (") ou <em>handakuten</em> (°) modifie le son d'une syllabe.</li>
+          <li><strong>Yōon :</strong> Les petites syllabes <em>ya, yu, yo</em> fusionnent avec le son précédent.</li>
         </ul>
-        <div class="alert-box"><strong>À savoir :</strong> Le petit tsu (っ) double la consonne suivante (ex: きって - kitte)[cite: 359]. Les particules は se prononce "wa", et を se prononce "o"[cite: 359].</div>
+        <div class="alert-box"><strong>À savoir :</strong> Le petit tsu (っ) double la consonne suivante. Les particules は se prononce "wa", et を se prononce "o".</div>
       </div>
       <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
       <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>
@@ -504,24 +441,23 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Les mots étrangers (Gairaigo)</h3>
-        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères (<em>gairaigo</em>) et les onomatopées[cite: 218]. Le japonais adapte ces mots à sa propre phonétique[cite: 305].</p>
-        
+        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères et les onomatopées.</p>
         <h3>2. Pièges et Astuces</h3>
         <ul>
-          <li><strong>Tiret d'allongement (ー) :</strong> Il allonge la voyelle précédente (ex: コーヒー - kō-hī)[cite: 300].</li>
-          <li><strong>Différences visuelles :</strong> Attention aux paires qui se ressemblent beaucoup ! ツ (tsu) s'écrit de haut en bas, tandis que シ (shi) s'écrit de gauche à droite[cite: 299]. Même chose pour ソ (so) et ン (n)[cite: 298].</li>
+          <li><strong>Tiret d'allongement (ー) :</strong> Il allonge la voyelle précédente (ex: コーヒー - kō-hī).</li>
+          <li><strong>Différences visuelles :</strong> Attention aux paires qui se ressemblent beaucoup ! ツ (tsu) s'écrit de haut en bas, tandis que シ (shi) s'écrit de gauche à droite.</li>
         </ul>
       </div>
       <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
       <div class="kana-section"><h4>Dakuten & Handakuten</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>
       <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(KATAKANA_YOON)}</div>`;
   }
-else if(id === 'cours-03') {
+  else if(id === 'cours-03') {
     titleHeader.innerText = "Cours 03 : Structure SOV & La Copule";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le Verbe à la fin (Règle d'or)</h3>
-        <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>[cite: 5]. Le verbe est TOUJOURS placé à la toute fin de la phrase[cite: 5]. C'est la seule règle absolue, le reste peut être déplacé grâce aux particules[cite: 5].</p>
+        <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>. Le verbe est TOUJOURS placé à la toute fin de la phrase.</p>
         
         <h3>2. La Copule です (Le verbe "Être")</h3>
         <p>Pour dire "A est B", on utilise "A wa B desu". <strong>です (desu)</strong> se place à la fin et se conjugue pour exprimer le temps et la négation :</p>
@@ -532,12 +468,6 @@ else if(id === 'cours-03') {
           <tr><td>Passé affirmatif</td><td><strong>〜でした</strong> (deshita)</td><td>猫でした (neko deshita)</td></tr>
           <tr><td>Passé négatif</td><td><strong>〜じゃありませんでした</strong> (ja arimasen deshita)</td><td>猫じゃありませんでした (neko ja arimasen deshita)</td></tr>
         </table>
-
-        <h3>3. Négation, Question et Omission</h3>
-        <ul>
-          <li><strong>Omission :</strong> Le sujet est souvent omis s'il est clair dans le contexte[cite: 5].</li>
-          <li><strong>Question :</strong> On ajoute simplement <strong>か (ka)</strong> à la fin de la phrase, sans changer l'ordre des mots[cite: 5].</li>
-        </ul>
       </div>`;
   }
   else if(id === 'cours-04') {
@@ -545,20 +475,18 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le rôle des particules</h3>
-        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom ou pronom[cite: 4]. Elles définissent le rôle grammatical du mot précédent[cite: 4]. Sans elles, la phrase japonaise est incompréhensible[cite: 4].</p>
-        
-        <h3>2. Les 9 particules fondamentales du N5</h3>
+        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom ou pronom. Elles définissent le rôle grammatical du mot précédent.</p>
         <table class="course-table">
           <tr><th>Particule</th><th>Rôle principal</th><th>Exemple</th></tr>
-          <tr><td><strong>は (wa)</strong></td><td>Thème (Ce dont on parle)[cite: 4].</td><td>私<strong>は</strong>学生です (Je suis étudiant)[cite: 4].</td></tr>
-          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau / Emphase[cite: 4].</td><td>猫<strong>が</strong>います (Il y a un chat)[cite: 4].</td></tr>
-          <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct[cite: 4].</td><td>すし<strong>を</strong>食べます (Je mange des sushis)[cite: 4].</td></tr>
-          <tr><td><strong>に (ni)</strong></td><td>Destination géographique, Moment précis[cite: 4].</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo)[cite: 4].</td></tr>
-          <tr><td><strong>で (de)</strong></td><td>Lieu d'action, Moyen, Instrument[cite: 4].</td><td>電車<strong>で</strong>行きます (J'y vais en train)[cite: 4].</td></tr>
+          <tr><td><strong>は (wa)</strong></td><td>Thème (Ce dont on parle).</td><td>私<strong>は</strong>学生です (Je suis étudiant).</td></tr>
+          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau / Emphase.</td><td>猫<strong>が</strong>います (Il y a un chat).</td></tr>
+          <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct.</td><td>すし<strong>を</strong>食べます (Je mange des sushis).</td></tr>
+          <tr><td><strong>に (ni)</strong></td><td>Destination géographique, Moment précis.</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo).</td></tr>
+          <tr><td><strong>で (de)</strong></td><td>Lieu d'action, Moyen, Instrument.</td><td>電車<strong>で</strong>行きます (J'y vais en train).</td></tr>
           <tr><td><strong>と (to)</strong></td><td>"Et" (liste exhaustive), "Avec" (une personne).</td><td>友達<strong>と</strong>行きます (J'y vais avec un ami).</td></tr>
-          <tr><td><strong>も (mo)</strong></td><td>"Aussi". (Remplace souvent は, が, et を).</td><td>私<strong>も</strong>学生です (Moi aussi je suis étudiant).</td></tr>
-          <tr><td><strong>から / まで (kara / made)</strong></td><td>"Depuis" / "Jusqu'à" (S'utilise pour le Temps ou l'Espace).</td><td>9時<strong>から</strong>5時<strong>まで</strong> (De 9h à 5h).</td></tr>
-          <tr><td><strong>へ (e)</strong></td><td>Direction (Insiste sur le trajet plutôt que sur le but).</td><td>日本<strong>へ</strong>行きます (Je pars vers le Japon).</td></tr>
+          <tr><td><strong>も (mo)</strong></td><td>"Aussi".</td><td>私<strong>も</strong>学生です (Moi aussi je suis étudiant).</td></tr>
+          <tr><td><strong>から / まで</strong></td><td>"Depuis" / "Jusqu'à" (Temps ou Espace).</td><td>9時<strong>から</strong>5時<strong>まで</strong> (De 9h à 5h).</td></tr>
+          <tr><td><strong>へ (e)</strong></td><td>Direction (Trajet).</td><td>日本<strong>へ</strong>行きます (Je pars vers le Japon).</td></tr>
         </table>
       </div>`;
   }
@@ -567,13 +495,13 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. La politesse universelle (Forme MASU)</h3>
-        <p>La forme <strong>ます (masu)</strong> est la forme standard polie[cite: 3]. Elle ne change JAMAIS selon la personne (Je, Tu, Il = même verbe)[cite: 3].</p>
+        <p>La forme <strong>ます (masu)</strong> est la forme standard polie. Elle ne change JAMAIS selon la personne.</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Terminaison</th><th>Exemple (Manger)</th></tr>
-          <tr><td>Présent affirmatif</td><td><strong>〜ます</strong>[cite: 3]</td><td>食べます (tabemasu)[cite: 3]</td></tr>
-          <tr><td>Présent négatif</td><td><strong>〜ません</strong>[cite: 3]</td><td>食べません (tabemasen)[cite: 3]</td></tr>
-          <tr><td>Passé affirmatif</td><td><strong>〜ました</strong>[cite: 3]</td><td>食べました (tabemashita)[cite: 3]</td></tr>
-          <tr><td>Passé négatif</td><td><strong>〜ませんでした</strong>[cite: 3]</td><td>食べませんでした (tabemasen deshita)[cite: 3]</td></tr>
+          <tr><td>Présent affirmatif</td><td><strong>〜ます</strong></td><td>食べます (tabemasu)</td></tr>
+          <tr><td>Présent négatif</td><td><strong>〜ません</strong></td><td>食べません (tabemasen)</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>〜ました</strong></td><td>食べました (tabemashita)</td></tr>
+          <tr><td>Passé négatif</td><td><strong>〜ませんでした</strong></td><td>食べませんでした (tabemasen deshita)</td></tr>
         </table>
 
         <h3>2. Exprimer un désir (Je veux...)</h3>
@@ -584,10 +512,9 @@ else if(id === 'cours-03') {
         </div>
 
         <h3>3. Faire une proposition ou inviter</h3>
-        <p>Il existe deux façons principales de proposer une action à quelqu'un :</p>
         <ul>
           <li><strong>〜ましょう (mashō) :</strong> Signifie "Faisons / Allons-y". (Ex: 行きましょう - Allons-y !).</li>
-          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". C'est une invitation très polie qui laisse le choix à l'interlocuteur. (Ex: お茶を飲みませんか - Voulez-vous boire un thé ?).</li>
+          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". (Ex: お茶を飲みませんか - Voulez-vous boire un thé ?).</li>
         </ul>
       </div>`;
   }
@@ -595,44 +522,36 @@ else if(id === 'cours-03') {
     titleHeader.innerText = "Cours 5.1 : Les Adjectifs (い et な)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. Les deux familles d'adjectifs</h3>
-        <p>En japonais, les adjectifs se divisent en deux groupes stricts qui ne se conjuguent pas du tout de la même manière. Ils se placent toujours <strong>avant</strong> le nom qu'ils qualifient.</p>
-        
-        <h3>2. Les Adjectifs en い (i)</h3>
-        <p>Ils se terminent toujours par la syllabe い (i). Ils portent en eux-mêmes la notion de temps et de négation, c'est donc l'adjectif lui-même qui se conjugue, pas le verbe "être" !</p>
+        <h3>1. Les Adjectifs en い (i)</h3>
+        <p>Ils se terminent toujours par la syllabe い (i). Ils portent en eux-mêmes la notion de temps et de négation, c'est donc l'adjectif lui-même qui se conjugue !</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 高い (takai - grand/cher)</th></tr>
           <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>高いです (takai desu)</td></tr>
           <tr><td>Présent négatif</td><td>Remplacer le い par <strong>くないです (kunai desu)</strong></td><td>高<strong>くないです</strong> (taka<strong>kunai desu</strong>)</td></tr>
           <tr><td>Passé affirmatif</td><td>Remplacer le い par <strong>かったです (katta desu)</strong></td><td>高<strong>かったです</strong> (taka<strong>katta desu</strong>)</td></tr>
-          <tr><td>Passé négatif</td><td>Remplacer le い par <strong>くなかったです (kunakatta desu)</strong></td><td>高<strong>くなかったです</strong> (taka<strong>kunakatta desu</strong>)</td></tr>
         </table>
-        <div class="alert-box"><strong>Exception absolue :</strong> L'adjectif いい (ii - bon/bien) devient よくない (yokunai) au négatif et よかった (yokatta) au passé.</div>
 
-        <h3>3. Les Adjectifs en な (na)</h3>
-        <p>Ils fonctionnent comme des noms. Ils ne se conjuguent pas ; c'est le verbe "être" (desu) qui fait tout le travail de conjugaison. On utilise la particule "na" uniquement pour les relier à un nom.</p>
+        <h3>2. Les Adjectifs en な (na)</h3>
+        <p>Ils fonctionnent comme des noms. Ils ne se conjuguent pas ; c'est le verbe "être" (desu) qui fait tout le travail. On utilise la particule "na" uniquement pour les relier à un nom.</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 静か (shizuka - calme)</th></tr>
-          <tr><td>Modification d'un nom</td><td>Ajouter な (na) + Nom</td><td>静か<strong>な</strong>部屋 (shizuka <strong>na</strong> heya - une chambre calme)</td></tr>
+          <tr><td>Modification d'un nom</td><td>Ajouter な (na) + Nom</td><td>静か<strong>な</strong>部屋 (shizuka <strong>na</strong> heya)</td></tr>
           <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>静かです (shizuka desu)</td></tr>
           <tr><td>Présent négatif</td><td>Adjectif + じゃありません (ja arimasen)</td><td>静か<strong>じゃありません</strong> (shizuka <strong>ja arimasen</strong>)</td></tr>
-          <tr><td>Passé affirmatif</td><td>Adjectif + でした (deshita)</td><td>静か<strong>でした</strong> (shizuka <strong>deshita</strong>)</td></tr>
         </table>
       </div>`;
   }
   else if(id === 'cours-05-2') {
-    titleHeader.innerText = "Cours 5.2 : Existence et Possession (あります / います)";
+    titleHeader.innerText = "Cours 5.2 : Existence et Possession";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Distinguer l'animé de l'inanimé</h3>
-        <p>Le verbe français "Il y a" ou "Avoir" se traduit par deux verbes distincts en japonais. Le choix dépend de la nature de l'objet ou du sujet.</p>
         <ul>
           <li><strong>あります (Arimasu) :</strong> Utilisé pour les objets inanimés et les plantes (livre, voiture, arbre, idée).</li>
           <li><strong>います (Imasu) :</strong> Utilisé pour les êtres vivants doués de mouvement (humains, animaux).</li>
         </ul>
         
         <h3>2. Structure grammaticale de l'existence</h3>
-        <p>Pour indiquer l'existence d'une chose dans un lieu, on utilise une structure stricte avec les particules に (ni) pour le lieu et が (ga) pour le sujet.</p>
         <div class="example-box">
           <p><strong>[Lieu] に [Sujet] が あります/います。</strong></p>
           <p>部屋<strong>に</strong>机<strong>が</strong>あります。(Heya ni tsukue ga arimasu) ➔ Il y a un bureau dans la chambre.</p>
@@ -640,7 +559,6 @@ else if(id === 'cours-03') {
         </div>
 
         <h3>3. Exprimer la possession</h3>
-        <p>Ces mêmes verbes sont utilisés pour dire "J'ai...". Dans ce cas, on utilise la particule は (wa) pour le propriétaire.</p>
         <div class="example-box">
           <p>私<strong>は</strong>車<strong>が</strong>あります。(Watashi wa kuruma ga arimasu) ➔ J'ai une voiture.</p>
           <p>私<strong>は</strong>兄弟<strong>が</strong>います。(Watashi wa kyōdai ga imasu) ➔ J'ai des frères et sœurs.</p>
@@ -652,7 +570,7 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Les mots interrogatifs essentiels (N5)</h3>
-        <p>En japonais, l'ordre des mots ne change pas quand on pose une question. On remplace simplement l'élément inconnu par le mot interrogatif et on ajoute か (ka) à la fin.</p>
+        <p>En japonais, l'ordre des mots ne change pas quand on pose une question.</p>
         <div class="vocab-grid" style="grid-template-columns: repeat(4, 1fr);">
           <div class="vocab-card"><span class="vocab-jp">何</span><span class="vocab-fr">Nani / Nan (Quoi)</span></div>
           <div class="vocab-card"><span class="vocab-jp">誰</span><span class="vocab-fr">Dare (Qui)</span></div>
@@ -660,15 +578,14 @@ else if(id === 'cours-03') {
           <div class="vocab-card"><span class="vocab-jp">いつ</span><span class="vocab-fr">Itsu (Quand)</span></div>
         </div>
 
-        <h3>2. Le cauchemar des compteurs (助数詞 - Josūshi)</h3>
-        <p>On ne peut pas simplement dire "Deux cafés" ou "Trois chats". Il faut insérer un "compteur" spécifique à la forme ou la nature de l'objet compté. Le compteur se place <strong>après</strong> la particule.</p>
+        <h3>2. Le cauchemar des compteurs</h3>
         <table class="course-table">
           <tr><th>Compteur</th><th>Utilisation</th><th>Exemple</th></tr>
-          <tr><td><strong>〜つ (tsu)</strong></td><td>Compteur générique universel pour les objets de petite taille ou abstraits (1: hitotsu, 2: futatsu, 3: mittsu...)</td><td>りんごを二<strong>つ</strong>買います。(J'achète deux pommes).</td></tr>
-          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (Exception : 1 personne = hitori, 2 personnes = futari)</td><td>学生が三<strong>人</strong>います。(Il y a trois étudiants).</td></tr>
-          <tr><td><strong>〜枚 (mai)</strong></td><td>Pour les objets plats et fins (feuilles, billets, t-shirts)</td><td>紙を五<strong>枚</strong>ください。(Cinq feuilles de papier SVP).</td></tr>
-          <tr><td><strong>〜本 (hon)</strong></td><td>Pour les objets longs et cylindriques (bouteilles, stylos, parapluies)</td><td>ペンが四<strong>本</strong>あります。(Il y a quatre stylos).</td></tr>
-          <tr><td><strong>〜匹 (hiki)</strong></td><td>Pour les petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。(Il y a deux chats).</td></tr>
+          <tr><td><strong>〜つ (tsu)</strong></td><td>Objets génériques (1: hitotsu, 2: futatsu...)</td><td>りんごを二<strong>つ</strong>買います。</td></tr>
+          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (1: hitori, 2: futari)</td><td>学生が三<strong>人</strong>います。</td></tr>
+          <tr><td><strong>〜枚 (mai)</strong></td><td>Objets plats et fins (feuilles, billets)</td><td>紙を五<strong>枚</strong>ください。</td></tr>
+          <tr><td><strong>〜本 (hon)</strong></td><td>Objets longs (bouteilles, stylos)</td><td>ペンが四<strong>本</strong>あります。</td></tr>
+          <tr><td><strong>〜匹 (hiki)</strong></td><td>Petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。</td></tr>
         </table>
       </div>`;
   }  
@@ -677,9 +594,8 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Le bagage lexical du N5</h3>
-        <p>Pour valider le JLPT N5, vous devez maîtriser les mots du quotidien. Voici les termes les plus fréquents de l'examen, classés par thèmes stratégiques. <strong>Cliquez sur les cartes pour écouter la prononciation native !</strong></p>
+        <p>Cliquez sur les cartes pour écouter la prononciation native !</p>
       </div>
-
       <div class="kana-section">
         <h4>🕒 Le Temps et les Moments</h4>
         <div class="vocab-grid">
@@ -687,13 +603,8 @@ else if(id === 'cours-03') {
           <div class="vocab-card" onclick="speak('明日')"><span class="vocab-jp">明日</span><span class="vocab-fr">ashita (Demain)</span></div>
           <div class="vocab-card" onclick="speak('昨日')"><span class="vocab-jp">昨日</span><span class="vocab-fr">kinō (Hier)</span></div>
           <div class="vocab-card" onclick="speak('毎日')"><span class="vocab-jp">毎日</span><span class="vocab-fr">mainichi (Tous les jours)</span></div>
-          <div class="vocab-card" onclick="speak('今')"><span class="vocab-jp">今</span><span class="vocab-fr">ima (Maintenant)</span></div>
-          <div class="vocab-card" onclick="speak('朝')"><span class="vocab-jp">朝</span><span class="vocab-fr">asa (Matin)</span></div>
-          <div class="vocab-card" onclick="speak('昼')"><span class="vocab-jp">昼</span><span class="vocab-fr">hiru (Midi)</span></div>
-          <div class="vocab-card" onclick="speak('夜')"><span class="vocab-jp">夜</span><span class="vocab-fr">yoru (Nuit)</span></div>
         </div>
       </div>
-
       <div class="kana-section">
         <h4>👤 Personnes et Relations</h4>
         <div class="vocab-grid">
@@ -701,46 +612,14 @@ else if(id === 'cours-03') {
           <div class="vocab-card" onclick="speak('あなた')"><span class="vocab-jp">あなた</span><span class="vocab-fr">anata (Toi, Vous)</span></div>
           <div class="vocab-card" onclick="speak('友達')"><span class="vocab-jp">友達</span><span class="vocab-fr">tomodachi (Ami)</span></div>
           <div class="vocab-card" onclick="speak('家族')"><span class="vocab-jp">家族</span><span class="vocab-fr">kazoku (Famille)</span></div>
-          <div class="vocab-card" onclick="speak('先生')"><span class="vocab-jp">先生</span><span class="vocab-fr">sensei (Professeur)</span></div>
-          <div class="vocab-card" onclick="speak('学生')"><span class="vocab-jp">学生</span><span class="vocab-fr">gakusei (Étudiant)</span></div>
         </div>
       </div>
-
-      <div class="kana-section">
-        <h4>📍 Lieux et Bâtiments</h4>
-        <div class="vocab-grid">
-          <div class="vocab-card" onclick="speak('学校')"><span class="vocab-jp">学校</span><span class="vocab-fr">gakkō (École)</span></div>
-          <div class="vocab-card" onclick="speak('駅')"><span class="vocab-jp">駅</span><span class="vocab-fr">eki (Gare)</span></div>
-          <div class="vocab-card" onclick="speak('病院')"><span class="vocab-jp">病院</span><span class="vocab-fr">byōin (Hôpital)</span></div>
-          <div class="vocab-card" onclick="speak('店')"><span class="vocab-jp">店</span><span class="vocab-fr">mise (Magasin)</span></div>
-          <div class="vocab-card" onclick="speak('会社')"><span class="vocab-jp">会社</span><span class="vocab-fr">kaisha (Entreprise)</span></div>
-          <div class="vocab-card" onclick="speak('家')"><span class="vocab-jp">家</span><span class="vocab-fr">ie / uchi (Maison)</span></div>
-        </div>
-      </div>
-
-      <div class="kana-section">
-        <h4>✨ Adjectifs Essentiels (い et な)</h4>
-        <div class="vocab-grid">
-          <div class="vocab-card" onclick="speak('大きい')"><span class="vocab-jp">大きい</span><span class="vocab-fr">ōkii (Grand)</span></div>
-          <div class="vocab-card" onclick="speak('小さい')"><span class="vocab-jp">小さい</span><span class="vocab-fr">chiisai (Petit)</span></div>
-          <div class="vocab-card" onclick="speak('新しい')"><span class="vocab-jp">新しい</span><span class="vocab-fr">atarashii (Nouveau)</span></div>
-          <div class="vocab-card" onclick="speak('古い')"><span class="vocab-jp">古い</span><span class="vocab-fr">furui (Vieux)</span></div>
-          <div class="vocab-card" onclick="speak('高い')"><span class="vocab-jp">高い</span><span class="vocab-fr">takai (Cher, Haut)</span></div>
-          <div class="vocab-card" onclick="speak('安い')"><span class="vocab-jp">安い</span><span class="vocab-fr">yasui (Pas cher)</span></div>
-          <div class="vocab-card" onclick="speak('静か')"><span class="vocab-jp">静か</span><span class="vocab-fr">shizuka (Calme) [na]</span></div>
-          <div class="vocab-card" onclick="speak('綺麗')"><span class="vocab-jp">綺麗</span><span class="vocab-fr">kirei (Beau, Propre) [na]</span></div>
-        </div>
-      </div>
-      
       <div class="kana-section">
         <h4>💬 Salutations (Aisatsu)</h4>
         <div class="vocab-grid">
           <div class="vocab-card" onclick="speak('おはようございます')"><span class="vocab-jp" style="font-size:18px;">おはようございます</span><span class="vocab-fr">ohayō gozaimasu (Bonjour - Matin)</span></div>
           <div class="vocab-card" onclick="speak('こんにちは')"><span class="vocab-jp" style="font-size:18px;">こんにちは</span><span class="vocab-fr">konnichiwa (Bonjour - Journée)</span></div>
-          <div class="vocab-card" onclick="speak('こんばんは')"><span class="vocab-jp" style="font-size:18px;">こんばんは</span><span class="vocab-fr">konbanwa (Bonsoir)</span></div>
-          <div class="vocab-card" onclick="speak('ありがとうございます')"><span class="vocab-jp" style="font-size:18px;">ありがとうございます</span><span class="vocab-fr">arigatō gozaimasu (Merci beaucoup)</span></div>
-          <div class="vocab-card" onclick="speak('すみません')"><span class="vocab-jp" style="font-size:18px;">すみません</span><span class="vocab-fr">sumimasen (Excusez-moi / Pardon)</span></div>
-          <div class="vocab-card" onclick="speak('お願いします')"><span class="vocab-jp" style="font-size:18px;">お願いします</span><span class="vocab-fr">onegaishimasu (S'il vous plaît)</span></div>
+          <div class="vocab-card" onclick="speak('ありがとうございます')"><span class="vocab-jp" style="font-size:18px;">ありがとうございます</span><span class="vocab-fr">arigatō gozaimasu (Merci)</span></div>
         </div>
       </div>`;
   }
@@ -749,17 +628,16 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Les Idéogrammes empruntés</h3>
-        <p>Les Kanjis viennent de Chine et possèdent généralement deux types de lecture[cite: 7, 8]:</p>
+        <p>Les Kanjis viennent de Chine et possèdent généralement deux types de lecture :</p>
         <ul>
-          <li><strong>ON (Onyomi) :</strong> Lecture d'origine chinoise, utilisée dans les mots composés[cite: 8].</li>
-          <li><strong>KUN (Kunyomi) :</strong> Lecture japonaise, utilisée seule ou avec okurigana[cite: 8].</li>
+          <li><strong>ON (Onyomi) :</strong> Lecture d'origine chinoise, utilisée dans les mots composés.</li>
+          <li><strong>KUN (Kunyomi) :</strong> Lecture japonaise, utilisée seule ou avec okurigana.</li>
         </ul>
-        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant) [cite: 24].</p>
+        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant).</p>
       </div>
       <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
   }
 
-  // --- NIVEAU JLPT N4 ---
   // --- NIVEAU JLPT N4 ---
   else if(id === 'cours-07') {
     titleHeader.innerText = "Cours 07 : Kanjis du niveau N4";
@@ -804,22 +682,22 @@ else if(id === 'cours-03') {
         <table class="course-table">
           <tr><th>Forme</th><th>Contexte d'utilisation</th><th>Exemple</th></tr>
           <tr>
-            <td><strong>と (to)</strong><br><span style="font-size: 12px; color: #666;">(Verbe Présent + to)</span></td>
-            <td><strong>La conséquence naturelle et inévitable.</strong> Quand A se produit, B se produit toujours (machines, nature).</td>
-            <td>ボタンを押す<strong>と</strong>、水が出ます。<br><em>(Si/Quand on appuie sur le bouton, l'eau sort).</em></td>
+            <td><strong>と (to)</strong></td>
+            <td><strong>La conséquence inévitable.</strong> Quand A se produit, B se produit toujours.</td>
+            <td>ボタンを押す<strong>と</strong>、水が出ます。<br><em>(Si on appuie, l'eau sort).</em></td>
           </tr>
           <tr>
-            <td><strong>ば (ba)</strong><br><span style="font-size: 12px; color: #666;">(Changer 'u' en 'eba')</span></td>
+            <td><strong>ば (ba)</strong></td>
             <td><strong>La condition logique.</strong> "À condition que...". Se concentre sur la nécessité de l'action.</td>
             <td>安けれ<strong>ば</strong>、買います。<br><em>(Si c'est pas cher, j'achèterai).</em></td>
           </tr>
           <tr>
-            <td><strong>たら (tara)</strong><br><span style="font-size: 12px; color: #666;">(Forme TA + ra)</span></td>
-            <td><strong>La condition chronologique / Une fois que.</strong> C'est le plus courant à l'oral. B ne peut se faire qu'une fois A terminé.</td>
+            <td><strong>たら (tara)</strong></td>
+            <td><strong>La condition chronologique / Une fois que.</strong> C'est le plus courant à l'oral. B se fait une fois A terminé.</td>
             <td>日本に行っ<strong>たら</strong>、寿司を食べます。<br><em>(Quand / Si je vais au Japon, je mangerai des sushis).</em></td>
           </tr>
           <tr>
-            <td><strong>なら (nara)</strong><br><span style="font-size: 12px; color: #666;">(Nom/Verbe + nara)</span></td>
+            <td><strong>なら (nara)</strong></td>
             <td><strong>La condition contextuelle.</strong> Réagit à ce que l'autre vient de dire ("Dans ce cas...").</td>
             <td>東京に行く<strong>なら</strong>、新幹線がいいです。<br><em>(Si tu vas à Tokyo, le Shinkansen est le mieux).</em></td>
           </tr>
@@ -863,10 +741,10 @@ else if(id === 'cours-03') {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le transfert d'objets</h3>
-        <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don (de moi vers l'autre, ou de l'autre vers moi).</p>
+        <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don.</p>
         <ul>
           <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる。</em></li>
-          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne (à moi ou ma famille). L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる。</em></li>
+          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne. L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる。</em></li>
           <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう。</em></li>
         </ul>
 
@@ -1016,7 +894,7 @@ else if(id === 'cours-03') {
         </table>
       </div>`;
   }
-    
+
   // --- NIVEAU JLPT N2 ---
   else if(id === 'cours-14') {
     titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
