@@ -146,7 +146,25 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .srs-btn.easy { background: #2ecc71; } 
 
 .flip-hint { text-align: center; color: #888; margin-top: 20px; font-size: 14px; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }  
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+/* --- STYLES TEXTE À TROUS (QUIZ GRAMMAIRE) --- */
+.quiz-sentence { font-size: 28px; font-family: var(--font-jp); text-align: center; margin: 30px 0; color: var(--sumi); letter-spacing: 2px; }
+.quiz-blank { display: inline-block; width: 50px; height: 35px; border-bottom: 3px solid var(--aka); text-align: center; color: var(--aka); font-weight: bold; margin: 0 8px; vertical-align: baseline; }
+.quiz-translation { text-align: center; color: #666; font-size: 16px; margin-bottom: 30px; font-style: italic; }
+.quiz-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+.quiz-opt-btn { font-family: var(--font-jp); font-size: 22px; padding: 12px 24px; border: 2px solid rgba(188,0,45,.2); border-radius: 8px; background: white; cursor: pointer; transition: all 0.2s; min-width: 80px; color: var(--sumi); font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.quiz-opt-btn:hover:not(:disabled) { border-color: var(--aka); background: var(--sakura-pale); transform: translateY(-2px); }
+.quiz-opt-btn:disabled { cursor: default; opacity: 0.6; }
+.quiz-opt-btn.correct-ans { background: #e8f8f5; border-color: #1abc9c; color: #16a085; opacity: 1;}
+.quiz-opt-btn.wrong-ans { background: #fdedec; border-color: #e74c3c; color: #c0392b; }
+
+.quiz-feedback { margin-top: 20px; padding: 16px 20px; border-radius: 8px; display: none; font-size: 15px; line-height: 1.6; animation: fadeIn 0.3s; }
+.quiz-feedback.correct { background: #e8f8f5; border-left: 4px solid #1abc9c; display: block; color: #16a085; }
+.quiz-feedback.wrong { background: #fdedec; border-left: 4px solid #e74c3c; display: block; color: #c0392b; }
+.quiz-next-btn { margin-top: 20px; width: 100%; display: none; background: var(--sumi); }
+.quiz-next-btn:hover { background: #000; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
   .sidebar.open{ transform:none; }
@@ -1081,18 +1099,19 @@ function loadContent(id) {
         <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
           
-          <!-- BOUTON FLASHCARDS ACTIF -->
-          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
             <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
             <span class="vocab-fr">Algorithme de répétition espacée</span>
           </div>
           
-          <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
+          <!-- NOUVEAU BOUTON TEXTE A TROUS ACTIF -->
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('fillblank-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
             <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
-            <span class="vocab-fr">Bientôt disponible</span>
+            <span class="vocab-fr">Testez vos Particules & Grammaire</span>
           </div>
+          
           <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏗️</span>
             <span class="vocab-jp" style="font-size: 18px;">Constructeur SOV</span>
@@ -1106,6 +1125,8 @@ function loadContent(id) {
         </div>
       </div>`;
   }
+  
+  // MENUS FLASHCARDS (Déjà existants, on les garde)
   else if(id === 'flashcards-menu') {
     titleHeader.innerText = "Configuration du Paquet";
     contentDiv.innerHTML = `
@@ -1114,20 +1135,16 @@ function loadContent(id) {
         <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
           <div class="vocab-card" onclick="startFlashcards('kana')">
-            <span class="vocab-jp">あ / ア</span>
-            <span class="vocab-fr">Tous les Kanas (Hiragana + Katakana)</span>
+            <span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span>
           </div>
           <div class="vocab-card" onclick="startFlashcards('kanji5')">
-            <span class="vocab-jp">N5</span>
-            <span class="vocab-fr">Kanjis Débutant (~100 cartes)</span>
+            <span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span>
           </div>
           <div class="vocab-card" onclick="startFlashcards('kanji4')">
-            <span class="vocab-jp">N4</span>
-            <span class="vocab-fr">Kanjis Élémentaire (~160 cartes)</span>
+            <span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span>
           </div>
           <div class="vocab-card" onclick="startFlashcards('kanji3')">
-            <span class="vocab-jp">N3</span>
-            <span class="vocab-fr">Kanjis Intermédiaire (~120 cartes)</span>
+            <span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span>
           </div>
         </div>
       </div>`;
@@ -1136,28 +1153,47 @@ function loadContent(id) {
     titleHeader.innerText = "Entraînement SRS en cours...";
     contentDiv.innerHTML = `
       <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
-        
         <div class="fc-container" onclick="flipFlashcard()">
           <div class="fc-card" id="fc-card-element">
-            <div class="fc-face fc-front">
-              <span class="fc-front-text" id="fc-front-text">語</span>
-            </div>
-            <div class="fc-face fc-back">
-              <span class="fc-back-jp" id="fc-back-jp">ゴ</span>
-              <span class="fc-back-fr" id="fc-back-fr">Langue</span>
-            </div>
+            <div class="fc-face fc-front"><span class="fc-front-text" id="fc-front-text"></span></div>
+            <div class="fc-face fc-back"><span class="fc-back-jp" id="fc-back-jp"></span><span class="fc-back-fr" id="fc-back-fr"></span></div>
           </div>
         </div>
-        
         <div class="flip-hint" id="flip-hint">Cliquez sur la carte pour la retourner</div>
-        
         <div class="srs-controls" id="srs-controls">
           <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
           <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
           <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
         </div>
-        
       </div>`;
+  }
+
+  // NOUVEAUX MENUS TEXTE A TROUS
+  else if(id === 'fillblank-menu') {
+    titleHeader.innerText = "Choix du niveau (Grammaire)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Testez vos réflexes grammaticaux</h3>
+        <p>Lisez la phrase, comprenez le contexte grâce à la traduction, et choisissez la particule ou la structure manquante.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startQuiz('N5')">
+            <span class="vocab-jp">N5</span>
+            <span class="vocab-fr">Les Particules de base</span>
+          </div>
+          <div class="vocab-card" onclick="startQuiz('N4')">
+            <span class="vocab-jp">N4</span>
+            <span class="vocab-fr">Grammaire intermédiaire</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'fillblank-run') {
+    titleHeader.innerText = "Complétez la phrase";
+    contentDiv.innerHTML = `
+      <div class="card" id="quiz-area" style="padding: 40px 20px;">
+        <!-- Injecté par JavaScript -->
+      </div>`;
+  }
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateur d'Examens JLPT";
@@ -1311,6 +1347,100 @@ function answerCard(quality) {
   }
   nextFlashcard();
 }  
+
+/* ─── MOTEUR QUIZ (TEXTE À TROUS) ─── */
+const QUIZ_DATA = [
+  // NIVEAU N5 - Particules de base
+  { lvl: 'N5', q: "私 ___ 学生です。", opts: ["は", "が", "を", "に"], ans: "は", fr: "Je suis étudiant.", expl: "La particule『は』 (wa) indique le thème principal de la phrase." },
+  { lvl: 'N5', q: "東京 ___ 行きます。", opts: ["で", "を", "へ", "が"], ans: "へ", fr: "Je vais à Tokyo.", expl: "La particule『へ』 (e) ou 『に』 indique la direction / la destination d'un déplacement." },
+  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』 (o) marque le Complément d'Objet Direct (l'objet qui subit l'action de manger)." },
+  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』 (de) indique le moyen ou l'instrument utilisé pour faire l'action." },
+  { lvl: 'N5', q: "部屋に猫 ___ います。", opts: ["は", "を", "で", "が"], ans: "が", fr: "Il y a un chat dans la chambre.", expl: "Avec les verbes d'existence (います / あります), le sujet est toujours marqué par la particule『が』." },
+  { lvl: 'N5', q: "日曜日 ___ 友達と遊びます。", opts: ["は", "に", "を", "が"], ans: "に", fr: "Je joue avec un ami le dimanche.", expl: "La particule『に』 (ni) s'utilise pour indiquer un moment précis dans le temps (jour de la semaine, heure)." },
+  
+  // NIVEAU N4 - Grammaire intermédiaire
+  { lvl: 'N4', q: "雨が降り ___ です。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Il a l'air de vouloir pleuvoir.", expl: "Racine du verbe (sans masu) + そう = Une apparence imminente (basée sur le visuel)." },
+  { lvl: 'N4', q: "日本に行った ___ があります。", opts: ["こと", "もの", "とき", "の"], ans: "こと", fr: "Je suis déjà allé au Japon.", expl: "Verbe au passé (Forme TA) + ことがある = Avoir l'expérience de faire quelque chose." },
+  { lvl: 'N4', q: "暗いから、電気をつけ ___ 。", opts: ["てあげる", "てくれる", "てみる", "ましょう"], ans: "ましょう", fr: "Comme il fait sombre, allumons la lumière.", expl: "La forme en 〜ましょう (mashō) exprime une proposition ou une invitation : Faisons-le !" },
+  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "La forme TE + はいけません (wa ikemasen) est la structure grammaticale pour exprimer une interdiction stricte." }
+];
+
+let activeQuiz = [];
+let currentQuizIndex = 0;
+
+function startQuiz(level) {
+  activeQuiz = QUIZ_DATA.filter(q => q.lvl === level);
+  // Mélanger les questions
+  activeQuiz.sort(() => Math.random() - 0.5);
+  currentQuizIndex = 0;
+  loadContent('fillblank-run');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  if(currentQuizIndex >= activeQuiz.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🏆</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Entraînement Terminé !</h3>
+        <p>Vous avez répondu à toutes les questions de ce niveau.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = activeQuiz[currentQuizIndex];
+  
+  // Remplacer le blanc par l'élément HTML
+  const displaySentence = q.q.replace("___", `<span class="quiz-blank" id="quiz-blank-spot">?</span>`);
+  
+  // Générer les boutons aléatoirement
+  let optionsHtml = '';
+  const shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+  shuffledOpts.forEach(opt => {
+    optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this, '${q.ans}', '${q.expl}')">${opt}</button>`;
+  });
+
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="quiz-sentence">${displaySentence}</div>
+    <div class="quiz-translation">"${q.fr}"</div>
+    <div class="quiz-options" id="quiz-options-container">${optionsHtml}</div>
+    <div id="quiz-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="quiz-next-btn" onclick="nextQuizQuestion()">Question Suivante ➔</button>
+  `;
+}
+
+function checkQuizAnswer(selected, btnElement, correct, explanation) {
+  // Désactiver tous les boutons
+  const allBtns = document.getElementById('quiz-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(btn => btn.disabled = true);
+  
+  const feedbackDiv = document.getElementById('quiz-feedback');
+  const blankSpot = document.getElementById('quiz-blank-spot');
+  
+  if(selected === correct) {
+    btnElement.classList.add('correct-ans');
+    blankSpot.innerText = correct;
+    blankSpot.style.color = '#1abc9c';
+    blankSpot.style.borderColor = '#1abc9c';
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong><br>${explanation}`;
+  } else {
+    btnElement.classList.add('wrong-ans');
+    // Trouver et surligner la bonne réponse
+    allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
+    blankSpot.innerText = correct;
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Erreur. La bonne réponse était 「${correct}」.</strong><br>${explanation}`;
+  }
+  
+  document.getElementById('quiz-next-btn').style.display = 'block';
+}
+
+function nextQuizQuestion() {
+  currentQuizIndex++;
+  renderQuizQuestion();
+}
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
