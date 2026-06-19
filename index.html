@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#BC002D">
 <title>日本語 de 道 — Mon Parcours Japonais</title>
 <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
 <style>
@@ -1545,6 +1547,22 @@ function nextQuizQuestion() {
   }
   // Lance le premier cours après un court délai pour être sûr que le DOM est prêt
   setTimeout(() => loadContent('cours-01'), 100);
+})();
+// Lancement de l'application
+  setTimeout(() => loadContent('cours-01'), 100);
+
+  // ENREGISTREMENT DU SERVICE WORKER (Mode Hors Ligne)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          console.log('ServiceWorker enregistré avec succès !', registration.scope);
+        })
+        .catch(error => {
+          console.log('Échec de l\'enregistrement du ServiceWorker :', error);
+        });
+    });
+  }
 })();
 </script>
 </body>
