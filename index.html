@@ -165,6 +165,16 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .quiz-next-btn { margin-top: 20px; width: 100%; display: none; background: var(--sumi); }
 .quiz-next-btn:hover { background: #000; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- STYLES TIMELINE (PROGRESSION) --- */
+.timeline { position: relative; max-width: 800px; margin: 20px auto; padding-left: 20px; border-left: 3px solid var(--sakura-pale); }
+.timeline-step { position: relative; margin-bottom: 24px; padding-left: 20px; }
+.timeline-badge { position: absolute; left: -36px; top: 0; width: 28px; height: 28px; background: var(--aka); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: var(--font-title); border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2; }
+.timeline-content { background: var(--kinari); padding: 20px; border-radius: 8px; border: 1px solid rgba(188,0,45,.1); }
+.timeline-content h4 { color: var(--aka); margin-top: 0; margin-bottom: 10px; font-family: var(--font-title); font-size: 18px; }
+.timeline-content ul { margin-top: 10px; margin-bottom: 0; color: #333; line-height: 1.6; }
+.timeline-content li { margin-bottom: 5px; }
+.timeline-duration { font-weight: bold; color: var(--sumi); font-size: 14px; display: inline-block; background: white; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--sakura); margin-bottom: 10px; }
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
   .sidebar.open{ transform:none; }
@@ -770,22 +780,101 @@ function loadContent(id) {
       </div>`;
   }
   else if(id === 'progression') {
-    titleHeader.innerText = "Tableau de Progression";
+    titleHeader.innerText = "Tableau de Progression & Feuille de Route";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Statistiques d'apprentissage</h3>
+        <h3>Vos Statistiques</h3>
         <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr);">
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">12</span>
-            <span class="vocab-fr">Jours consécutifs (Série)</span>
+            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;" id="stat-streak">0</span>
+            <span class="vocab-fr">Jours consécutifs</span>
           </div>
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;">85%</span>
+            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;" id="stat-acc">0%</span>
             <span class="vocab-fr">Précision Flashcards</span>
           </div>
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;">240</span>
+            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;" id="stat-words">0</span>
             <span class="vocab-fr">Mots maîtrisés</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Chronologie d'Étude Conseillée</h3>
+        <p>Pour ne brûler aucune étape et garantir une mémorisation à long terme, suivez cette feuille de route académique. <strong>Ne passez pas à l'étape suivante tant que la précédente n'est pas maîtrisée à 80%.</strong></p>
+
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="timeline-badge">1</div>
+            <div class="timeline-content">
+              <h4>Étape 1 : Les Fondations Absolues</h4>
+              <span class="timeline-duration">⏳ Durée : 1 à 2 semaines minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Étudier Cours 1 (Hiragana) et Cours 2 (Katakana).</li>
+                <li><strong>Pratique :</strong> Utiliser les <em>Flashcards SRS (Paquet Kana)</em> tous les jours jusqu'à ce que la lecture soit instantanée. Ne touchez pas encore à la grammaire.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-badge">2</div>
+            <div class="timeline-content">
+              <h4>Étape 2 : Le Moteur de la Langue (N5)</h4>
+              <span class="timeline-duration">⏳ Durée : 2 à 3 semaines minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Assimiler Cours 3 (SOV), Cours 4 (Particules) et Cours 5 (Verbes Masu).</li>
+                <li><strong>Pratique :</strong> Faire l'exercice <em>Texte à trous N5</em> en boucle pour forcer votre cerveau à automatiser les particules は, が, を, に, で.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-badge">3</div>
+            <div class="timeline-content">
+              <h4>Étape 3 : Enrichissement et Premiers Kanjis (N5)</h4>
+              <span class="timeline-duration">⏳ Durée : 3 à 4 semaines minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Cours 5.1 à 5.4 (Adjectifs, Compteurs, Vocabulaire N5) et Cours 6 (Kanji N5).</li>
+                <li><strong>Pratique :</strong> Alterner <em>Flashcards Vocabulaire</em> et <em>Flashcards Kanji N5</em>. Tentez le test blanc JLPT N5 à la fin de cette période.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-badge">4</div>
+            <div class="timeline-content">
+              <h4>Étape 4 : La Survie au Japon (N4)</h4>
+              <span class="timeline-duration">⏳ Durée : 6 à 8 semaines minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Tous les modules N4 (Potentiel, Volitif, Conditionnels complexes).</li>
+                <li><strong>Pratique :</strong> Combinez <em>Flashcards Kanji N4</em> et <em>Textes à trous N4</em>. (Le futur module "Constructeur SOV" sera vital ici).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-badge">5</div>
+            <div class="timeline-content">
+              <h4>Étape 5 : L'Indépendance (N3)</h4>
+              <span class="timeline-duration">⏳ Durée : 3 à 4 mois minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Modules N3 (Passif, Causatif, Keigo, Nuances temporelles).</li>
+                <li><strong>Pratique :</strong> Vous devez commencer à lire du vrai contenu japonais (NHK Easy News). Continuez le SRS quotidiennement pour les Kanjis N3.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="timeline-badge">6</div>
+            <div class="timeline-content">
+              <h4>Étape 6 : Bilinguisme Professionnel (N2 & N1)</h4>
+              <span class="timeline-duration">⏳ Durée : 6 mois à 1 an par niveau</span>
+              <ul>
+                <li><strong>Théorie :</strong> Grammaire rigide N2 et tournures littéraires N1.</li>
+                <li><strong>Pratique :</strong> Immersion totale (Journaux, Romans, Podcasts natifs) couplée à l'entretien de la mémoire via les Flashcards SRS N1.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>`;
