@@ -175,6 +175,10 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-4')">5.4: Vocabulaire Essentiel</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
       </div>
 
@@ -625,6 +629,78 @@ function loadContent(id) {
         </table>
       </div>`;
   }  
+  else if(id === 'cours-05-4') {
+    titleHeader.innerText = "Cours 5.4 : Vocabulaire Essentiel N5";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le bagage lexical du N5</h3>
+        <p>Pour valider le JLPT N5, vous devez maîtriser les mots du quotidien. Voici les termes les plus fréquents de l'examen, classés par thèmes stratégiques. <strong>Cliquez sur les cartes pour écouter la prononciation native !</strong></p>
+      </div>
+
+      <div class="kana-section">
+        <h4>🕒 Le Temps et les Moments</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('今日')"><span class="vocab-jp">今日</span><span class="vocab-fr">kyō (Aujourd'hui)</span></div>
+          <div class="vocab-card" onclick="speak('明日')"><span class="vocab-jp">明日</span><span class="vocab-fr">ashita (Demain)</span></div>
+          <div class="vocab-card" onclick="speak('昨日')"><span class="vocab-jp">昨日</span><span class="vocab-fr">kinō (Hier)</span></div>
+          <div class="vocab-card" onclick="speak('毎日')"><span class="vocab-jp">毎日</span><span class="vocab-fr">mainichi (Tous les jours)</span></div>
+          <div class="vocab-card" onclick="speak('今')"><span class="vocab-jp">今</span><span class="vocab-fr">ima (Maintenant)</span></div>
+          <div class="vocab-card" onclick="speak('朝')"><span class="vocab-jp">朝</span><span class="vocab-fr">asa (Matin)</span></div>
+          <div class="vocab-card" onclick="speak('昼')"><span class="vocab-jp">昼</span><span class="vocab-fr">hiru (Midi)</span></div>
+          <div class="vocab-card" onclick="speak('夜')"><span class="vocab-jp">夜</span><span class="vocab-fr">yoru (Nuit)</span></div>
+        </div>
+      </div>
+
+      <div class="kana-section">
+        <h4>👤 Personnes et Relations</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('私')"><span class="vocab-jp">私</span><span class="vocab-fr">watashi (Moi, Je)</span></div>
+          <div class="vocab-card" onclick="speak('あなた')"><span class="vocab-jp">あなた</span><span class="vocab-fr">anata (Toi, Vous)</span></div>
+          <div class="vocab-card" onclick="speak('友達')"><span class="vocab-jp">友達</span><span class="vocab-fr">tomodachi (Ami)</span></div>
+          <div class="vocab-card" onclick="speak('家族')"><span class="vocab-jp">家族</span><span class="vocab-fr">kazoku (Famille)</span></div>
+          <div class="vocab-card" onclick="speak('先生')"><span class="vocab-jp">先生</span><span class="vocab-fr">sensei (Professeur)</span></div>
+          <div class="vocab-card" onclick="speak('学生')"><span class="vocab-jp">学生</span><span class="vocab-fr">gakusei (Étudiant)</span></div>
+        </div>
+      </div>
+
+      <div class="kana-section">
+        <h4>📍 Lieux et Bâtiments</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('学校')"><span class="vocab-jp">学校</span><span class="vocab-fr">gakkō (École)</span></div>
+          <div class="vocab-card" onclick="speak('駅')"><span class="vocab-jp">駅</span><span class="vocab-fr">eki (Gare)</span></div>
+          <div class="vocab-card" onclick="speak('病院')"><span class="vocab-jp">病院</span><span class="vocab-fr">byōin (Hôpital)</span></div>
+          <div class="vocab-card" onclick="speak('店')"><span class="vocab-jp">店</span><span class="vocab-fr">mise (Magasin)</span></div>
+          <div class="vocab-card" onclick="speak('会社')"><span class="vocab-jp">会社</span><span class="vocab-fr">kaisha (Entreprise)</span></div>
+          <div class="vocab-card" onclick="speak('家')"><span class="vocab-jp">家</span><span class="vocab-fr">ie / uchi (Maison)</span></div>
+        </div>
+      </div>
+
+      <div class="kana-section">
+        <h4>✨ Adjectifs Essentiels (い et な)</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('大きい')"><span class="vocab-jp">大きい</span><span class="vocab-fr">ōkii (Grand)</span></div>
+          <div class="vocab-card" onclick="speak('小さい')"><span class="vocab-jp">小さい</span><span class="vocab-fr">chiisai (Petit)</span></div>
+          <div class="vocab-card" onclick="speak('新しい')"><span class="vocab-jp">新しい</span><span class="vocab-fr">atarashii (Nouveau)</span></div>
+          <div class="vocab-card" onclick="speak('古い')"><span class="vocab-jp">古い</span><span class="vocab-fr">furui (Vieux)</span></div>
+          <div class="vocab-card" onclick="speak('高い')"><span class="vocab-jp">高い</span><span class="vocab-fr">takai (Cher, Haut)</span></div>
+          <div class="vocab-card" onclick="speak('安い')"><span class="vocab-jp">安い</span><span class="vocab-fr">yasui (Pas cher)</span></div>
+          <div class="vocab-card" onclick="speak('静か')"><span class="vocab-jp">静か</span><span class="vocab-fr">shizuka (Calme) [na]</span></div>
+          <div class="vocab-card" onclick="speak('綺麗')"><span class="vocab-jp">綺麗</span><span class="vocab-fr">kirei (Beau, Propre) [na]</span></div>
+        </div>
+      </div>
+      
+      <div class="kana-section">
+        <h4>💬 Salutations (Aisatsu)</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('おはようございます')"><span class="vocab-jp" style="font-size:18px;">おはようございます</span><span class="vocab-fr">ohayō gozaimasu (Bonjour - Matin)</span></div>
+          <div class="vocab-card" onclick="speak('こんにちは')"><span class="vocab-jp" style="font-size:18px;">こんにちは</span><span class="vocab-fr">konnichiwa (Bonjour - Journée)</span></div>
+          <div class="vocab-card" onclick="speak('こんばんは')"><span class="vocab-jp" style="font-size:18px;">こんばんは</span><span class="vocab-fr">konbanwa (Bonsoir)</span></div>
+          <div class="vocab-card" onclick="speak('ありがとうございます')"><span class="vocab-jp" style="font-size:18px;">ありがとうございます</span><span class="vocab-fr">arigatō gozaimasu (Merci beaucoup)</span></div>
+          <div class="vocab-card" onclick="speak('すみません')"><span class="vocab-jp" style="font-size:18px;">すみません</span><span class="vocab-fr">sumimasen (Excusez-moi / Pardon)</span></div>
+          <div class="vocab-card" onclick="speak('お願いします')"><span class="vocab-jp" style="font-size:18px;">お願いします</span><span class="vocab-fr">onegaishimasu (S'il vous plaît)</span></div>
+        </div>
+      </div>`;
+  }
   else if(id === 'cours-06') {
     titleHeader.innerText = "Cours 06 : Kanjis du niveau N5";
     contentDiv.innerHTML = `
