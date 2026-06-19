@@ -947,8 +947,10 @@ function renderQuizQuestion() {
   // Générer les boutons aléatoirement
   let optionsHtml = '';
   const shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+  
+  // CORRECTION : On ne passe plus l'explication dans le HTML pour éviter le bug de l'apostrophe !
   shuffledOpts.forEach(opt => {
-    optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this, '${q.ans}', '${q.expl}')">${opt}</button>`;
+    optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this)">${opt}</button>`;
   });
 
   document.getElementById('quiz-area').innerHTML = `
@@ -960,7 +962,12 @@ function renderQuizQuestion() {
   `;
 }
 
-function checkQuizAnswer(selected, btnElement, correct, explanation) {
+// CORRECTION : La fonction vient piocher l'explication directement à la source
+function checkQuizAnswer(selected, btnElement) {
+  const q = activeQuiz[currentQuizIndex];
+  const correct = q.ans;
+  const explanation = q.expl;
+
   // Désactiver tous les boutons
   const allBtns = document.getElementById('quiz-options-container').querySelectorAll('.quiz-opt-btn');
   allBtns.forEach(btn => btn.disabled = true);
