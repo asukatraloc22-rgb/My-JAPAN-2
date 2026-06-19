@@ -188,9 +188,10 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
       </button>
       <div id="jlpt4-menu" class="submenu" style="display: none;">
         <button class="nav-item sub-item" onclick="loadContent('cours-07')">7: Kanji N4</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Forme TE</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Forme NAI</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Forme TA</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Potentiel & Volitif</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Les 4 Conditionnels</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Suppositions & Apparences</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
       </div>
 
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
@@ -731,62 +732,125 @@ else if(id === 'cours-03') {
   }
 
   // --- NIVEAU JLPT N4 ---
+  // --- NIVEAU JLPT N4 ---
   else if(id === 'cours-07') {
     titleHeader.innerText = "Cours 07 : Kanjis du niveau N4";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Niveau Intermédiaire - JLPT N4</h3>
-        <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société, au travail, aux actions complexes et aux saisons.</p>
+        <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société (社), au travail (業), aux actions complexes et à la nature.</p>
         <p>L'architecture de ces Kanjis est souvent basée sur des "clés" (radicaux) que vous avez déjà apprises au niveau N5.</p>
       </div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N4</h4>${generateKanjiGrid(KANJI_N4)}</div>`;
+      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(KANJI_N4)}</div>`;
   }
   else if(id === 'cours-08') {
-    titleHeader.innerText = "Cours 08 : La redoutable Forme en TE (〜て)";
+    titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. Qu'est-ce que la forme en TE ?</h3>
-        <p>C'est une forme de verbe indispensable au niveau N4. Elle permet de lier des phrases, de demander des faveurs ou d'exprimer une action en cours.</p>
-        
-        <h3>2. Formation (Les 3 groupes)</h3>
+        <h3>1. La forme Potentielle (Pouvoir faire)</h3>
+        <p>En japonais, "pouvoir faire" ne s'exprime pas avec un verbe auxiliaire comme en français, mais en modifiant le verbe lui-même. <strong>Attention : la particule を (o) devient souvent が (ga).</strong></p>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Règle</th><th>Exemple</th></tr>
-          <tr><td><strong>Ichidan (G2)</strong></td><td>Enlever "ru" + ajouter <strong>て (te)</strong></td><td>食べる (taberu) ➔ 食べて (tabete)</td></tr>
-          <tr><td><strong>Iréguliers (G3)</strong></td><td>À apprendre par cœur</td><td>する (suru) ➔ して (shite)<br>くる (kuru) ➔ きて (kite)</td></tr>
-          <tr><td><strong>Godan (G1)</strong></td><td>Terminaison u, tsu, ru ➔ <strong>って (tte)</strong><br>Terminaison mu, bu, nu ➔ <strong>んで (nde)</strong><br>Terminaison ku / gu ➔ <strong>いて (ite) / いで (ide)</strong></td><td>買う (kau) ➔ 買って (katte)<br>飲む (nomu) ➔ 飲んで (nonde)<br>聞く (kiku) ➔ 聞いて (kiite)</td></tr>
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'E' + る (ru)</strong></td><td>飲む (nomu) ➔ 飲める (nomeru - je peux boire)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>られる (rareru)</strong></td><td>食べる (taberu) ➔ 食べられる (taberareru - je peux manger)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>できる</strong> (dekiru)<br>くる ➔ <strong>こられる</strong> (korareru)</td><td>日本語が<strong>できる</strong> (Je peux parler japonais).</td></tr>
+        </table>
+
+        <h3>2. La forme Volitive (L'intention / Faisons !)</h3>
+        <p>C'est la forme familière de <em>~mashō</em>. Elle sert à proposer de faire quelque chose ("Allons-y !") ou à exprimer une forte intention (souvent suivie de と思っています - <em>to omotte imasu</em>).</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'O' + う (u)</strong></td><td>行く (iku) ➔ 行こう (ikō - Allons-y !)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>よう (yō)</strong></td><td>食べる (taberu) ➔ 食べよう (tabeyō - Mangeons !)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>しよう</strong> (shiyō)<br>くる ➔ <strong>こよう</strong> (koyō)</td><td>日本に行こうと思っています (J'ai l'intention d'aller au Japon).</td></tr>
         </table>
       </div>`;
   }
   else if(id === 'cours-09') {
-    titleHeader.innerText = "Cours 09 : La forme NAI (〜ない)";
+    titleHeader.innerText = "Cours 09 : Les 4 Conditionnels (Si / Quand)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. Exprimer la forme neutre négative</h3>
-        <p>La forme en NAI est la version familière de "masen". Elle est très utilisée pour donner des interdictions ou exprimer des obligations.</p>
+        <h3>Le cauchemar des conditionnels</h3>
+        <p>Le français utilise "Si" pour presque tout. Le japonais possède 4 formes distinctes selon la logique de la condition.</p>
         
-        <h3>2. Construction</h3>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Règle</th><th>Exemple</th></tr>
-          <tr><td><strong>Ichidan (G2)</strong></td><td>Enlever "ru" + ajouter <strong>ない (nai)</strong></td><td>食べる (taberu) ➔ 食べない (tabenai)</td></tr>
-          <tr><td><strong>Godan (G1)</strong></td><td>Changer la dernière voyelle en <strong>A</strong> + <strong>ない (nai)</strong></td><td>行く (iku) ➔ 行かない (ikanai)<br>飲む (nomu) ➔ 飲まない (nomanai)</td></tr>
+          <tr><th>Forme</th><th>Contexte d'utilisation</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>と (to)</strong><br><span style="font-size: 12px; color: #666;">(Verbe Présent + to)</span></td>
+            <td><strong>La conséquence naturelle et inévitable.</strong> Quand A se produit, B se produit toujours (machines, nature).</td>
+            <td>ボタンを押す<strong>と</strong>、水が出ます。<br><em>(Si/Quand on appuie sur le bouton, l'eau sort).</em></td>
+          </tr>
+          <tr>
+            <td><strong>ば (ba)</strong><br><span style="font-size: 12px; color: #666;">(Changer 'u' en 'eba')</span></td>
+            <td><strong>La condition logique.</strong> "À condition que...". Se concentre sur la nécessité de l'action.</td>
+            <td>安けれ<strong>ば</strong>、買います。<br><em>(Si c'est pas cher, j'achèterai).</em></td>
+          </tr>
+          <tr>
+            <td><strong>たら (tara)</strong><br><span style="font-size: 12px; color: #666;">(Forme TA + ra)</span></td>
+            <td><strong>La condition chronologique / Une fois que.</strong> C'est le plus courant à l'oral. B ne peut se faire qu'une fois A terminé.</td>
+            <td>日本に行っ<strong>たら</strong>、寿司を食べます。<br><em>(Quand / Si je vais au Japon, je mangerai des sushis).</em></td>
+          </tr>
+          <tr>
+            <td><strong>なら (nara)</strong><br><span style="font-size: 12px; color: #666;">(Nom/Verbe + nara)</span></td>
+            <td><strong>La condition contextuelle.</strong> Réagit à ce que l'autre vient de dire ("Dans ce cas...").</td>
+            <td>東京に行く<strong>なら</strong>、新幹線がいいです。<br><em>(Si tu vas à Tokyo, le Shinkansen est le mieux).</em></td>
+          </tr>
         </table>
-        <div class="alert-box"><strong>Attention (Exception Godan) :</strong> Les verbes se terminant par la syllabe "U" (ex: 買う kau) se changent en "WA" et non "A". ➔ 買わない (kawanai).</div>
       </div>`;
   }
   else if(id === 'cours-10') {
-    titleHeader.innerText = "Cours 10 : La forme TA (〜た) et le passé";
+    titleHeader.innerText = "Cours 10 : Suppositions et Apparences";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. Le passé familier (Forme TA)</h3>
-        <p>La forme en TA est simplement la version familière de "mashita". La bonne nouvelle : elle se construit exactement comme la forme en TE (Cours 8) ! Il suffit de remplacer les "e" par des "a".</p>
+        <h3>Exprimer ce que l'on perçoit</h3>
+        <p>En N4, on apprend à nuancer son discours en exprimant des impressions, des on-dit ou des apparences.</p>
         
-        <h3>2. Comparatif rapide</h3>
         <table class="course-table">
-          <tr><th>Forme Dictionnaire</th><th>Forme TE (En cours)</th><th>Forme TA (Passé)</th></tr>
-          <tr><td>食べる (taberu)</td><td>食べて (tabete)</td><td>食べた (tabeta) - <em>J'ai mangé</em></td></tr>
-          <tr><td>飲む (nomu)</td><td>飲んで (nonde)</td><td>飲んだ (nonda) - <em>J'ai bu</em></td></tr>
-          <tr><td>行く (iku)</td><td>行って (itte)</td><td>行った (itta) - <em>Je suis allé</em></td></tr>
+          <tr><th>Expression</th><th>Construction</th><th>Sens et Exemple</th></tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Visuel</em></td>
+            <td>Base du verbe / Racine Adj <strong>+ そう</strong></td>
+            <td><strong>"Ça a l'air / Il semble sur le point de..."</strong> (Basé sur ce qu'on voit à l'instant T).<br>雨が降り<strong>そうです</strong>。(Il a l'air de vouloir pleuvoir).</td>
+          </tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Ouï-dire</em></td>
+            <td>Verbe forme neutre <strong>+ そう</strong></td>
+            <td><strong>"J'ai entendu dire que..."</strong> (Basé sur une information externe).<br>明日、雨が降る<strong>そうです</strong>。(J'ai entendu dire qu'il pleuvrait demain).</td>
+          </tr>
+          <tr>
+            <td><strong>〜みたいです (mitai desu)</strong><br><em>Sensorial</em></td>
+            <td>Nom / Verbe neutre <strong>+ みたい</strong></td>
+            <td><strong>"On dirait / C'est comme..."</strong> (Basé sur tous les sens ou l'intuition).<br>彼は日本人<strong>みたいです</strong>。(On dirait un Japonais).</td>
+          </tr>
+          <tr>
+            <td><strong>〜らしいです (rashii desu)</strong><br><em>Typique</em></td>
+            <td>Nom <strong>+ らしい</strong></td>
+            <td><strong>"C'est typique de / Digne de..."</strong><br>今日は春<strong>らしい</strong>天気です。(Aujourd'hui, il fait un temps typiquement printanier).</td>
+          </tr>
         </table>
+      </div>`;
+  }
+  else if(id === 'cours-10-1') {
+    titleHeader.innerText = "Cours 10.1 : Donner, Recevoir et les Faveurs";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le transfert d'objets</h3>
+        <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don (de moi vers l'autre, ou de l'autre vers moi).</p>
+        <ul>
+          <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる。</em></li>
+          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne (à moi ou ma famille). L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる。</em></li>
+          <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう。</em></li>
+        </ul>
+
+        <h3>2. Les faveurs (Verbe en TE + Don/Réception)</h3>
+        <p>C'est ici que réside toute la subtilité du N4. On attache ces trois verbes à la forme <strong>TE</strong> d'un autre verbe pour exprimer qu'une action est un service rendu ou reçu.</p>
+        <div class="example-box">
+          <p><strong>〜てあげる (Te ageru) :</strong> Faire une faveur à quelqu'un.<br><em>手伝ってあげる (Je vais t'aider - Attention, peut paraître prétentieux envers un supérieur).</em></p>
+          <br>
+          <p><strong>〜てくれる (Te kureru) :</strong> Quelqu'un me rend un service.<br><em>母が料理を作ってくれた (Ma mère m'a fait à manger - On insiste sur la gratitude).</em></p>
+          <br>
+          <p><strong>〜てもらう (Te morau) :</strong> Recevoir une faveur (souvent après l'avoir demandée).<br><em>先生に教えてもらった (J'ai reçu l'enseignement de mon professeur).</em></p>
+        </div>
       </div>`;
   }
     // --- NIVEAU JLPT N3 ---
