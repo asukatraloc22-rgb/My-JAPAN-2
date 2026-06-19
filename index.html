@@ -146,27 +146,45 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
     </div>
     
     <nav class="sidebar-nav">
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
-        <span><span class="nav-icon">🎓</span> Cours JLPT N5</span><span class="chevron" id="chevron-jlpt5-menu">▼</span>
+      
+      <div class="nav-group-label">Apprentissage</div>
+      
+      <!-- MENU DÉROULANT : TOUS LES COURS -->
+      <button class="nav-item menu-toggle" onclick="toggleMenu('cours-menu')">
+        <span><span class="nav-icon">📚</span> Leçons & Cours</span>
+        <span class="chevron" id="chevron-cours-menu">▼</span>
       </button>
-      <div id="jlpt5-menu" class="submenu" style="display: block;">
-        <button class="nav-item sub-item active" onclick="loadContent('cours-01')"><span class="nav-icon">あ</span> Cours 1 : Hiragana</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-02')"><span class="nav-icon">ア</span> Cours 2 : Katakana</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-03')"><span class="nav-icon">📚</span> Cours 3 : Structure SOV</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-04')"><span class="nav-icon">📚</span> Cours 4 : Particules</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05')"><span class="nav-icon">📚</span> Cours 5 : Verbes (Masu)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-06')"><span class="nav-icon">⛩</span> Cours 6 : Kanji N5</button>
+      
+      <div id="cours-menu" class="submenu" style="display: block;">
+        <div class="nav-group-label" style="padding: 8px 20px 4px 36px; opacity: 0.6;">Niveau JLPT N5</div>
+        <button class="nav-item sub-item active" onclick="loadContent('cours-01')">Cours 1 : Hiragana</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-02')">Cours 2 : Katakana</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-03')">Cours 3 : Structure SOV</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-04')">Cours 4 : Particules</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05')">Cours 5 : Verbes (Masu)</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-06')">Cours 6 : Kanji N5</button>
+        
+        <div class="nav-group-label" style="padding: 12px 20px 4px 36px; opacity: 0.6; border-top: 1px solid rgba(255,255,255,0.05);">Niveau JLPT N4</div>
+        <button class="nav-item sub-item" onclick="loadContent('cours-07')">Cours 7 : Kanji N4</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-08')">Cours 8 : La forme TE</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-09')">Cours 9 : La forme NAI</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-10')">Cours 10 : La forme TA</button>
       </div>
+
       <div class="sidebar-section-divider"></div>
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
-        <span><span class="nav-icon">🗻</span> Cours JLPT N4</span><span class="chevron" id="chevron-jlpt4-menu" style="transform: rotate(-90deg);">▼</span>
-      </button>
-      <div id="jlpt4-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-07')"><span class="nav-icon">⛩</span> Cours 7 : Kanji N4</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-08')"><span class="nav-icon">🔄</span> Cours 8 : La forme TE</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-09')"><span class="nav-icon">🚫</span> Cours 9 : La forme NAI</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10')"><span class="nav-icon">⏱</span> Cours 10 : La forme TA</button>
-      </div>
+      
+      <div class="nav-group-label">Pratique & Évaluation</div>
+      
+      <!-- VOS NOUVEAUX ONGLETS -->
+      <button class="nav-item" onclick="loadContent('exercices')"><span class="nav-icon">💪</span> Exercices</button>
+      <button class="nav-item" onclick="loadContent('examens')"><span class="nav-icon">🎓</span> Examens JLPT</button>
+      
+      <div class="sidebar-section-divider"></div>
+      
+      <div class="nav-group-label">Mon Compte</div>
+      <button class="nav-item" onclick="loadContent('progression')"><span class="nav-icon">📈</span> Progression</button>
+      <button class="nav-item" onclick="loadContent('parametres')"><span class="nav-icon">⚙️</span> Paramètres</button>
+      
     </nav>
   </aside>
 
@@ -372,6 +390,95 @@ function loadContent(id) {
 
         <h3>3. Vocabulaire Temporel utile</h3>
         <p>Pour préciser quand l'action se passe, ajoutez simplement ces mots en début de phrase : 今日 (Aujourd'hui), 昨日 (Hier), 明日 (Demain), 毎日 (Tous les jours)[cite: 83].</p>
+      </div>`;
+  // --- NOUVEAUX ONGLETS (STRUCTURE D'ACCUEIL) ---
+  else if(id === 'exercices') {
+    titleHeader.innerText = "Zone d'Entraînement";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Choisissez votre exercice</h3>
+        <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" style="padding: 24px;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
+            <span class="vocab-jp" style="font-size: 18px;">Flashcards</span>
+            <span class="vocab-fr">Révisez par catégorie (Kana, Vocabulaire, Kanji)</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
+            <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
+            <span class="vocab-fr">Pratiquez la grammaire et les particules en contexte</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">❓</span>
+            <span class="vocab-jp" style="font-size: 18px;">Q&A Rapide</span>
+            <span class="vocab-fr">Séries de questions chronométrées pour la fluidité</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px;">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏆</span>
+            <span class="vocab-jp" style="font-size: 18px;">Test Global</span>
+            <span class="vocab-fr">Évaluation complète de votre niveau actuel</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'examens') {
+    titleHeader.innerText = "Simulateur d'Examens JLPT";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Conditions réelles d'examen</h3>
+        <p>Entraînez-vous avec la même structure, le même temps et les mêmes barèmes que l'examen officiel du JLPT (Japanese-Language Proficiency Test).</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" style="border-color: var(--aka);">
+            <span class="vocab-jp">JLPT N5 (Débutant)</span>
+            <span class="vocab-fr">Durée : 105 minutes<br>Vocabulaire, Grammaire, Lecture, Écoute</span>
+            <button class="quiz-opt-btn" style="margin-top: 15px; text-align: center; border-color: var(--aka); color: var(--aka);">Lancer le test blanc</button>
+          </div>
+          <div class="vocab-card">
+            <span class="vocab-jp">JLPT N4 (Élémentaire)</span>
+            <span class="vocab-fr">Durée : 115 minutes<br>Nécessite de valider les modules N4</span>
+            <button class="quiz-opt-btn" style="margin-top: 15px; text-align: center;" disabled>Verrouillé</button>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'progression') {
+    titleHeader.innerText = "Tableau de Progression";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Statistiques d'apprentissage</h3>
+        <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">12</span>
+            <span class="vocab-fr">Jours consécutifs (Série)</span>
+          </div>
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;">85%</span>
+            <span class="vocab-fr">Précision Flashcards</span>
+          </div>
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;">240</span>
+            <span class="vocab-fr">Mots maîtrisés</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'parametres') {
+    titleHeader.innerText = "Paramètres de l'Application";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Préférences d'affichage</h3>
+        <ul style="list-style: none; margin-left: 0;">
+          <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <strong>Afficher les Rōmaji</strong> <span>[ ON ]</span>
+          </li>
+          <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+            <strong>Mode Sombre (Dark Mode)</strong> <span>[ OFF ]</span>
+          </li>
+          <li style="padding: 10px 0; display: flex; justify-content: space-between;">
+            <strong>Vitesse de la voix audio</strong> <span>[ Normale ]</span>
+          </li>
+        </ul>
       </div>`;
   }
   else if(id === 'cours-06') {
