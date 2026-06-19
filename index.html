@@ -376,36 +376,32 @@ const KANJI_N4 = [
 ];
 
 const KANJI_N3 = [
- {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'},
-  {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'},
-  {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'},
-  {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'},
-  {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'},
-  {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'},
-  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'},
-  {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'},
-  {j:'決', on:'ケツ', kun:'き.める', f:'Décider'},
-  {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
-  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer, Économie'},
-  {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'},
-  {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'},
-  {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'},
-  {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'},
-  {j:'原', on:'ゲン', kun:'はら', f:'Origine, Plaine'},
-  {j:'因', on:'イン', kun:'よ.る', f:'Cause'},
-  {j:'求', on:'キュウ', kun:'もと.める', f:'Demander, Exiger'},
-  {j:'受', on:'ジュ', kun:'う.ける', f:'Recevoir'},
-  {j:'辞', on:'ジ', kun:'や.める', f:'Démissionner, Mot'},
-  {j:'関', on:'カン', kun:'せき', f:'Lien, Barrière'},
-  {j:'係', on:'ケイ', kun:'かか.る', f:'Relation, Préposé'},
-  {j:'役', on:'ヤク', kun:'-', f:'Rôle, Service'},
-  {j:'投', on:'トウ', kun:'な.げる', f:'Jeter, Lancer'},
-  {j:'打', on:'ダ', kun:'う.つ', f:'Frapper'},
-  {j:'勝', on:'ショウ', kun:'か.つ', f:'Gagner'},
-  {j:'負', on:'フ', kun:'ま.ける', f:'Perdre'},
-  {j:'残', on:'ザン', kun:'のこ.る', f:'Rester, Laisser'},
-  {j:'念', on:'ネン', kun:'-', f:'Pensée, Regret'},
-  {j:'苦', on:'ク', kun:'くる.しい', f:'Souffrance, Amer'}
+  // Émotions et Sentiments
+  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'}, {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'}, {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'}, {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'}, {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'}, {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'}, {j:'苦', on:'ク', kun:'くる.しい', f:'Souffrance, Amer'}, {j:'痛', on:'ツウ', kun:'いた.い', f:'Douleur'}, {j:'疲', on:'ヒ', kun:'つか.れる', f:'Fatigue'}, {j:'恥', on:'チ', kun:'はずか.しい', f:'Honte'},
+  
+  // Pensée et Cognition
+  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser, Se réveiller'}, {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'}, {j:'決', on:'ケツ', kun:'き.める', f:'Décider'}, {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'}, {j:'考', on:'コウ', kun:'かんが.える', f:'Penser, Réfléchir'}, {j:'念', on:'ネン', kun:'-', f:'Pensée, Regret'}, {j:'疑', on:'ギ', kun:'うたが.う', f:'Douter'}, {j:'解', on:'カイ', kun:'と.く', f:'Résoudre, Comprendre'},
+  
+  // Société, Politique et Économie
+  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer (temps), Économie'}, {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'}, {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'}, {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'}, {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'}, {j:'法', on:'ホウ', kun:'-', f:'Loi, Méthode'}, {j:'規', on:'キ', kun:'-', f:'Règle, Standard'}, {j:'則', on:'ソク', kun:'-', f:'Règle'}, {j:'禁', on:'キン', kun:'-', f:'Interdire'},
+  
+  // Relations et Travail
+  {j:'関', on:'カン', kun:'せき', f:'Lien, Barrière'}, {j:'係', on:'ケイ', kun:'かか.る', f:'Relation, Préposé'}, {j:'役', on:'ヤク', kun:'-', f:'Rôle, Service'}, {j:'辞', on:'ジ', kun:'や.める', f:'Démissionner, Mot'}, {j:'就', on:'シュウ', kun:'つ.く', f:'Prendre un poste'}, {j:'職', on:'ショク', kun:'-', f:'Emploi'}, {j:'退', on:'タイ', kun:'しりぞ.く', f:'Se retirer, Reculer'}, {j:'労', on:'ロウ', kun:'-', f:'Travail, Labeur'}, {j:'給', on:'キュウ', kun:'-', f:'Salaire, Fournir'},
+  
+  // Actions Complexes
+  {j:'求', on:'キュウ', kun:'もと.める', f:'Demander, Exiger'}, {j:'受', on:'ジュ', kun:'う.ける', f:'Recevoir'}, {j:'投', on:'トウ', kun:'な.げる', f:'Jeter, Lancer'}, {j:'打', on:'ダ', kun:'う.つ', f:'Frapper'}, {j:'勝', on:'ショウ', kun:'か.つ', f:'Gagner'}, {j:'負', on:'フ', kun:'ま.ける', f:'Perdre'}, {j:'残', on:'ザン', kun:'のこ.る', f:'Rester, Laisser'}, {j:'交', on:'コウ', kun:'まじ.わる', f:'Mélanger, Échanger'}, {j:'換', on:'カン', kun:'か.える', f:'Échanger'}, {j:'変', on:'ヘン', kun:'か.わる', f:'Changer'},
+  
+  // Nature et Conditions
+  {j:'原', on:'ゲン', kun:'はら', f:'Origine, Plaine'}, {j:'因', on:'イン', kun:'よ.る', f:'Cause'}, {j:'寒', on:'カン', kun:'さむ.い', f:'Froid (climat)'}, {j:'暑', on:'ショ', kun:'あつ.い', f:'Chaud (climat)'}, {j:'暖', on:'ダン', kun:'あたた.かい', f:'Doux, Chaleureux'}, {j:'涼', on:'リョウ', kun:'すず.しい', f:'Frais'}, {j:'冷', on:'レイ', kun:'つめ.たい', f:'Froid (toucher)'}, {j:'温', on:'オン', kun:'あたた.かい', f:'Chaud (toucher)'}, {j:'氷', on:'ヒョウ', kun:'こおり', f:'Glace'},
+  
+  // Objets, Concepts et Descriptions
+  {j:'薬', on:'ヤク', kun:'くすり', f:'Médicament'}, {j:'局', on:'キョク', kun:'-', f:'Bureau, Département'}, {j:'客', on:'キャク', kun:'-', f:'Client, Invité'}, {j:'石', on:'セキ', kun:'いし', f:'Pierre'}, {j:'油', on:'ユ', kun:'あぶら', f:'Huile'}, {j:'酒', on:'シュ', kun:'さけ', f:'Alcool'}, {j:'塩', on:'エン', kun:'しお', f:'Sel'}, {j:'皿', on:'ベイ', kun:'さら', f:'Assiette'}, {j:'血', on:'ケツ', kun:'ち', f:'Sang'}, {j:'息', on:'ソク', kun:'いき', f:'Souffle'},
+  
+  // Mouvement et État
+  {j:'飛', on:'ヒ', kun:'と.ぶ', f:'Voler (air)'}, {j:'降', on:'コウ', kun:'お.りる', f:'Descendre, Tomber (pluie)'}, {j:'迎', on:'ゲイ', kun:'むか.える', f:'Accueillir'}, {j:'呼', on:'コ', kun:'よ.ぶ', f:'Appeler'}, {j:'泊', on:'ハク', kun:'と.まる', f:'Passer la nuit'}, {j:'戻', on:'レイ', kun:'もど.る', f:'Retourner'}, {j:'払', on:'フツ', kun:'はら.う', f:'Payer'}, {j:'育', on:'イク', kun:'そだ.つ', f:'Élever, Grandir'}, {j:'続', on:'ゾク', kun:'つづ.く', f:'Continuer'}, {j:'落', on:'ラク', kun:'お.ちる', f:'Tomber'},
+  
+  // Adjectifs N3
+  {j:'忙', on:'ボウ', kun:'いそが.しい', f:'Occupé'}, {j:'静', on:'セイ', kun:'しず.か', f:'Calme'}, {j:'危', on:'キ', kun:'あぶ.ない', f:'Dangereux'}, {j:'険', on:'ケン', kun:'けわ.しい', f:'Escarpé, Danger'}, {j:'暗', on:'アン', kun:'くら.い', f:'Sombre'}, {j:'細', on:'サイ', kun:'ほそ.い', f:'Fin, Détaillé'}, {j:'太', on:'タイ', kun:'ふと.い', f:'Gros'}, {j:'浅', on:'セン', kun:'あさ.い', f:'Peu profond'}, {j:'深', on:'シン', kun:'ふか.い', f:'Profond'}, {j:'若', on:'ジャク', kun:'わか.い', f:'Jeune'}
 ];
 
 const KANJI_N2 = [
