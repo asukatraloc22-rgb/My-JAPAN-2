@@ -194,6 +194,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
       </div>
 
+      <!-- MENU N3 : INTERMÉDIAIRE -->
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
         <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
         <span class="chevron" id="chevron-jlpt3-menu" style="transform: rotate(-90deg);">▼</span>
@@ -202,6 +203,8 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
         <button class="nav-item sub-item" onclick="loadContent('cours-11')">11: Kanji N3</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-12')">12: Passif & Causatif</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-13')">13: Le Keigo (Politesse)</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13-1')">13.1: Temps & Limites</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13-2')">13.2: Décisions & État</button>
       </div>
 
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt2-menu')">
@@ -368,13 +371,38 @@ const KANJI_N5 = [
   {j:'山', on:'サン', kun:'やま', f:'Montagne'}, {j:'川', on:'セン', kun:'かわ', f:'Rivière'}, {j:'空', on:'クウ', kun:'そら', f:'Ciel'}, {j:'気', on:'キ', kun:'-', f:'Esprit, Air'}, {j:'雨', on:'ウ', kun:'あめ', f:'Pluie'}, {j:'電', on:'デン', kun:'-', f:'Électricité'}, {j:'車', on:'シャ', kun:'くるま', f:'Voiture'}, {j:'学', on:'ガク', kun:'まな.ぶ', f:'Étudier'}, {j:'校', on:'コウ', kun:'-', f:'École'}, {j:'語', on:'ゴ', kun:'-', f:'Langue'}, {j:'本', on:'ホン', kun:'もと', f:'Livre'}
 ];
 
-const KANJI_N4 = [
-  {j:'会', on:'カイ', kun:'あ.う', f:'Se rencontrer'}, {j:'同', on:'ドウ', kun:'おな.じ', f:'Même'}, {j:'事', on:'ジ', kun:'こと', f:'Chose'}, {j:'自', on:'ジ', kun:'みずか.ら', f:'Soi-même'}, {j:'社', on:'シャ', kun:'やしろ', f:'Société'}, {j:'発', on:'ハツ', kun:'-', f:'Émettre'}, {j:'者', on:'シャ', kun:'もの', f:'Personne'}, {j:'地', on:'チ', kun:'-', f:'Terrain'}, {j:'業', on:'ギョウ', kun:'わざ', f:'Profession'}, {j:'方', on:'ホウ', kun:'かた', f:'Direction'}, 
-  {j:'新', on:'シン', kun:'あたら.しい', f:'Nouveau'}, {j:'場', on:'ジョウ', kun:'ば', f:'Endroit'}, {j:'員', on:'イン', kun:'-', f:'Membre'}, {j:'開', on:'カイ', kun:'あ.く', f:'Ouvrir'}, {j:'力', on:'リョク', kun:'ちから', f:'Force'}, {j:'問', on:'モン', kun:'と.う', f:'Question'}, {j:'代', on:'ダイ', kun:'か.わる', f:'Remplacer'}, {j:'明', on:'メイ', kun:'あか.るい', f:'Clair'}, {j:'動', on:'ドウ', kun:'うご.く', f:'Bouger'}, {j:'京', on:'キョウ', kun:'みやこ', f:'Capitale'}, 
-  {j:'通', on:'ツウ', kun:'とお.る', f:'Passer'}, {j:'言', on:'ゲン', kun:'い.う', f:'Dire'}, {j:'理', on:'リ', kun:'-', f:'Raison'}, {j:'体', on:'タイ', kun:'からだ', f:'Corps'}, {j:'田', on:'デン', kun:'た', f:'Rizière'}, {j:'作', on:'サク', kun:'つく.る', f:'Fabriquer'}, {j:'用', on:'ヨウ', kun:'もち.いる', f:'Utiliser'}, {j:'強', on:'キョウ', kun:'つよ.い', f:'Fort'}, {j:'公', on:'コウ', kun:'おおやけ', f:'Public'}, {j:'野', on:'ヤ', kun:'の', f:'Champ'},
-  {j:'思', on:'シ', kun:'おも.う', f:'Penser'}, {j:'家', on:'カ', kun:'いえ', f:'Maison'}, {j:'起', on:'キ', kun:'お.きる', f:'Se lever'}, {j:'歩', on:'ホ', kun:'ある.く', f:'Marcher'}, {j:'待', on:'タイ', kun:'ま.つ', f:'Attendre'}, {j:'知', on:'チ', kun:'し.る', f:'Savoir'}, {j:'売', on:'バイ', kun:'う.る', f:'Vendre'}, {j:'着', on:'チャク', kun:'き.る', f:'Porter'}, {j:'乗', on:'ジョウ', kun:'の.る', f:'Monter'}, {j:'答', on:'トウ', kun:'こた.え', f:'Répondre'},
-  {j:'夜', on:'ヤ', kun:'よる', f:'Nuit'}, {j:'朝', on:'チョウ', kun:'あさ', f:'Matin'}, {j:'昼', on:'チュウ', kun:'ひる', f:'Midi'}, {j:'春', on:'シュン', kun:'はる', f:'Printemps'}, {j:'夏', on:'カ', kun:'なつ', f:'Été'}, {j:'秋', on:'シュウ', kun:'あき', f:'Automne'}, {j:'冬', on:'トウ', kun:'ふゆ', f:'Hiver'}, {j:'花', on:'カ', kun:'はな', f:'Fleur'}, {j:'海', on:'カイ', kun:'うみ', f:'Mer'}, {j:'風', on:'フウ', kun:'かぜ', f:'Vent'},
-  {j:'音', on:'オン', kun:'おと', f:'Son'}, {j:'楽', on:'ガク', kun:'たの.しい', f:'Musique'}, {j:'歌', on:'カ', kun:'うた', f:'Chanson'}, {j:'画', on:'ガ', kun:'-', f:'Image'}, {j:'紙', on:'シ', kun:'かみ', f:'Papier'}, {j:'映', on:'エイ', kun:'うつ.す', f:'Projeter'}, {j:'急', on:'キュウ', kun:'いそ.ぐ', f:'Dépêcher'}, {j:'教', on:'キョウ', kun:'おし.える', f:'Enseigner'}, {j:'黒', on:'コク', kun:'くろ', f:'Noir'}, {j:'茶', on:'チャ', kun:'-', f:'Thé'}
+/* ─── BASE DE DONNÉES KANJI N3 ─── */
+const KANJI_N3 = [
+  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'},
+  {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'},
+  {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'},
+  {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'},
+  {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'},
+  {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'},
+  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'},
+  {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'},
+  {j:'決', on:'ケツ', kun:'き.める', f:'Décider'},
+  {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
+  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer, Économie'},
+  {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'},
+  {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'},
+  {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'},
+  {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'},
+  {j:'原', on:'ゲン', kun:'はら', f:'Origine, Plaine'},
+  {j:'因', on:'イン', kun:'よ.る', f:'Cause'},
+  {j:'求', on:'キュウ', kun:'もと.める', f:'Demander, Exiger'},
+  {j:'受', on:'ジュ', kun:'う.ける', f:'Recevoir'},
+  {j:'辞', on:'ジ', kun:'や.める', f:'Démissionner, Mot'},
+  {j:'関', on:'カン', kun:'せき', f:'Lien, Barrière'},
+  {j:'係', on:'ケイ', kun:'かか.る', f:'Relation, Préposé'},
+  {j:'役', on:'ヤク', kun:'-', f:'Rôle, Service'},
+  {j:'投', on:'トウ', kun:'な.げる', f:'Jeter, Lancer'},
+  {j:'打', on:'ダ', kun:'う.つ', f:'Frapper'},
+  {j:'勝', on:'ショウ', kun:'か.つ', f:'Gagner'},
+  {j:'負', on:'フ', kun:'ま.ける', f:'Perdre'},
+  {j:'残', on:'ザン', kun:'のこ.る', f:'Rester, Laisser'},
+  {j:'念', on:'ネン', kun:'-', f:'Pensée, Regret'},
+  {j:'苦', on:'ク', kun:'くる.しい', f:'Souffrance, Amer'}
 ];
 
 /* ─── NOUVELLES BASES DE DONNÉES JLPT N3, N2, N1 ─── */
@@ -853,52 +881,140 @@ else if(id === 'cours-03') {
         </div>
       </div>`;
   }
-    // --- NIVEAU JLPT N3 ---
+  // --- NIVEAU JLPT N3 ---
   else if(id === 'cours-11') {
     titleHeader.innerText = "Cours 11 : Kanjis du niveau N3";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Le pont vers la fluidité</h3>
-        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne. Les Kanjis y abordent les émotions, les sentiments, l'économie et la politique de base.</p>
+        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (articles simples, affiches, e-mails professionnels). Les Kanjis y abordent les émotions, les sentiments complexes, l'économie et la politique de base.</p>
       </div>
-      <div class="kana-section"><h4>Sélection de Kanji N3</h4>${generateKanjiGrid(KANJI_N3)}</div>`;
+      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(KANJI_N3)}</div>`;
   }
   else if(id === 'cours-12') {
-    titleHeader.innerText = "Cours 12 : Le Passif et le Causatif";
+    titleHeader.innerText = "Cours 12 : Passif, Causatif et Causatif-Passif";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. La forme Passive (reru / rareru)</h3>
-        <p>Elle sert à exprimer qu'une action est subie par le sujet. En japonais, le passif est souvent utilisé pour exprimer une gêne ou un dommage subi (le "passif de contrariété").</p>
+        <h3>1. La forme Passive (れる / られる)</h3>
+        <p>Elle sert à exprimer qu'une action est subie par le sujet. <strong>Subtilité N3 :</strong> le "passif de contrariété". Le japonais utilise le passif pour montrer qu'on a subi un désagrément à cause de l'action de quelqu'un d'autre.</p>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
-          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる (reru)</strong></td><td>書く (kaku) ➔ 書かれる (kakareru)</td></tr>
-          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる (rareru)</strong></td><td>食べる (taberu) ➔ 食べられる (taberareru)</td></tr>
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる (reru)</strong></td><td>雨に降ら<strong>れる</strong> (Subir la pluie ➔ Il a plu sur moi).</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる (rareru)</strong></td><td>見<strong>られる</strong> (Être regardé).</td></tr>
         </table>
         
-        <h3>2. La forme Causative (seru / saseru)</h3>
-        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un, ou de <strong>laisser faire</strong>.</p>
+        <h3>2. La forme Causative (せる / させる)</h3>
+        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un (forcer), ou de <strong>laisser faire</strong> (autoriser).</p>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
-          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる (seru)</strong></td><td>行く (iku) ➔ 行かせる (ikaseru)</td></tr>
-          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる (saseru)</strong></td><td>食べる (taberu) ➔ 食べさせる (tabesaseru)</td></tr>
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる (seru)</strong></td><td>彼を待た<strong>せる</strong> (Je le fais attendre).</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる (saseru)</strong></td><td>子供に野菜を食べ<strong>させる</strong> (Je force/laisse l'enfant manger ses légumes).</td></tr>
         </table>
-        <div class="alert-box"><strong>Astuce ultime :</strong> On peut combiner les deux (Causatif-Passif) pour dire "J'ai été forcé de le faire" : 食べさせられる (On m'a forcé à manger).</div>
+
+        <h3>3. Le Boss Final : Le Causatif-Passif (させられる)</h3>
+        <p>C'est l'un des points de grammaire les plus complexes. Il combine les deux concepts précédents pour exprimer : <strong>"On m'a forcé à faire une action (et ça m'a dérangé)".</strong></p>
+        <div class="example-box">
+          <p><strong>Règle générale :</strong> Verbe Causatif ➔ Enlever RU ➔ Ajouter RARERU.</p>
+          <p><em>Ex: 食べる (Manger) ➔ 食べさせる (Faire manger) ➔ 食べさせられる (Être forcé à manger).</em></p>
+          <p><strong>Astuce G1 :</strong> Pour les verbes du groupe 1, "〜せられる" (serareru) se contracte souvent en <strong>"〜される" (sareru)</strong> à l'oral. <em>Ex: 待つ ➔ 待たされる (On m'a fait poireauter).</em></p>
+        </div>
       </div>`;
   }
   else if(id === 'cours-13') {
-    titleHeader.innerText = "Cours 13 : Le Keigo (Langage Honorifique)";
+    titleHeader.innerText = "Cours 13 : Le Keigo (Le Langage Honorifique)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>L'art de la politesse japonaise</h3>
-        <p>Au niveau N3, la forme polie "masu" ne suffit plus dans le monde du travail. Il faut maîtriser le Keigo, qui se divise en trois grandes familles :</p>
-        <ul>
-          <li><strong>Sonkeigo (尊敬語) :</strong> Le langage de respect. On surélève l'action de l'interlocuteur (un client, un patron).<br><em>Ex: 食べる (manger) ➔ 召し上がる (meshiagaru).</em></li>
-          <li><strong>Kenjōgo (謙譲語) :</strong> Le langage d'humilité. On abaisse sa propre action pour montrer du respect.<br><em>Ex: 食べる (manger) ➔ いただく (itadaku).</em></li>
-          <li><strong>Teineigo (丁寧語) :</strong> Le langage poli standard (desu/masu). Il met un filtre de politesse sur tout.</li>
-        </ul>
+        <h3>L'art de la politesse d'entreprise</h3>
+        <p>Au niveau N3, la forme "masu" ne suffit plus dans le monde du travail. Il faut maîtriser le <strong>Keigo (敬語)</strong>, qui redéfinit votre position sociale par rapport à votre interlocuteur.</p>
+        
+        <table class="course-table">
+          <tr><th>Famille</th><th>Explication</th><th>Formes de "Manger" (食べる)</th></tr>
+          <tr>
+            <td><strong>1. Sonkeigo (尊敬語)</strong><br><em>Langage de respect</em></td>
+            <td>On surélève l'action de l'interlocuteur (un client, un patron). Vous ne devez JAMAIS l'utiliser pour vos propres actions.</td>
+            <td><strong>召し上がる (Meshiagaru)</strong><br><em>Ex: 社長が召し上がった (Le PDG a mangé).</em></td>
+          </tr>
+          <tr>
+            <td><strong>2. Kenjōgo (謙譲語)</strong><br><em>Langage d'humilité</em></td>
+            <td>On abaisse sa propre action pour montrer du respect à l'autre. S'utilise uniquement pour soi-même ou les membres de son entreprise face à un client.</td>
+            <td><strong>いただく (Itadaku)</strong><br><em>Ex: 私がいただきました (C'est moi qui ai mangé).</em></td>
+          </tr>
+          <tr>
+            <td><strong>3. Teineigo (丁寧語)</strong><br><em>Langage de courtoisie</em></td>
+            <td>Le langage poli standard (desu/masu). Il met simplement un filtre de politesse sur les mots sans rapport de hiérarchie stricte.</td>
+            <td><strong>食べます (Tabemasu)</strong></td>
+          </tr>
+        </table>
+        
+        <div class="alert-box"><strong>Verbes irréguliers à mémoriser absolument :</strong><br>
+        Aller/Venir/Être : いらっしゃる (Sonkeigo) / まいる・おる (Kenjōgo).<br>
+        Dire : おっしゃる (Sonkeigo) / もうす (Kenjōgo).</div>
       </div>`;
   }
-
+  else if(id === 'cours-13-1') {
+    titleHeader.innerText = "Cours 13.1 : Grammaire du Temps et des Limites";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Nuancer la temporalité</h3>
+        <p>Le N3 demande une grande précision pour expliquer <em>quand</em> ou <em>pendant combien de temps</em> se déroule une action.</p>
+        
+        <table class="course-table">
+          <tr><th>Grammaire</th><th>Traduction et Sens</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>〜うちに (uchi ni)</strong></td>
+            <td><strong>Pendant que / Avant que...</strong><br>L'action B doit être faite pendant que l'état A est encore valable, sinon il sera trop tard.</td>
+            <td>温かい<strong>うちに</strong>食べてください。<br><em>Mangez-le pendant que c'est encore chaud.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜間に (aida ni)</strong></td>
+            <td><strong>Pendant (un intervalle)...</strong><br>L'action B est courte et se produit ponctuellement pendant que l'état A (plus long) est en cours.</td>
+            <td>留守の<strong>間に</strong>泥棒が入った。<br><em>Pendant mon absence, un voleur est entré.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜たびに (tabi ni)</strong></td>
+            <td><strong>À chaque fois que...</strong><br>Exprime une routine ou une habitude inévitable.</td>
+            <td>この曲を聞く<strong>たびに</strong>、彼を思い出す。<br><em>À chaque fois que j'écoute cette chanson, je pense à lui.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ついでに (tsuide ni)</strong></td>
+            <td><strong>En profitant de l'occasion pour...</strong><br>Faire l'action B de manière opportuniste pendant qu'on fait l'action A.</td>
+            <td>散歩の<strong>ついでに</strong>手紙を出した。<br><em>J'ai profité de ma promenade pour poster la lettre.</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-13-2') {
+    titleHeader.innerText = "Cours 13.2 : Décisions et Changements d'état";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>La différence entre l'effort et la conséquence</h3>
+        <p>En japonais, on fait une grande distinction entre ce qu'on décide activement de faire (volonté) et ce qui est décidé par les circonstances (passivité/règlement).</p>
+        
+        <table class="course-table">
+          <tr><th>Expression</th><th>Sens (Ce que cela implique)</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>〜ことにする</strong><br>(koto ni suru)</td>
+            <td><strong>Décider de... (Action personnelle)</strong><br>Le locuteur a pris la décision par sa propre volonté.</td>
+            <td>タバコをやめる<strong>ことにした</strong>。<br><em>J'ai décidé d'arrêter de fumer.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ことになる</strong><br>(koto ni naru)</td>
+            <td><strong>Il a été décidé que... (Conséquence extérieure)</strong><br>La décision vient de la société, de l'entreprise ou des règles. Le locuteur n'a pas le contrôle.</td>
+            <td>来月、転勤する<strong>ことになりました</strong>。<br><em>Il a été décidé que je serais muté le mois prochain.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ようにする</strong><br>(yō ni suru)</td>
+            <td><strong>Faire en sorte de... / Faire un effort pour...</strong><br>Exprime une habitude qu'on essaie de tenir.</td>
+            <td>毎日、運動する<strong>ようにしている</strong>。<br><em>Je fais en sorte de faire du sport tous les jours.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ようになる</strong><br>(yō ni naru)</td>
+            <td><strong>En venir à... / Devenir capable de...</strong><br>Exprime un changement d'état ou de capacité qui s'est produit avec le temps.</td>
+            <td>日本語が話せる<strong>ようになりました</strong>。<br><em>J'en suis venu à pouvoir parler japonais (Avant je ne pouvais pas).</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
   // --- NIVEAU JLPT N2 ---
   else if(id === 'cours-14') {
     titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
