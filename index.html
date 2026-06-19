@@ -526,6 +526,12 @@ function loadContent(id) {
       <div class="card">
         <h3>1. L'Alphabet Phonétique Natif</h3>
         <p>Les hiragana sont la base absolue du japonais. Ils vous permettent de lire sans rōmaji et d'accéder aux <em>furigana</em>. Chaque caractère = 1 consonne + 1 voyelle, sauf <strong>ん (n)</strong>.</p>
+        <h3>2. Sons modifiés et combinés</h3>
+        <ul>
+          <li><strong>Sons voicés :</strong> L'ajout de <em>dakuten</em> (") ou <em>handakuten</em> (°) modifie le son d'une syllabe.</li>
+          <li><strong>Yōon :</strong> Les petites syllabes <em>ya, yu, yo</em> fusionnent avec le son précédent.</li>
+        </ul>
+        <div class="alert-box"><strong>À savoir :</strong> Le petit tsu (っ) double la consonne suivante. Les particules は se prononce "wa", et を se prononce "o".</div>
       </div>
       <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
       <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>
@@ -537,6 +543,11 @@ function loadContent(id) {
       <div class="card">
         <h3>1. Les mots étrangers (Gairaigo)</h3>
         <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères et les onomatopées.</p>
+        <h3>2. Pièges et Astuces</h3>
+        <ul>
+          <li><strong>Tiret d'allongement (ー) :</strong> Il allonge la voyelle précédente (ex: コーヒー - kō-hī).</li>
+          <li><strong>Différences visuelles :</strong> Attention aux paires qui se ressemblent beaucoup ! ツ (tsu) s'écrit de haut en bas, tandis que シ (shi) s'écrit de gauche à droite.</li>
+        </ul>
       </div>
       <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
       <div class="kana-section"><h4>Dakuten & Handakuten</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>
@@ -550,7 +561,7 @@ function loadContent(id) {
         <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>. Le verbe est TOUJOURS placé à la toute fin de la phrase.</p>
         
         <h3>2. La Copule です (Le verbe "Être")</h3>
-        <p>Pour dire "A est B", on utilise "A wa B desu".</p>
+        <p>Pour dire "A est B", on utilise "A wa B desu". <strong>です (desu)</strong> se place à la fin et se conjugue pour exprimer le temps et la négation :</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Forme polie</th><th>Exemple (C'est un chat)</th></tr>
           <tr><td>Présent affirmatif</td><td><strong>〜です</strong> (desu)</td><td>猫です (neko desu)</td></tr>
@@ -573,7 +584,10 @@ function loadContent(id) {
           <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct.</td><td>すし<strong>を</strong>食べます (Je mange des sushis).</td></tr>
           <tr><td><strong>に (ni)</strong></td><td>Destination géographique, Moment précis.</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo).</td></tr>
           <tr><td><strong>で (de)</strong></td><td>Lieu d'action, Moyen, Instrument.</td><td>電車<strong>で</strong>行きます (J'y vais en train).</td></tr>
-          <tr><td><strong>と (to)</strong></td><td>"Et", "Avec" (une personne).</td><td>友達<strong>と</strong>行きます (J'y vais avec un ami).</td></tr>
+          <tr><td><strong>と (to)</strong></td><td>"Et" (liste exhaustive), "Avec" (une personne).</td><td>友達<strong>と</strong>行きます (J'y vais avec un ami).</td></tr>
+          <tr><td><strong>も (mo)</strong></td><td>"Aussi".</td><td>私<strong>も</strong>学生です (Moi aussi je suis étudiant).</td></tr>
+          <tr><td><strong>から / まで</strong></td><td>"Depuis" / "Jusqu'à" (Temps ou Espace).</td><td>9時<strong>から</strong>5時<strong>まで</strong> (De 9h à 5h).</td></tr>
+          <tr><td><strong>へ (e)</strong></td><td>Direction (Trajet).</td><td>日本<strong>へ</strong>行きます (Je pars vers le Japon).</td></tr>
         </table>
       </div>`;
   }
@@ -590,25 +604,91 @@ function loadContent(id) {
           <tr><td>Passé affirmatif</td><td><strong>〜ました</strong></td><td>食べました (tabemashita)</td></tr>
           <tr><td>Passé négatif</td><td><strong>〜ませんでした</strong></td><td>食べませんでした (tabemasen deshita)</td></tr>
         </table>
+
         <h3>2. Exprimer un désir (Je veux...)</h3>
-        <p>Pour dire "Je veux faire quelque chose", on enlève "masu" et on le remplace par <strong>たいです (tai desu)</strong>.</p>
+        <p>Pour dire "Je veux faire quelque chose", on enlève "masu" et on le remplace par <strong>たいです (tai desu)</strong>. Le verbe se conjugue ensuite exactement comme un adjectif en "i" !</p>
+        <div class="example-box">
+          <p>食べる (Manger) ➔ 食べ<strong>たいです</strong> (Je veux manger).</p>
+          <p>飲む (Boire) ➔ 飲み<strong>たくないです</strong> (Je ne veux pas boire).</p>
+        </div>
+
+        <h3>3. Faire une proposition ou inviter</h3>
+        <ul>
+          <li><strong>〜ましょう (mashō) :</strong> Signifie "Faisons / Allons-y". (Ex: 行きましょう - Allons-y !).</li>
+          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". (Ex: お茶を飲みませんか - Voulez-vous boire un thé ?).</li>
+        </ul>
       </div>`;
   }
   else if(id === 'cours-05-1') {
     titleHeader.innerText = "Cours 5.1 : Les Adjectifs (い et な)";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. Les Adjectifs en い (i) et な (na)</h3>
-        <p>Les adjectifs en "i" se conjuguent eux-mêmes. Les adjectifs en "na" utilisent "desu" pour se conjuguer.</p>
+        <h3>1. Les Adjectifs en い (i)</h3>
+        <p>Ils se terminent toujours par la syllabe い (i). Ils portent en eux-mêmes la notion de temps et de négation, c'est donc l'adjectif lui-même qui se conjugue !</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 高い (takai - grand/cher)</th></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>高いです (takai desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Remplacer le い par <strong>くないです (kunai desu)</strong></td><td>高<strong>くないです</strong> (taka<strong>kunai desu</strong>)</td></tr>
+          <tr><td>Passé affirmatif</td><td>Remplacer le い par <strong>かったです (katta desu)</strong></td><td>高<strong>かったです</strong> (taka<strong>katta desu</strong>)</td></tr>
+        </table>
+
+        <h3>2. Les Adjectifs en な (na)</h3>
+        <p>Ils fonctionnent comme des noms. Ils ne se conjuguent pas ; c'est le verbe "être" (desu) qui fait tout le travail. On utilise la particule "na" uniquement pour les relier à un nom.</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 静か (shizuka - calme)</th></tr>
+          <tr><td>Modification d'un nom</td><td>Ajouter な (na) + Nom</td><td>静か<strong>な</strong>部屋 (shizuka <strong>na</strong> heya)</td></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>静かです (shizuka desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Adjectif + じゃありません (ja arimasen)</td><td>静か<strong>じゃありません</strong> (shizuka <strong>ja arimasen</strong>)</td></tr>
+        </table>
       </div>`;
   }
   else if(id === 'cours-05-2') {
     titleHeader.innerText = "Cours 5.2 : Existence et Possession";
-    contentDiv.innerHTML = `<div class="card"><h3>Existence</h3><p>あります (Arimasu) pour l'inanimé, います (Imasu) pour l'animé.</p></div>`;
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Distinguer l'animé de l'inanimé</h3>
+        <ul>
+          <li><strong>あります (Arimasu) :</strong> Utilisé pour les objets inanimés et les plantes (livre, voiture, arbre, idée).</li>
+          <li><strong>います (Imasu) :</strong> Utilisé pour les êtres vivants doués de mouvement (humains, animaux).</li>
+        </ul>
+        
+        <h3>2. Structure grammaticale de l'existence</h3>
+        <div class="example-box">
+          <p><strong>[Lieu] に [Sujet] が あります/います。</strong></p>
+          <p>部屋<strong>に</strong>机<strong>が</strong>あります。(Heya ni tsukue ga arimasu) ➔ Il y a un bureau dans la chambre.</p>
+          <p>庭<strong>に</strong>犬<strong>が</strong>います。(Niwa ni inu ga imasu) ➔ Il y a un chien dans le jardin.</p>
+        </div>
+
+        <h3>3. Exprimer la possession</h3>
+        <div class="example-box">
+          <p>私<strong>は</strong>車<strong>が</strong>あります。(Watashi wa kuruma ga arimasu) ➔ J'ai une voiture.</p>
+          <p>私<strong>は</strong>兄弟<strong>が</strong>います。(Watashi wa kyōdai ga imasu) ➔ J'ai des frères et sœurs.</p>
+        </div>
+      </div>`;
   }
   else if(id === 'cours-05-3') {
     titleHeader.innerText = "Cours 5.3 : Mots interrogatifs et Compteurs";
-    contentDiv.innerHTML = `<div class="card"><h3>Les compteurs</h3><p>On utilise des suffixes spécifiques pour compter (~tsu, ~nin, ~mai, ~hon).</p></div>`;
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les mots interrogatifs essentiels (N5)</h3>
+        <p>En japonais, l'ordre des mots ne change pas quand on pose une question.</p>
+        <div class="vocab-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="vocab-card"><span class="vocab-jp">何</span><span class="vocab-fr">Nani / Nan (Quoi)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">誰</span><span class="vocab-fr">Dare (Qui)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">どこ</span><span class="vocab-fr">Doko (Où)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">いつ</span><span class="vocab-fr">Itsu (Quand)</span></div>
+        </div>
+
+        <h3>2. Le cauchemar des compteurs</h3>
+        <table class="course-table">
+          <tr><th>Compteur</th><th>Utilisation</th><th>Exemple</th></tr>
+          <tr><td><strong>〜つ (tsu)</strong></td><td>Objets génériques (1: hitotsu, 2: futatsu...)</td><td>りんごを二<strong>つ</strong>買います。</td></tr>
+          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (1: hitori, 2: futari)</td><td>学生が三<strong>人</strong>います。</td></tr>
+          <tr><td><strong>〜枚 (mai)</strong></td><td>Objets plats et fins (feuilles, billets)</td><td>紙を五<strong>枚</strong>ください。</td></tr>
+          <tr><td><strong>〜本 (hon)</strong></td><td>Objets longs (bouteilles, stylos)</td><td>ペンが四<strong>本</strong>あります。</td></tr>
+          <tr><td><strong>〜匹 (hiki)</strong></td><td>Petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。</td></tr>
+        </table>
+      </div>`;
   }  
   else if(id === 'cours-05-4') {
     titleHeader.innerText = "Cours 5.4 : Vocabulaire Essentiel N5";
@@ -622,51 +702,403 @@ function loadContent(id) {
         <div class="vocab-grid">
           <div class="vocab-card" onclick="speak('今日')"><span class="vocab-jp">今日</span><span class="vocab-fr">kyō (Aujourd'hui)</span></div>
           <div class="vocab-card" onclick="speak('明日')"><span class="vocab-jp">明日</span><span class="vocab-fr">ashita (Demain)</span></div>
+          <div class="vocab-card" onclick="speak('昨日')"><span class="vocab-jp">昨日</span><span class="vocab-fr">kinō (Hier)</span></div>
+          <div class="vocab-card" onclick="speak('毎日')"><span class="vocab-jp">毎日</span><span class="vocab-fr">mainichi (Tous les jours)</span></div>
+        </div>
+      </div>
+      <div class="kana-section">
+        <h4>👤 Personnes et Relations</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('私')"><span class="vocab-jp">私</span><span class="vocab-fr">watashi (Moi, Je)</span></div>
+          <div class="vocab-card" onclick="speak('あなた')"><span class="vocab-jp">あなた</span><span class="vocab-fr">anata (Toi, Vous)</span></div>
+          <div class="vocab-card" onclick="speak('友達')"><span class="vocab-jp">友達</span><span class="vocab-fr">tomodachi (Ami)</span></div>
+          <div class="vocab-card" onclick="speak('家族')"><span class="vocab-jp">家族</span><span class="vocab-fr">kazoku (Famille)</span></div>
+        </div>
+      </div>
+      <div class="kana-section">
+        <h4>💬 Salutations (Aisatsu)</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('おはようございます')"><span class="vocab-jp" style="font-size:18px;">おはようございます</span><span class="vocab-fr">ohayō gozaimasu (Bonjour - Matin)</span></div>
+          <div class="vocab-card" onclick="speak('こんにちは')"><span class="vocab-jp" style="font-size:18px;">こんにちは</span><span class="vocab-fr">konnichiwa (Bonjour - Journée)</span></div>
+          <div class="vocab-card" onclick="speak('ありがとうございます')"><span class="vocab-jp" style="font-size:18px;">ありがとうございます</span><span class="vocab-fr">arigatō gozaimasu (Merci)</span></div>
         </div>
       </div>`;
   }
   else if(id === 'cours-06') {
     titleHeader.innerText = "Cours 06 : Kanjis du niveau N5";
     contentDiv.innerHTML = `
-      <div class="card"><h3>Kanjis de base</h3></div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N5</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
+      <div class="card">
+        <h3>1. Les Idéogrammes empruntés</h3>
+        <p>Les Kanjis viennent de Chine et possèdent généralement deux types de lecture :</p>
+        <ul>
+          <li><strong>ON (Onyomi) :</strong> Lecture d'origine chinoise, utilisée dans les mots composés.</li>
+          <li><strong>KUN (Kunyomi) :</strong> Lecture japonaise, utilisée seule ou avec okurigana.</li>
+        </ul>
+        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant).</p>
+      </div>
+      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
   }
 
   // --- NIVEAU JLPT N4 ---
   else if(id === 'cours-07') {
     titleHeader.innerText = "Cours 07 : Kanjis du niveau N4";
     contentDiv.innerHTML = `
-      <div class="card"><h3>Kanjis N4</h3></div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N4</h4>${generateKanjiGrid(KANJI_N4)}</div>`;
+      <div class="card">
+        <h3>Niveau Intermédiaire - JLPT N4</h3>
+        <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société (社), au travail (業), aux actions complexes et à la nature.</p>
+        <p>L'architecture de ces Kanjis est souvent basée sur des "clés" (radicaux) que vous avez déjà apprises au niveau N5.</p>
+      </div>
+      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(KANJI_N4)}</div>`;
   }
-  else if(id === 'cours-08') { titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif"; contentDiv.innerHTML = `<div class="card"><h3>Potentiel & Volitif</h3><p>Contenu en cours de révision...</p></div>`; }
-  else if(id === 'cours-09') { titleHeader.innerText = "Cours 09 : Les 4 Conditionnels"; contentDiv.innerHTML = `<div class="card"><h3>to / ba / tara / nara</h3></div>`; }
-  else if(id === 'cours-10') { titleHeader.innerText = "Cours 10 : Suppositions"; contentDiv.innerHTML = `<div class="card"><h3>~sou desu, ~mitai desu</h3></div>`; }
-  else if(id === 'cours-10-1') { titleHeader.innerText = "Cours 10.1 : Donner et Recevoir"; contentDiv.innerHTML = `<div class="card"><h3>Ageru, Kureru, Morau</h3></div>`; }
+  else if(id === 'cours-08') {
+    titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La forme Potentielle (Pouvoir faire)</h3>
+        <p>En japonais, "pouvoir faire" ne s'exprime pas avec un verbe auxiliaire comme en français, mais en modifiant le verbe lui-même. <strong>Attention : la particule を (o) devient souvent が (ga).</strong></p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'E' + る (ru)</strong></td><td>飲む (nomu) ➔ 飲める (nomeru - je peux boire)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>られる (rareru)</strong></td><td>食べる (taberu) ➔ 食べられる (taberareru - je peux manger)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>できる</strong> (dekiru)<br>くる ➔ <strong>こられる</strong> (korareru)</td><td>日本語が<strong>できる</strong> (Je peux parler japonais).</td></tr>
+        </table>
 
+        <h3>2. La forme Volitive (L'intention / Faisons !)</h3>
+        <p>C'est la forme familière de <em>~mashō</em>. Elle sert à proposer de faire quelque chose ("Allons-y !") ou à exprimer une forte intention (souvent suivie de と思っています - <em>to omotte imasu</em>).</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'O' + う (u)</strong></td><td>行く (iku) ➔ 行こう (ikō - Allons-y !)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>よう (yō)</strong></td><td>食べる (taberu) ➔ 食べよう (tabeyō - Mangeons !)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>しよう</strong> (shiyō)<br>くる ➔ <strong>こよう</strong> (koyō)</td><td>日本に行こうと思っています (J'ai l'intention d'aller au Japon).</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-09') {
+    titleHeader.innerText = "Cours 09 : Les 4 Conditionnels (Si / Quand)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le cauchemar des conditionnels</h3>
+        <p>Le français utilise "Si" pour presque tout. Le japonais possède 4 formes distinctes selon la logique de la condition.</p>
+        
+        <table class="course-table">
+          <tr><th>Forme</th><th>Contexte d'utilisation</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>と (to)</strong></td>
+            <td><strong>La conséquence inévitable.</strong> Quand A se produit, B se produit toujours.</td>
+            <td>ボタンを押す<strong>と</strong>、水が出ます。<br><em>(Si on appuie, l'eau sort).</em></td>
+          </tr>
+          <tr>
+            <td><strong>ば (ba)</strong></td>
+            <td><strong>La condition logique.</strong> "À condition que...". Se concentre sur la nécessité de l'action.</td>
+            <td>安けれ<strong>ば</strong>、買います。<br><em>(Si c'est pas cher, j'achèterai).</em></td>
+          </tr>
+          <tr>
+            <td><strong>たら (tara)</strong></td>
+            <td><strong>La condition chronologique / Une fois que.</strong> C'est le plus courant à l'oral. B se fait une fois A terminé.</td>
+            <td>日本に行っ<strong>たら</strong>、寿司を食べます。<br><em>(Quand / Si je vais au Japon, je mangerai des sushis).</em></td>
+          </tr>
+          <tr>
+            <td><strong>なら (nara)</strong></td>
+            <td><strong>La condition contextuelle.</strong> Réagit à ce que l'autre vient de dire ("Dans ce cas...").</td>
+            <td>東京に行く<strong>なら</strong>、新幹線がいいです。<br><em>(Si tu vas à Tokyo, le Shinkansen est le mieux).</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-10') {
+    titleHeader.innerText = "Cours 10 : Suppositions et Apparences";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Exprimer ce que l'on perçoit</h3>
+        <p>En N4, on apprend à nuancer son discours en exprimant des impressions, des on-dit ou des apparences.</p>
+        
+        <table class="course-table">
+          <tr><th>Expression</th><th>Construction</th><th>Sens et Exemple</th></tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Visuel</em></td>
+            <td>Base du verbe / Racine Adj <strong>+ そう</strong></td>
+            <td><strong>"Ça a l'air / Il semble sur le point de..."</strong> (Basé sur ce qu'on voit à l'instant T).<br>雨が降り<strong>そうです</strong>。(Il a l'air de vouloir pleuvoir).</td>
+          </tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Ouï-dire</em></td>
+            <td>Verbe forme neutre <strong>+ そう</strong></td>
+            <td><strong>"J'ai entendu dire que..."</strong> (Basé sur une information externe).<br>明日、雨が降る<strong>そうです</strong>。(J'ai entendu dire qu'il pleuvrait demain).</td>
+          </tr>
+          <tr>
+            <td><strong>〜みたいです (mitai desu)</strong><br><em>Sensorial</em></td>
+            <td>Nom / Verbe neutre <strong>+ みたい</strong></td>
+            <td><strong>"On dirait / C'est comme..."</strong> (Basé sur tous les sens ou l'intuition).<br>彼は日本人<strong>みたいです</strong>。(On dirait un Japonais).</td>
+          </tr>
+          <tr>
+            <td><strong>〜らしいです (rashii desu)</strong><br><em>Typique</em></td>
+            <td>Nom <strong>+ らしい</strong></td>
+            <td><strong>"C'est typique de / Digne de..."</strong><br>今日は春<strong>らしい</strong>天気です。(Aujourd'hui, il fait un temps typiquement printanier).</td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-10-1') {
+    titleHeader.innerText = "Cours 10.1 : Donner, Recevoir et les Faveurs";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le transfert d'objets</h3>
+        <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don.</p>
+        <ul>
+          <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる。</em></li>
+          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne. L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる。</em></li>
+          <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう。</em></li>
+        </ul>
+
+        <h3>2. Les faveurs (Verbe en TE + Don/Réception)</h3>
+        <p>C'est ici que réside toute la subtilité du N4. On attache ces trois verbes à la forme <strong>TE</strong> d'un autre verbe pour exprimer qu'une action est un service rendu ou reçu.</p>
+        <div class="example-box">
+          <p><strong>〜てあげる (Te ageru) :</strong> Faire une faveur à quelqu'un.<br><em>手伝ってあげる (Je vais t'aider - Attention, peut paraître prétentieux envers un supérieur).</em></p>
+          <br>
+          <p><strong>〜てくれる (Te kureru) :</strong> Quelqu'un me rend un service.<br><em>母が料理を作ってくれた (Ma mère m'a fait à manger - On insiste sur la gratitude).</em></p>
+          <br>
+          <p><strong>〜てもらう (Te morau) :</strong> Recevoir une faveur (souvent après l'avoir demandée).<br><em>先生に教えてもらった (J'ai reçu l'enseignement de mon professeur).</em></p>
+        </div>
+      </div>`;
+  }
+    
   // --- NIVEAU JLPT N3 ---
   else if(id === 'cours-11') {
     titleHeader.innerText = "Cours 11 : Kanjis du niveau N3";
-    contentDiv.innerHTML = `<div class="card"><h3>Kanjis N3</h3></div><div class="kana-section">${generateKanjiGrid(KANJI_N3)}</div>`;
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le pont vers la fluidité</h3>
+        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (articles simples, affiches, e-mails professionnels). Les Kanjis y abordent les émotions, les sentiments complexes, l'économie et la politique de base.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(KANJI_N3)}</div>`;
   }
-  else if(id === 'cours-12') { titleHeader.innerText = "Cours 12 : Passif & Causatif"; contentDiv.innerHTML = `<div class="card"><h3>Passif & Causatif</h3></div>`; }
-  else if(id === 'cours-13') { titleHeader.innerText = "Cours 13 : Le Keigo"; contentDiv.innerHTML = `<div class="card"><h3>Langage Honorifique</h3></div>`; }
-  else if(id === 'cours-13-1') { titleHeader.innerText = "Cours 13.1 : Temps & Limites"; contentDiv.innerHTML = `<div class="card"><h3>uchi ni, aida ni</h3></div>`; }
-  else if(id === 'cours-13-2') { titleHeader.innerText = "Cours 13.2 : Décisions"; contentDiv.innerHTML = `<div class="card"><h3>koto ni suru / naru</h3></div>`; }
+  else if(id === 'cours-12') {
+    titleHeader.innerText = "Cours 12 : Passif, Causatif et Causatif-Passif";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La forme Passive (れる / られる)</h3>
+        <p>Elle sert à exprimer qu'une action est subie par le sujet. <strong>Subtilité N3 :</strong> le "passif de contrariété". Le japonais utilise le passif pour montrer qu'on a subi un désagrément à cause de l'action de quelqu'un d'autre.</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる (reru)</strong></td><td>雨に降ら<strong>れる</strong> (Subir la pluie ➔ Il a plu sur moi).</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる (rareru)</strong></td><td>見<strong>られる</strong> (Être regardé).</td></tr>
+        </table>
+        
+        <h3>2. La forme Causative (せる / させる)</h3>
+        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un (forcer), ou de <strong>laisser faire</strong> (autoriser).</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる (seru)</strong></td><td>彼を待た<strong>せる</strong> (Je le fais attendre).</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる (saseru)</strong></td><td>子供に野菜を食べ<strong>させる</strong> (Je force/laisse l'enfant manger ses légumes).</td></tr>
+        </table>
+
+        <h3>3. Le Boss Final : Le Causatif-Passif (させられる)</h3>
+        <p>C'est l'un des points de grammaire les plus complexes. Il combine les deux concepts précédents pour exprimer : <strong>"On m'a forcé à faire une action (et ça m'a dérangé)".</strong></p>
+        <div class="example-box">
+          <p><strong>Règle générale :</strong> Verbe Causatif ➔ Enlever RU ➔ Ajouter RARERU.</p>
+          <p><em>Ex: 食べる (Manger) ➔ 食べさせる (Faire manger) ➔ 食べさせられる (Être forcé à manger).</em></p>
+          <p><strong>Astuce G1 :</strong> Pour les verbes du groupe 1, "〜せられる" (serareru) se contracte souvent en <strong>"〜される" (sareru)</strong> à l'oral. <em>Ex: 待つ ➔ 待たされる (On m'a fait poireauter).</em></p>
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-13') {
+    titleHeader.innerText = "Cours 13 : Le Keigo (Le Langage Honorifique)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art de la politesse d'entreprise</h3>
+        <p>Au niveau N3, la forme "masu" ne suffit plus dans le monde du travail. Il faut maîtriser le <strong>Keigo (敬語)</strong>, qui redéfinit votre position sociale par rapport à votre interlocuteur.</p>
+        
+        <table class="course-table">
+          <tr><th>Famille</th><th>Explication</th><th>Formes de "Manger" (食べる)</th></tr>
+          <tr>
+            <td><strong>1. Sonkeigo (尊敬語)</strong><br><em>Langage de respect</em></td>
+            <td>On surélève l'action de l'interlocuteur (un client, un patron). Vous ne devez JAMAIS l'utiliser pour vos propres actions.</td>
+            <td><strong>召し上がる (Meshiagaru)</strong><br><em>Ex: 社長が召し上がった (Le PDG a mangé).</em></td>
+          </tr>
+          <tr>
+            <td><strong>2. Kenjōgo (謙譲語)</strong><br><em>Langage d'humilité</em></td>
+            <td>On abaisse sa propre action pour montrer du respect à l'autre. S'utilise uniquement pour soi-même ou les membres de son entreprise face à un client.</td>
+            <td><strong>いただく (Itadaku)</strong><br><em>Ex: 私がいただきました (C'est moi qui ai mangé).</em></td>
+          </tr>
+          <tr>
+            <td><strong>3. Teineigo (丁寧語)</strong><br><em>Langage de courtoisie</em></td>
+            <td>Le langage poli standard (desu/masu). Il met simplement un filtre de politesse sur les mots sans rapport de hiérarchie stricte.</td>
+            <td><strong>食べます (Tabemasu)</strong></td>
+          </tr>
+        </table>
+        
+        <div class="alert-box"><strong>Verbes irréguliers à mémoriser absolument :</strong><br>
+        Aller/Venir/Être : いらっしゃる (Sonkeigo) / まいる・おる (Kenjōgo).<br>
+        Dire : おっしゃる (Sonkeigo) / もうす (Kenjōgo).</div>
+      </div>`;
+  }
+  else if(id === 'cours-13-1') {
+    titleHeader.innerText = "Cours 13.1 : Grammaire du Temps et des Limites";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Nuancer la temporalité</h3>
+        <p>Le N3 demande une grande précision pour expliquer <em>quand</em> ou <em>pendant combien de temps</em> se déroule une action.</p>
+        
+        <table class="course-table">
+          <tr><th>Grammaire</th><th>Traduction et Sens</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>〜うちに (uchi ni)</strong></td>
+            <td><strong>Pendant que / Avant que...</strong><br>L'action B doit être faite pendant que l'état A est encore valable, sinon il sera trop tard.</td>
+            <td>温かい<strong>うちに</strong>食べてください。<br><em>Mangez-le pendant que c'est encore chaud.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜間に (aida ni)</strong></td>
+            <td><strong>Pendant (un intervalle)...</strong><br>L'action B est courte et se produit ponctuellement pendant que l'état A (plus long) est en cours.</td>
+            <td>留守の<strong>間に</strong>泥棒が入った。<br><em>Pendant mon absence, un voleur est entré.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜たびに (tabi ni)</strong></td>
+            <td><strong>À chaque fois que...</strong><br>Exprime une routine ou une habitude inévitable.</td>
+            <td>この曲を聞く<strong>たびに</strong>、彼を思い出す。<br><em>À chaque fois que j'écoute cette chanson, je pense à lui.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ついでに (tsuide ni)</strong></td>
+            <td><strong>En profitant de l'occasion pour...</strong><br>Faire l'action B de manière opportuniste pendant qu'on fait l'action A.</td>
+            <td>散歩の<strong>ついでに</strong>手紙を出した。<br><em>J'ai profité de ma promenade pour poster la lettre.</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-13-2') {
+    titleHeader.innerText = "Cours 13.2 : Décisions et Changements d'état";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>La différence entre l'effort et la conséquence</h3>
+        <p>En japonais, on fait une grande distinction entre ce qu'on décide activement de faire (volonté) et ce qui est décidé par les circonstances (passivité/règlement).</p>
+        
+        <table class="course-table">
+          <tr><th>Expression</th><th>Sens (Ce que cela implique)</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>〜ことにする</strong><br>(koto ni suru)</td>
+            <td><strong>Décider de... (Action personnelle)</strong><br>Le locuteur a pris la décision par sa propre volonté.</td>
+            <td>タバコをやめる<strong>ことにした</strong>。<br><em>J'ai décidé d'arrêter de fumer.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ことになる</strong><br>(koto ni naru)</td>
+            <td><strong>Il a été décidé que... (Conséquence extérieure)</strong><br>La décision vient de la société, de l'entreprise ou des règles. Le locuteur n'a pas le contrôle.</td>
+            <td>来月、転勤する<strong>ことになりました</strong>。<br><em>Il a été décidé que je serais muté le mois prochain.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ようにする</strong><br>(yō ni suru)</td>
+            <td><strong>Faire en sorte de... / Faire un effort pour...</strong><br>Exprime une habitude qu'on essaie de tenir.</td>
+            <td>毎日、運動する<strong>ようにしている</strong>。<br><em>Je fais en sorte de faire du sport tous les jours.</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ようになる</strong><br>(yō ni naru)</td>
+            <td><strong>En venir à... / Devenir capable de...</strong><br>Exprime un changement d'état ou de capacité qui s'est produit avec le temps.</td>
+            <td>日本語が話せる<strong>ようになりました</strong>。<br><em>J'en suis venu à pouvoir parler japonais (Avant je ne pouvais pas).</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
 
   // --- NIVEAU JLPT N2 ---
   else if(id === 'cours-14') {
     titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
-    contentDiv.innerHTML = `<div class="card"><h3>Kanjis N2</h3></div><div class="kana-section">${generateKanjiGrid(KANJI_N2)}</div>`;
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Comprendre la presse et le monde professionnel</h3>
+        <p>Le JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le passeport pour travailler dans une entreprise japonaise.</p>
+        <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion d'entreprise, la justice et l'économie.</p>
+      </div>
+      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(KANJI_N2)}</div>`;
   }
-  else if(id === 'cours-15') { titleHeader.innerText = "Cours 15 : Grammaire N2"; contentDiv.innerHTML = `<div class="card"><h3>Japonais Professionnel</h3></div>`; }
+  else if(id === 'cours-15') {
+    titleHeader.innerText = "Cours 15 : Grammaire N2 (Rigidité et Nuances)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le japonais formel (堅い表現 - Katai hyōgen)</h3>
+        <p>Le N2 est rempli de tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors de discours d'entreprise.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Sens / Équivalent basique</th><th>Exemple d'utilisation</th></tr>
+          <tr><td><strong>〜に際して (ni saishite)</strong></td><td>À l'occasion de... (très formel)</td><td>ご案内に際して (À l'occasion de votre visite...)</td></tr>
+          <tr><td><strong>〜にあたって (ni atatte)</strong></td><td>Au moment de... (pour une occasion spéciale)</td><td>開会にあたって、一言ご挨拶申し上げます。(À l'occasion de l'ouverture, je voudrais dire un mot.)</td></tr>
+          <tr><td><strong>〜つつある (tsutsu aru)</strong></td><td>Être en train de (processus de changement)</td><td>景気は改善されつつある (L'économie est en cours d'amélioration)</td></tr>
+        </table>
+
+        <h3>2. L'impossibilité psychologique ou de situation</h3>
+        <p>En N2, on n'utilise plus seulement le verbe "ne pas pouvoir" (dekinai), on ajoute des nuances pour expliquer <em>pourquoi</em> on ne peut pas. C'est très utile en clientèle.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Sens et Nuance</th><th>Exemple d'utilisation</th></tr>
+          <tr><td><strong>〜かねる (kaneru)</strong></td><td>Ne pas pouvoir (car la position ou la morale l'interdit). Utilisé pour refuser poliment.</td><td>そのご意見には賛成しかねます。(Je ne peux me résoudre à approuver cette opinion.)</td></tr>
+          <tr><td><strong>〜ざるを得ない (zaru o enai)</strong></td><td>Être obligé de... (malgré soi). On n'a pas d'autre choix.</td><td>予定を変更せざるを得ない。(Nous sommes obligés de modifier le programme.)</td></tr>
+        </table>
+
+        <h3>3. L'affirmation forte et la conviction</h3>
+        <div class="example-box">
+          <p><strong>〜に違いない (ni chigainai) :</strong> "Il est certain que / Il n'y a pas d'erreur, c'est..."<br>
+          <em>Ex: 犯人は彼に違いない。(Il est certain que c'est lui le coupable).</em></p>
+          <br>
+          <p><strong>〜に決まっている (ni kimatte iru) :</strong> "Il est évident que / C'est couru d'avance". Plus subjectif et oral que chigainai.<br>
+          <em>Ex: そんなの嘘に決まっている！ (C'est évident que c'est un mensonge !).</em></p>
+        </div>
+      </div>`;
+  }
 
   // --- NIVEAU JLPT N1 ---
   else if(id === 'cours-16') {
     titleHeader.innerText = "Cours 16 : Kanjis du niveau N1";
-    contentDiv.innerHTML = `<div class="card"><h3>Kanjis N1</h3></div><div class="kana-section">${generateKanjiGrid(KANJI_N1)}</div>`;
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'ultime étape : Littérature et Spécialisation</h3>
+        <p>Le JLPT N1 couvre l'ensemble des ~2136 Kanjis d'usage courant (Jōyō Kanji). Ce sont des idéogrammes que l'on retrouve dans la littérature classique, les documents juridiques, les thèses universitaires ou les journaux très spécialisés.</p>
+        <p>Ils expriment souvent des émotions complexes, des concepts philosophiques abstraits ou des actions extrêmement précises.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(KANJI_N1)}</div>`;
   }
-  else if(id === 'cours-17') { titleHeader.innerText = "Cours 17 : Grammaire N1"; contentDiv.innerHTML = `<div class="card"><h3>Japonais Littéraire</h3></div>`; }
+  else if(id === 'cours-17') {
+    titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les tournures de la littérature japonaise</h3>
+        <p>La grammaire N1 est si poussée que même de nombreux Japonais natifs hésitent sur certaines nuances s'ils ne lisent pas régulièrement. Elle est archaïque, emphatique et souvent très poétique ou dramatique.</p>
+        
+        <h3>2. Succession immédiate et dramatique</h3>
+        <p>En français, on dirait "À peine eut-il fait ceci, que cela se produisit". Le N1 adore ces expressions au timing serré.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜や否や (ya ina ya)</strong></td>
+            <td>Dès que... (Succession immédiate, souvent surprenante). Verbe au dictionnaire.</td>
+            <td>彼は私の顔を見る<strong>や否や</strong>、逃げ出した。<br><em>(Dès qu'il a vu mon visage, il s'est enfui).</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜が早いか (ga hayai ka)</strong></td>
+            <td>À peine... que. (Action presque simultanée, souvent intentionnelle).</td>
+            <td>ベルが鳴る<strong>が早いか</strong>、生徒たちは教室を飛び出した。<br><em>(À peine la cloche a-t-elle sonné que les élèves ont bondi hors de la classe).</em></td>
+          </tr>
+        </table>
+
+        <h3>3. L'emphase et l'extrême</h3>
+        <p>Pour insister sur la rareté, l'évidence ou le caractère extrême d'une situation.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜だに (dani)</strong></td>
+            <td>"Rien que de..." (Souvent utilisé avec imaginer, penser, entendre).</td>
+            <td>そんなことが起きるなんて、想像する<strong>だに</strong>恐ろしい。<br><em>(Rien que d'imaginer qu'une telle chose puisse arriver, c'est terrifiant).</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜すら (sura)</strong></td>
+            <td>"Même" (Équivalent très soutenu et littéraire de さえ - sae). Indique qu'un cas extrême n'est pas rempli.</td>
+            <td>彼は自分の名前<strong>すら</strong>書けない。<br><em>(Il ne peut même pas écrire son propre nom).</em></td>
+          </tr>
+        </table>
+
+        <h3>4. Les causes formelles (C'est précisément parce que...)</h3>
+        <div class="example-box">
+          <p><strong>〜ばこそ (ba koso) :</strong> Met en lumière la raison unique et paradoxale d'un acte.</p>
+          <p><em>Ex: 愛していれ<strong>ばこそ</strong>、厳しく叱るのです。</em><br>(C'est précisément parce que je l'aime que je le gronde sévèrement).</p>
+          <br>
+          <p><strong>〜ゆえに (yue ni) :</strong> "En raison de". Très utilisé dans les dissertations académiques ou les démonstrations mathématiques.</p>
+          <p><em>Ex: 悪天候<strong>ゆえに</strong>、試合は中止となった。</em><br>(En raison du mauvais temps, le match a été annulé).</p>
+        </div>
+      </div>`;
+  }
 
   // --- ZONE D'ENTRAÎNEMENT & MENUS ASSOCIÉS ---
   else if(id === 'exercices') {
@@ -674,7 +1106,7 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Choisissez votre exercice</h3>
-        <p>Sélectionnez un mode d'entraînement pour tester vos connaissances.</p>
+        <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
           
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka);" onclick="loadContent('flashcards-menu')">
@@ -707,11 +1139,20 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Que voulez-vous réviser aujourd'hui ?</h3>
+        <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" onclick="startFlashcards('kana')"><span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span></div>
-          <div class="vocab-card" onclick="startFlashcards('kanji5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span></div>
-          <div class="vocab-card" onclick="startFlashcards('kanji4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span></div>
-          <div class="vocab-card" onclick="startFlashcards('kanji3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kana')">
+            <span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji5')">
+            <span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji4')">
+            <span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span>
+          </div>
+          <div class="vocab-card" onclick="startFlashcards('kanji3')">
+            <span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span>
+          </div>
         </div>
       </div>`;
   }
@@ -765,6 +1206,7 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Conditions réelles d'examen</h3>
+        <p>Entraînez-vous avec la même structure, le même temps et les mêmes barèmes que l'examen officiel du JLPT.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
           <div class="vocab-card" style="border-color: var(--aka);">
             <span class="vocab-jp">JLPT N5 (Débutant)</span>
