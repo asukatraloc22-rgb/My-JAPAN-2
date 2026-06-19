@@ -30,12 +30,19 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 /* LAYOUT PRINCIPAL */
 .app-shell { display: flex; min-height: 100vh; width: 100%; }
 .sidebar { width: 280px; flex-shrink: 0; background: linear-gradient(180deg, #2a0000 0%, #4a0000 50%, #6e0000 100%); position: fixed; top: 0; left: 0; bottom: 0; overflow-y: auto; overflow-x: hidden; z-index: 200; display: flex; flex-direction: column; box-shadow: 4px 0 25px rgba(0,0,0,0.4); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+/* --- STYLES SIDEBAR RÉDUITE (CORRIGÉ) --- */
 .sidebar.collapsed { width: 70px; }
-.sidebar.collapsed .jp-title, .sidebar.collapsed .sub, .sidebar.collapsed .nav-group-label, .sidebar.collapsed .nav-item span:not(.nav-icon), .sidebar.collapsed .chevron { display: none !important; }
+.sidebar.collapsed .jp-title, 
+.sidebar.collapsed .sub, 
+.sidebar.collapsed .nav-group-label, 
+.sidebar.collapsed .chevron { display: none !important; }
 .sidebar.collapsed .sidebar-logo { padding: 24px 10px; justify-content: center; }
 .sidebar.collapsed .logo-svg { width: 32px; height: 32px; }
-.sidebar.collapsed .nav-item { justify-content: center !important; padding: 14px 0 !important; }
-.sidebar.collapsed .nav-icon { margin: 0; font-size: 18px; }
+/* Rend le texte transparent mais garde l'icône visible */
+.sidebar.collapsed .nav-item { justify-content: center !important; padding: 14px 0 !important; color: transparent !important; }
+.sidebar.collapsed .nav-item .nav-icon { margin: 0; font-size: 22px; color: rgba(255,255,255,0.85) !important; }
+/* Force la fermeture des sous-menus pour ne garder que les icônes principales */
+.sidebar.collapsed .submenu { display: none !important; }
 
 .toggle-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.15); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 300; font-size: 12px; }
 .toggle-btn:hover { background: var(--sakura); color: var(--sumi); }
@@ -362,6 +369,50 @@ const KANJI_N4 = [
   {j:'音', on:'オン', kun:'おと', f:'Son'}, {j:'楽', on:'ガク', kun:'たの.しい', f:'Musique'}, {j:'歌', on:'カ', kun:'うた', f:'Chanson'}, {j:'画', on:'ガ', kun:'-', f:'Image'}, {j:'紙', on:'シ', kun:'かみ', f:'Papier'}, {j:'映', on:'エイ', kun:'うつ.す', f:'Projeter'}, {j:'急', on:'キュウ', kun:'いそ.ぐ', f:'Dépêcher'}, {j:'教', on:'キョウ', kun:'おし.える', f:'Enseigner'}, {j:'黒', on:'コク', kun:'くろ', f:'Noir'}, {j:'茶', on:'チャ', kun:'-', f:'Thé'}
 ];
 
+/* ─── NOUVELLES BASES DE DONNÉES JLPT N3, N2, N1 ─── */
+const KANJI_N3 = [
+  {j:'感', on:'カン', kun:'-', f:'Sentiment, Sensation'},
+  {j:'情', on:'ジョウ', kun:'なさ.け', f:'Émotion'},
+  {j:'悲', on:'ヒ', kun:'かな.しい', f:'Triste'},
+  {j:'笑', on:'ショウ', kun:'わら.う', f:'Rire'},
+  {j:'泣', on:'キュウ', kun:'な.く', f:'Pleurer'},
+  {j:'怒', on:'ド', kun:'おこ.る', f:'Se fâcher'},
+  {j:'覚', on:'カク', kun:'おぼ.える', f:'Mémoriser'},
+  {j:'忘', on:'ボウ', kun:'わす.れる', f:'Oublier'},
+  {j:'決', on:'ケツ', kun:'き.める', f:'Décider'},
+  {j:'信', on:'シン', kun:'-', f:'Croire, Confiance'},
+  {j:'経', on:'ケイ', kun:'へ.る', f:'Passer (temps), Économie'},
+  {j:'済', on:'サイ', kun:'す.む', f:'Finir, Économie'},
+  {j:'政', on:'セイ', kun:'まつりごと', f:'Politique'},
+  {j:'治', on:'ジ, チ', kun:'なお.る', f:'Gouverner, Guérir'},
+  {j:'活', on:'カツ', kun:'い.きる', f:'Activité, Vie'}
+];
+
+const KANJI_N2 = [
+  {j:'識', on:'シキ', kun:'し.る', f:'Discernement'},
+  {j:'観', on:'カン', kun:'み.る', f:'Observer'},
+  {j:'察', on:'サツ', kun:'-', f:'Deviner, Inspecter'},
+  {j:'判', on:'ハン', kun:'わか.る', f:'Juger'},
+  {j:'断', on:'ダン', kun:'ことわ.る', f:'Couper, Refuser'},
+  {j:'認', on:'ニン', kun:'みと.める', f:'Reconnaître'},
+  {j:'確', on:'カク', kun:'たし.か', f:'Certain, Sûr'},
+  {j:'想', on:'ソウ', kun:'おも.う', f:'Idée, Pensée'},
+  {j:'像', on:'ゾウ', kun:'-', f:'Statue, Image'},
+  {j:'現', on:'ゲン', kun:'あらわ.れる', f:'Apparaître, Présent'}
+];
+
+const KANJI_N1 = [
+  {j:'響', on:'キョウ', kun:'ひび.く', f:'Résonner, Écho'},
+  {j:'驚', on:'キョウ', kun:'おどろ.く', f:'Être surpris'},
+  {j:'嘆', on:'タン', kun:'なげ.く', f:'Soupirer, Déplorer'},
+  {j:'慰', on:'イ', kun:'なぐさ.める', f:'Consoler'},
+  {j:'躍', on:'ヤク', kun:'おど.る', f:'Sauter, Bondir'},
+  {j:'輝', on:'キ', kun:'かがや.く', f:'Briller'},
+  {j:'瞬', on:'シュン', kun:'またた.く', f:'Cligner, Instant'},
+  {j:'魅', on:'ミ', kun:'みせ.る', f:'Fasciner'},
+  {j:'嫌', on:'ケン', kun:'きら.う', f:'Détester'}
+];
+
 /* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
 function generateKanaGrid(dataArray) {
   let html = `<div class="kana-grid">`;
@@ -561,6 +612,101 @@ function loadContent(id) {
           <tr><td>食べる (taberu)</td><td>食べて (tabete)</td><td>食べた (tabeta) - <em>J'ai mangé</em></td></tr>
           <tr><td>飲む (nomu)</td><td>飲んで (nonde)</td><td>飲んだ (nonda) - <em>J'ai bu</em></td></tr>
           <tr><td>行く (iku)</td><td>行って (itte)</td><td>行った (itta) - <em>Je suis allé</em></td></tr>
+        </table>
+      </div>`;
+  }
+    // --- NIVEAU JLPT N3 ---
+  else if(id === 'cours-11') {
+    titleHeader.innerText = "Cours 11 : Kanjis du niveau N3";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le pont vers la fluidité</h3>
+        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne. Les Kanjis y abordent les émotions, les sentiments, l'économie et la politique de base.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection de Kanji N3</h4>${generateKanjiGrid(KANJI_N3)}</div>`;
+  }
+  else if(id === 'cours-12') {
+    titleHeader.innerText = "Cours 12 : Le Passif et le Causatif";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La forme Passive (reru / rareru)</h3>
+        <p>Elle sert à exprimer qu'une action est subie par le sujet. En japonais, le passif est souvent utilisé pour exprimer une gêne ou un dommage subi (le "passif de contrariété").</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる (reru)</strong></td><td>書く (kaku) ➔ 書かれる (kakareru)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる (rareru)</strong></td><td>食べる (taberu) ➔ 食べられる (taberareru)</td></tr>
+        </table>
+        
+        <h3>2. La forme Causative (seru / saseru)</h3>
+        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un, ou de <strong>laisser faire</strong>.</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる (seru)</strong></td><td>行く (iku) ➔ 行かせる (ikaseru)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる (saseru)</strong></td><td>食べる (taberu) ➔ 食べさせる (tabesaseru)</td></tr>
+        </table>
+        <div class="alert-box"><strong>Astuce ultime :</strong> On peut combiner les deux (Causatif-Passif) pour dire "J'ai été forcé de le faire" : 食べさせられる (On m'a forcé à manger).</div>
+      </div>`;
+  }
+  else if(id === 'cours-13') {
+    titleHeader.innerText = "Cours 13 : Le Keigo (Langage Honorifique)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art de la politesse japonaise</h3>
+        <p>Au niveau N3, la forme polie "masu" ne suffit plus dans le monde du travail. Il faut maîtriser le Keigo, qui se divise en trois grandes familles :</p>
+        <ul>
+          <li><strong>Sonkeigo (尊敬語) :</strong> Le langage de respect. On surélève l'action de l'interlocuteur (un client, un patron).<br><em>Ex: 食べる (manger) ➔ 召し上がる (meshiagaru).</em></li>
+          <li><strong>Kenjōgo (謙譲語) :</strong> Le langage d'humilité. On abaisse sa propre action pour montrer du respect.<br><em>Ex: 食べる (manger) ➔ いただく (itadaku).</em></li>
+          <li><strong>Teineigo (丁寧語) :</strong> Le langage poli standard (desu/masu). Il met un filtre de politesse sur tout.</li>
+        </ul>
+      </div>`;
+  }
+
+  // --- NIVEAU JLPT N2 ---
+  else if(id === 'cours-14') {
+    titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Comprendre la presse japonaise</h3>
+        <p>Le niveau N2 permet de lire des journaux et des documents professionnels. Les kanjis abordent des concepts intellectuels, de jugement et de perception avancée.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection de Kanji N2</h4>${generateKanjiGrid(KANJI_N2)}</div>`;
+  }
+  else if(id === 'cours-15') {
+    titleHeader.innerText = "Cours 15 : Grammaire N2";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Grammaire Professionnelle et Écrite</h3>
+        <p>La grammaire N2 remplace souvent des expressions basiques par des tournures plus rigides ou professionnelles.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Sens / Équivalent basique</th><th>Exemple d'utilisation</th></tr>
+          <tr><td><strong>〜に際して (ni saishite)</strong></td><td>À l'occasion de... (très formel)</td><td>ご案内に際して (À l'occasion de votre visite...)</td></tr>
+          <tr><td><strong>〜に違いない (ni chigainai)</strong></td><td>Il n'y a pas d'erreur, c'est certain</td><td>彼が犯人に違いない (Il est certain que c'est lui le coupable)</td></tr>
+          <tr><td><strong>〜つつある (tsutsu aru)</strong></td><td>Être en train de (remplace ~te imasu)</td><td>改善されつつある (C'est en cours d'amélioration)</td></tr>
+        </table>
+      </div>`;
+  }
+
+  // --- NIVEAU JLPT N1 ---
+  else if(id === 'cours-16') {
+    titleHeader.innerText = "Cours 16 : Kanjis du niveau N1";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le niveau de fluidité totale</h3>
+        <p>Les kanjis du N1 sont rares, poétiques, ou très techniques. Ils se retrouvent dans la littérature classique, les contrats juridiques et la médecine.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection de Kanji N1</h4>${generateKanjiGrid(KANJI_N1)}</div>`;
+  }
+  else if(id === 'cours-17') {
+    titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Les tournures de la littérature japonaise</h3>
+        <p>La grammaire N1 est souvent méconnue de certains Japonais natifs s'ils ne lisent pas beaucoup. Elle est archaïque, emphatique et hautement poétique.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Sens et Contexte</th></tr>
+          <tr><td><strong>〜や否や (ya ina ya)</strong></td><td>"Dès que...". Exprime une succession immédiate et dramatique d'événements.</td></tr>
+          <tr><td><strong>〜ばこそ (ba koso)</strong></td><td>"C'est précisément parce que...". Met une forte emphase sur la raison d'un acte.</td></tr>
+          <tr><td><strong>〜ごとき / ごとく (gotoki)</strong></td><td>"Tel que... / Comme...". Variante archaïque et élégante de <em>yō na</em> ou <em>mitai na</em>.</td></tr>
         </table>
       </div>`;
   }
