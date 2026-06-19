@@ -487,66 +487,81 @@ function loadContent(id) {
       <div class="kana-section"><h4>Dakuten & Handakuten</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>
       <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(KATAKANA_YOON)}</div>`;
   }
-  else if(id === 'cours-03') {
-    titleHeader.innerText = "Cours 03 : La Structure SOV";
+else if(id === 'cours-03') {
+    titleHeader.innerText = "Cours 03 : Structure SOV & La Copule";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le Verbe à la fin (Règle d'or)</h3>
-        <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>[cite: 159]. Le verbe est TOUJOURS placé à la toute fin de la phrase[cite: 160]. C'est la seule règle absolue, le reste peut être déplacé grâce aux particules[cite: 192, 197].</p>
+        <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>[cite: 5]. Le verbe est TOUJOURS placé à la toute fin de la phrase[cite: 5]. C'est la seule règle absolue, le reste peut être déplacé grâce aux particules[cite: 5].</p>
         
-        <h3>2. Formation des phrases</h3>
-        <ul>
-          <li><strong>Phrase simple (S+O+V) :</strong> 私は すしを 食べます。 (Je mange des sushis)[cite: 171].</li>
-          <li><strong>Phrase avec lieu (S+Lieu+V) :</strong> 彼女は 学校で 勉強します。 (Elle étudie à l'école)[cite: 175].</li>
-        </ul>
+        <h3>2. La Copule です (Le verbe "Être")</h3>
+        <p>Pour dire "A est B", on utilise "A wa B desu". <strong>です (desu)</strong> se place à la fin et se conjugue pour exprimer le temps et la négation :</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Forme polie</th><th>Exemple (C'est un chat)</th></tr>
+          <tr><td>Présent affirmatif</td><td><strong>〜です</strong> (desu)</td><td>猫です (neko desu)</td></tr>
+          <tr><td>Présent négatif</td><td><strong>〜じゃありません</strong> (ja arimasen)</td><td>猫じゃありません (neko ja arimasen)</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>〜でした</strong> (deshita)</td><td>猫でした (neko deshita)</td></tr>
+          <tr><td>Passé négatif</td><td><strong>〜じゃありませんでした</strong> (ja arimasen deshita)</td><td>猫じゃありませんでした (neko ja arimasen deshita)</td></tr>
+        </table>
 
         <h3>3. Négation, Question et Omission</h3>
-        <p>L'avantage du japonais est que le sujet est souvent omis s'il est évident dans le contexte[cite: 188, 200].</p>
         <ul>
-          <li><strong>Négation :</strong> On remplace "masu" par "masen"[cite: 180].</li>
-          <li><strong>Question :</strong> On ajoute simplement "ka" à la fin de la phrase polie[cite: 183].</li>
+          <li><strong>Omission :</strong> Le sujet est souvent omis s'il est clair dans le contexte[cite: 5].</li>
+          <li><strong>Question :</strong> On ajoute simplement <strong>か (ka)</strong> à la fin de la phrase, sans changer l'ordre des mots[cite: 5].</li>
         </ul>
       </div>`;
   }
   else if(id === 'cours-04') {
-    titleHeader.innerText = "Cours 04 : Les Particules (Joshi)";
+    titleHeader.innerText = "Cours 04 : Les Particules Complètes (N5)";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le rôle des particules</h3>
-        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom[cite: 93]. Elles définissent le rôle grammatical du mot précédent dans la phrase[cite: 94]. Sans elles, la phrase est incompréhensible[cite: 94].</p>
+        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom ou pronom[cite: 4]. Elles définissent le rôle grammatical du mot précédent[cite: 4]. Sans elles, la phrase japonaise est incompréhensible[cite: 4].</p>
         
-        <h3>2. Les 5 particules fondamentales</h3>
+        <h3>2. Les 9 particules fondamentales du N5</h3>
         <table class="course-table">
           <tr><th>Particule</th><th>Rôle principal</th><th>Exemple</th></tr>
-          <tr><td><strong>は (wa)</strong></td><td>Thème (Ce dont on parle) [cite: 145].</td><td>私<strong>は</strong>日本語を学びます[cite: 145].</td></tr>
-          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau / Surprise [cite: 145].</td><td>猫<strong>が</strong>います[cite: 145].</td></tr>
-          <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct [cite: 145].</td><td>すし<strong>を</strong>食べます[cite: 145].</td></tr>
-          <tr><td><strong>に (ni)</strong></td><td>Direction, Point dans le temps [cite: 145].</td><td>東京<strong>に</strong>行きます[cite: 145].</td></tr>
-          <tr><td><strong>で (de)</strong></td><td>Lieu de l'action, Moyen [cite: 145].</td><td>電車<strong>で</strong>行きます[cite: 145].</td></tr>
+          <tr><td><strong>は (wa)</strong></td><td>Thème (Ce dont on parle)[cite: 4].</td><td>私<strong>は</strong>学生です (Je suis étudiant)[cite: 4].</td></tr>
+          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau / Emphase[cite: 4].</td><td>猫<strong>が</strong>います (Il y a un chat)[cite: 4].</td></tr>
+          <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct[cite: 4].</td><td>すし<strong>を</strong>食べます (Je mange des sushis)[cite: 4].</td></tr>
+          <tr><td><strong>に (ni)</strong></td><td>Destination géographique, Moment précis[cite: 4].</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo)[cite: 4].</td></tr>
+          <tr><td><strong>で (de)</strong></td><td>Lieu d'action, Moyen, Instrument[cite: 4].</td><td>電車<strong>で</strong>行きます (J'y vais en train)[cite: 4].</td></tr>
+          <tr><td><strong>と (to)</strong></td><td>"Et" (liste exhaustive), "Avec" (une personne).</td><td>友達<strong>と</strong>行きます (J'y vais avec un ami).</td></tr>
+          <tr><td><strong>も (mo)</strong></td><td>"Aussi". (Remplace souvent は, が, et を).</td><td>私<strong>も</strong>学生です (Moi aussi je suis étudiant).</td></tr>
+          <tr><td><strong>から / まで (kara / made)</strong></td><td>"Depuis" / "Jusqu'à" (S'utilise pour le Temps ou l'Espace).</td><td>9時<strong>から</strong>5時<strong>まで</strong> (De 9h à 5h).</td></tr>
+          <tr><td><strong>へ (e)</strong></td><td>Direction (Insiste sur le trajet plutôt que sur le but).</td><td>日本<strong>へ</strong>行きます (Je pars vers le Japon).</td></tr>
         </table>
-        
-        <div class="alert-box"><strong>DE vs NI :</strong> Utilisez "NI" pour une destination (on y arrive), et "DE" pour l'endroit où se déroule une action (on y fait quelque chose)[cite: 150].</div>
       </div>`;
   }
   else if(id === 'cours-05') {
-    titleHeader.innerText = "Cours 05 : Les Verbes et la forme MASU";
+    titleHeader.innerText = "Cours 05 : Verbes, Désirs et Invitations";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>1. La politesse universelle</h3>
-        <p>La forme <strong>ます (masu)</strong> est la forme standard polie[cite: 47]. Super nouvelle : elle ne s'accorde jamais avec la personne (Je, Tu, Il = même conjugaison)[cite: 50]!</p>
-        
-        <h3>2. Les 4 conjugaisons de base</h3>
+        <h3>1. La politesse universelle (Forme MASU)</h3>
+        <p>La forme <strong>ます (masu)</strong> est la forme standard polie[cite: 3]. Elle ne change JAMAIS selon la personne (Je, Tu, Il = même verbe)[cite: 3].</p>
         <table class="course-table">
           <tr><th>Temps</th><th>Terminaison</th><th>Exemple (Manger)</th></tr>
-          <tr><td>Présent/Futur affirmatif</td><td><strong>ます</strong> [cite: 53]</td><td>食べます (tabemasu) [cite: 53]</td></tr>
-          <tr><td>Présent/Futur négatif</td><td><strong>ません</strong> [cite: 53]</td><td>食べません (tabemasen) [cite: 53]</td></tr>
-          <tr><td>Passé affirmatif</td><td><strong>ました</strong> [cite: 53]</td><td>食べました (tabemashita) [cite: 53]</td></tr>
-          <tr><td>Passé négatif</td><td><strong>ませんでした</strong> [cite: 53]</td><td>食べませんでした (tabemasen deshita) [cite: 53]</td></tr>
+          <tr><td>Présent affirmatif</td><td><strong>〜ます</strong>[cite: 3]</td><td>食べます (tabemasu)[cite: 3]</td></tr>
+          <tr><td>Présent négatif</td><td><strong>〜ません</strong>[cite: 3]</td><td>食べません (tabemasen)[cite: 3]</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>〜ました</strong>[cite: 3]</td><td>食べました (tabemashita)[cite: 3]</td></tr>
+          <tr><td>Passé négatif</td><td><strong>〜ませんでした</strong>[cite: 3]</td><td>食べませんでした (tabemasen deshita)[cite: 3]</td></tr>
         </table>
 
-        <h3>3. Vocabulaire Temporel utile</h3>
-        <p>Pour préciser quand l'action se passe, ajoutez ces mots : 今日 (Aujourd'hui), 昨日 (Hier), 明日 (Demain), 毎日 (Tous les jours)[cite: 83].</p>
+        <h3>2. Exprimer un désir (Je veux...)</h3>
+        <p>Pour dire "Je veux faire quelque chose", on enlève "masu" et on le remplace par <strong>たいです (tai desu)</strong>. Le verbe se conjugue ensuite exactement comme un adjectif en "i" !</p>
+        <div class="example-box">
+          <p>食べる (Manger) ➔ 食べ<strong>たいです</strong> (Je veux manger).</p>
+          <p>飲む (Boire) ➔ 飲み<strong>たくないです</strong> (Je ne veux pas boire).</p>
+        </div>
+
+        <h3>3. Faire une proposition ou inviter</h3>
+        <p>Il existe deux façons principales de proposer une action à quelqu'un :</p>
+        <ul>
+          <li><strong>〜ましょう (mashō) :</strong> Signifie "Faisons / Allons-y". (Ex: 行きましょう - Allons-y !).</li>
+          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". C'est une invitation très polie qui laisse le choix à l'interlocuteur. (Ex: お茶を飲みませんか - Voulez-vous boire un thé ?).</li>
+        </ul>
       </div>`;
+  }
   }
   else if(id === 'cours-05-1') {
     titleHeader.innerText = "Cours 5.1 : Les Adjectifs (い et な)";
