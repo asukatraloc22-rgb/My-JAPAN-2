@@ -128,12 +128,8 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .fc-card { width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; cursor: pointer; position: relative; }
 .fc-card.is-flipped { transform: rotateY(180deg); }
 
-/* La règle d'or pour cacher le dos : ajout de -webkit- et top/left absolus */
 .fc-face { position: absolute; top: 0; left: 0; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; background: white; border-radius: 16px; box-shadow: var(--shadow); border: 2px solid var(--sakura-pale); padding: 20px; text-align: center; }
-
-/* La face avant est au-dessus (z-index: 2) */
 .fc-front { z-index: 2; transform: rotateY(0deg); }
-/* La face arrière est en-dessous (z-index: 1) et déjà tournée à 180° */
 .fc-back { transform: rotateY(180deg); border-color: var(--sakura); background: var(--washi); z-index: 1; }
 
 .fc-front-text { font-family: var(--font-jp); font-size: 80px; font-weight: bold; color: var(--sumi); line-height: 1; }
@@ -150,7 +146,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .flip-hint { text-align: center; color: #888; margin-top: 20px; font-size: 14px; animation: pulse 2s infinite; }
 @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
 
-/* --- STYLES TEXTE À TROUS (QUIZ GRAMMAIRE) --- */
+/* --- STYLES TEXTE À TROUS --- */
 .quiz-sentence { font-size: 28px; font-family: var(--font-jp); text-align: center; margin: 30px 0; color: var(--sumi); letter-spacing: 2px; }
 .quiz-blank { display: inline-block; width: 50px; height: 35px; border-bottom: 3px solid var(--aka); text-align: center; color: var(--aka); font-weight: bold; margin: 0 8px; vertical-align: baseline; }
 .quiz-translation { text-align: center; color: #666; font-size: 16px; margin-bottom: 30px; font-style: italic; }
@@ -168,7 +164,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .quiz-next-btn:hover { background: #000; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- STYLES TIMELINE (PROGRESSION) --- */
+/* --- STYLES TIMELINE --- */
 .timeline { position: relative; max-width: 800px; margin: 20px auto; padding-left: 20px; border-left: 3px solid var(--sakura-pale); }
 .timeline-step { position: relative; margin-bottom: 24px; padding-left: 20px; }
 .timeline-badge { position: absolute; left: -36px; top: 0; width: 28px; height: 28px; background: var(--aka); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-family: var(--font-title); border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 2; }
@@ -177,6 +173,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .timeline-content ul { margin-top: 10px; margin-bottom: 0; color: #333; line-height: 1.6; }
 .timeline-content li { margin-bottom: 5px; }
 .timeline-duration { font-weight: bold; color: var(--sumi); font-size: 14px; display: inline-block; background: white; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--sakura); margin-bottom: 10px; }
+
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
   .sidebar.open{ transform:none; }
@@ -1453,7 +1450,6 @@ let currentQuizIndex = 0;
 
 function startQuiz(level) {
   activeQuiz = QUIZ_DATA.filter(q => q.lvl === level);
-  // Mélanger les questions
   activeQuiz.sort(() => Math.random() - 0.5);
   currentQuizIndex = 0;
   loadContent('fillblank-run');
@@ -1473,15 +1469,10 @@ function renderQuizQuestion() {
   }
 
   const q = activeQuiz[currentQuizIndex];
-  
-  // Remplacer le blanc par l'élément HTML
   const displaySentence = q.q.replace("___", `<span class="quiz-blank" id="quiz-blank-spot">?</span>`);
   
-  // Générer les boutons aléatoirement
   let optionsHtml = '';
   const shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
-  
-  // CORRECTION : On ne passe plus l'explication dans le HTML pour éviter le bug de l'apostrophe !
   shuffledOpts.forEach(opt => {
     optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this)">${opt}</button>`;
   });
@@ -1495,13 +1486,11 @@ function renderQuizQuestion() {
   `;
 }
 
-// CORRECTION : La fonction vient piocher l'explication directement à la source
 function checkQuizAnswer(selected, btnElement) {
   const q = activeQuiz[currentQuizIndex];
   const correct = q.ans;
   const explanation = q.expl;
 
-  // Désactiver tous les boutons
   const allBtns = document.getElementById('quiz-options-container').querySelectorAll('.quiz-opt-btn');
   allBtns.forEach(btn => btn.disabled = true);
   
@@ -1517,7 +1506,6 @@ function checkQuizAnswer(selected, btnElement) {
     feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong><br>${explanation}`;
   } else {
     btnElement.classList.add('wrong-ans');
-    // Trouver et surligner la bonne réponse
     allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
     blankSpot.innerText = correct;
     feedbackDiv.className = 'quiz-feedback wrong';
@@ -1531,6 +1519,7 @@ function nextQuizQuestion() {
   currentQuizIndex++;
   renderQuizQuestion();
 }
+
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
@@ -1546,7 +1535,7 @@ function nextQuizQuestion() {
     }
   }
 
-  // Lance le premier cours après un court délai pour être sûr que le DOM est prêt
+  // Lancement du premier cours
   setTimeout(() => loadContent('cours-01'), 100);
 
   // ENREGISTREMENT DU SERVICE WORKER (Mode Hors Ligne)
