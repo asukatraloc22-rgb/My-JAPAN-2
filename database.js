@@ -80,6 +80,21 @@ const DB_VOCAB = {
   }
 };
 
+// 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
+// Chaque phrase possède ses mauvaises réponses en français ET en japonais.
+const DB_DICTATION = {
+  N5: [
+    { jp: "おはようございます", fr: "Bonjour (le matin)", wrong_fr: ["Bonsoir", "Merci beaucoup", "Au revoir"], wrong_jp: ["こんばんは", "ありがとうございます", "さようなら"] },
+    { jp: "りんごを食べます", fr: "Je mange une pomme", wrong_fr: ["Je bois de l'eau", "J'achète une pomme", "Il mange du pain"], wrong_jp: ["水を飲みます", "りんごを買います", "パンを食べます"] },
+    { jp: "どこに行きますか", fr: "Où allez-vous ?", wrong_fr: ["D'où venez-vous ?", "Que faites-vous ?", "Quand partez-vous ?"], wrong_jp: ["どこから来ましたか", "何をしますか", "いつ出発しますか"] },
+    { jp: "わたしは学生です", fr: "Je suis étudiant", wrong_fr: ["Je suis professeur", "Il est étudiant", "C'est mon école"], wrong_jp: ["わたしは先生です", "彼は学生です", "これは私の学校です"] }
+  ],
+  N4: [
+    { jp: "雨が降りそうです", fr: "On dirait qu'il va pleuvoir", wrong_fr: ["Il a plu hier", "Il pleut beaucoup", "J'aime la pluie"], wrong_jp: ["昨日雨が降りました", "雨がたくさん降っています", "雨が好きです"] }
+  ]
+};
+
 // Exporte les variables pour les rendre accessibles par index.html
 window.DB_KANJI = DB_KANJI;
 window.DB_VOCAB = DB_VOCAB;
+window.DB_DICTATION = DB_DICTATION;
