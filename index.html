@@ -189,6 +189,13 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .sov-controls { display: flex; justify-content: center; margin-top: 30px; gap: 15px; }
 @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
+/* --- STYLES DICTÉE AVEUGLE --- */
+.dict-audio-box { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px auto 30px; padding: 20px; background: var(--sakura-pale); border-radius: 50%; width: 120px; height: 120px; cursor: pointer; border: 4px solid var(--sakura); transition: all 0.2s; box-shadow: var(--shadow-sm); }
+.dict-audio-box:hover, .dict-audio-box:active { transform: scale(1.05); border-color: var(--aka); background: white; }
+.dict-icon { font-size: 50px; line-height: 1; user-select: none; margin-left: 6px; /* Centrage optique du haut-parleur */ }
+.dict-hint { text-align: center; color: #888; font-style: italic; margin-bottom: 25px; font-size: 15px; }
+.dict-jp-reveal { font-size: 28px; font-family: var(--font-jp); font-weight: bold; color: var(--aka); text-align: center; margin-bottom: 20px; display: none; animation: popIn 0.3s ease-out; letter-spacing: 2px; }
+  
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
   .sidebar.open{ transform:none; }
@@ -1142,15 +1149,41 @@ function loadContent(id) {
             <span class="vocab-fr">Maîtrisez l'ordre des mots</span>
           </div>
 
-          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('sov-menu')">
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('dictation-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎧</span>
             <span class="vocab-jp" style="font-size: 18px;">Dictée Aveugle</span>
-            <span class="vocab-fr">Bientôt disponible</span>
+            <span class="vocab-fr">Entraînez votre oreille</span>
           </div>
         </div>
       </div>`;
   }
-  
+
+// --- NOUVEAUX MENUS DICTÉE AVEUGLE ---
+  else if(id === 'dictation-menu') {
+    titleHeader.innerText = "Dictée Aveugle";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Compréhension Orale</h3>
+        <p>L'application prononcera une phrase à voix haute. Tendez l'oreille, analysez les particules et le verbe, et sélectionnez la bonne traduction.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startDictation('N5')">
+            <span class="vocab-jp">N5</span>
+            <span class="vocab-fr">Écoute Débutant</span>
+          </div>
+          <div class="vocab-card" onclick="startDictation('N4')">
+            <span class="vocab-jp">N4</span>
+            <span class="vocab-fr">Écoute Intermédiaire</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'dictation-run') {
+    titleHeader.innerText = "Écoutez attentivement";
+    contentDiv.innerHTML = `
+      <div class="card" id="dict-area" style="padding: 30px 20px;">
+        </div>`;
+  }
+    
   // --- NOUVEAUX MENUS SOV ---
   else if(id === 'sov-menu') {
     titleHeader.innerText = "Constructeur de Phrases";
@@ -1673,6 +1706,93 @@ function checkSovAnswer() {
 function nextSovQuestion() {
   currentSovIndex++;
   renderSovQuestion();
+}
+
+/* ─── MOTEUR DICTÉE AVEUGLE ─── */
+const DICTATION_DATA = [
+  // NIVEAU N5
+  { lvl: 'N5', jp: "おはようございます", fr: "Bonjour (le matin)", wrong: ["Bonsoir", "Merci beaucoup", "Au revoir"] },
+  { lvl: 'N5', jp: "りんごを食べます", fr: "Je mange une pomme", wrong: ["Je bois de l'eau", "J'achète une pomme", "Il mange du pain"] },
+  { lvl: 'N5', jp: "どこに行きますか", fr: "Où allez-vous ?", wrong: ["D'où venez-vous ?", "Que faites-vous ?", "Quand partez-vous ?"] },
+  { lvl: 'N5', jp: "わたしは学生です", fr: "Je suis étudiant", wrong: ["Je suis professeur", "Il est étudiant", "C'est mon école"] },
+  // NIVEAU N4
+  { lvl: 'N4', jp: "雨が降りそうです", fr: "On dirait qu'il va pleuvoir", wrong: ["Il a plu hier", "Il pleut beaucoup", "J'aime la pluie"] },
+  { lvl: 'N4', jp: "日本語が話せます", fr: "Je peux parler japonais", wrong: ["J'étudie le japonais", "Le japonais est difficile", "Je ne parle pas japonais"] },
+  { lvl: 'N4', jp: "手伝ってくれますか", fr: "Pouvez-vous m'aider ?", wrong: ["Je vais vous aider", "Il m'a aidé", "Merci pour votre aide"] }
+];
+
+let activeDict = [];
+let currentDictIndex = 0;
+
+function startDictation(level) {
+  activeDict = DICTATION_DATA.filter(q => q.lvl === level).sort(() => Math.random() - 0.5);
+  currentDictIndex = 0;
+  loadContent('dictation-run');
+  renderDictation();
+}
+
+function renderDictation() {
+  if(currentDictIndex >= activeDict.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🎧</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Dictée Terminée !</h3>
+        <p>Excellent travail. Votre oreille s'habitue progressivement aux sonorités japonaises.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+
+  const q = activeDict[currentDictIndex];
+  
+  // Prépare les boutons (1 bonne réponse + 3 mauvaises, mélangées)
+  let options = [q.fr, ...q.wrong].sort(() => Math.random() - 0.5);
+  let optionsHtml = '';
+  options.forEach(opt => {
+    // Note : On passe les chaînes de caractères en échappant les apostrophes potentielles
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeCorrect = q.fr.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" onclick="checkDictAnswer('${safeOpt}', this, '${safeCorrect}', '${q.jp}')">${opt}</button>`;
+  });
+
+  document.getElementById('dict-area').innerHTML = `
+    <div class="dict-audio-box" onclick="speak('${q.jp}')">
+      <span class="dict-icon">🔊</span>
+    </div>
+    <div class="dict-hint">Écoutez la phrase et choisissez la bonne traduction.<br>(Appuyez sur le haut-parleur pour réécouter)</div>
+    <div id="dict-reveal" class="dict-jp-reveal"></div>
+    <div class="quiz-options" id="dict-options-container">${optionsHtml}</div>
+    <button class="btn-primary quiz-next-btn" id="dict-next-btn" onclick="nextDictQuestion()">Continuer ➔</button>
+  `;
+  
+  // Joue l'audio automatiquement 500ms après l'affichage de la carte
+  setTimeout(() => speak(q.jp), 500);
+}
+
+function checkDictAnswer(selected, btnElement, correctFr, correctJp) {
+  // Désactive tous les boutons
+  const allBtns = document.getElementById('dict-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(btn => btn.disabled = true);
+  
+  // Révèle le texte japonais caché
+  const revealDiv = document.getElementById('dict-reveal');
+  revealDiv.innerText = correctJp;
+  revealDiv.style.display = 'block';
+
+  if(selected === correctFr) {
+    btnElement.classList.add('correct-ans');
+  } else {
+    btnElement.classList.add('wrong-ans');
+    // Surligne la bonne réponse
+    allBtns.forEach(btn => { if(btn.innerText === correctFr) btn.classList.add('correct-ans'); });
+  }
+  
+  document.getElementById('dict-next-btn').style.display = 'block';
+}
+
+function nextDictQuestion() {
+  currentDictIndex++;
+  renderDictation();
 }
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
