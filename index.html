@@ -1431,74 +1431,72 @@ function answerCard(quality) {
   nextFlashcard();
 }  
 
-/* ─── MOTEUR QUIZ (TEXTE À TROUS) ─── */
-const QUIZ_DATA = [
-  // NIVEAU N5 - Particules de base
-  { lvl: 'N5', q: "私 ___ 学生です。", opts: ["は", "が", "を", "に"], ans: "は", fr: "Je suis étudiant.", expl: "La particule『は』 (wa) indique le thème principal de la phrase." },
-  { lvl: 'N5', q: "東京 ___ 行きます。", opts: ["で", "を", "へ", "が"], ans: "へ", fr: "Je vais à Tokyo.", expl: "La particule『へ』 (e) ou 『に』 indique la direction / la destination d'un déplacement." },
-  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』 (o) marque le Complément d'Objet Direct (l'objet qui subit l'action de manger)." },
-  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』 (de) indique le moyen ou l'instrument utilisé pour faire l'action." },
-  { lvl: 'N5', q: "部屋に猫 ___ います。", opts: ["は", "を", "で", "が"], ans: "が", fr: "Il y a un chat dans la chambre.", expl: "Avec les verbes d'existence (います / あります), le sujet est toujours marqué par la particule『が』." },
-  { lvl: 'N5', q: "日曜日 ___ 友達と遊びます。", opts: ["は", "に", "を", "が"], ans: "に", fr: "Je joue avec un ami le dimanche.", expl: "La particule『に』 (ni) s'utilise pour indiquer un moment précis dans le temps (jour de la semaine, heure)." },
-  
-  // NIVEAU N4 - Grammaire intermédiaire
-  { lvl: 'N4', q: "雨が降り ___ です。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Il a l'air de vouloir pleuvoir.", expl: "Racine du verbe (sans masu) + そう = Une apparence imminente (basée sur le visuel)." },
-  { lvl: 'N4', q: "日本に行った ___ があります。", opts: ["こと", "もの", "とき", "の"], ans: "こと", fr: "Je suis déjà allé au Japon.", expl: "Verbe au passé (Forme TA) + ことがある = Avoir l'expérience de faire quelque chose." },
-  { lvl: 'N4', q: "暗いから、電気をつけ ___ 。", opts: ["てあげる", "てくれる", "てみる", "ましょう"], ans: "ましょう", fr: "Comme il fait sombre, allumons la lumière.", expl: "La forme en 〜ましょう (mashō) exprime une proposition ou une invitation : Faisons-le !" },
-  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "La forme TE + はいけません (wa ikemasen) est la structure grammaticale pour exprimer une interdiction stricte." }
+/* ─── MOTEUR QUIZ (TEXTE À TROUS) BILINGUE & PROCÉDURAL ─── */
+// On garde quelques phrases complexes en dur pour la grammaire spécifique
+const QUIZ_DATA_FIXED = [
+  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』marque le Complément d'Objet Direct." },
+  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』indique le moyen ou l'instrument utilisé." },
+  { lvl: 'N4', q: "雨が降り ___ です。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Il a l'air de vouloir pleuvoir.", expl: "Racine du verbe + そう = Une apparence imminente." },
+  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "Forme TE + はいけません exprime une interdiction stricte." }
 ];
 
 let activeQuiz = [];
 let currentQuizIndex = 0;
 
-// Générateur procédural de grammaire
+// Le Générateur Magique de Grammaire
 function generateProceduralQuiz(level, count = 10) {
   const vocab = window.DB_VOCAB[level];
   if (!vocab || !vocab.subjects) return [];
   
   let generated = [];
-  const allParticles = ["は", "が", "を", "に", "で", "へ", "と"];
+  const allParticles = ["は", "が", "を", "に", "で", "へ", "と", "も"];
   
   for(let i = 0; i < count; i++) {
     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
     
-    // Pile ou face : on cache soit la particule du sujet, soit celle du lieu
+    // Pile ou face : on cache soit le Sujet, soit la Destination
     let hideTopic = Math.random() > 0.5;
     let sentence, answer, expl;
     
     if(hideTopic) {
       sentence = `${s.jp} ___ ${p.jp}に${v.jp}。`;
       answer = "は";
-      expl = "La particule『は』marque le thème principal de la phrase.";
+      expl = "La particule『は』(wa) marque le thème principal de la phrase.";
     } else {
       sentence = `${s.jp}は${p.jp} ___ ${v.jp}。`;
       answer = "に";
-      expl = "La particule『に』indique la destination du mouvement.";
+      expl = "La particule『に』(ni) indique la destination d'un déplacement.";
     }
     
-    // On génère 3 mauvaises particules pour le QCM
+    // Préparation du QCM avec 3 mauvaises particules aléatoires
     let opts = [answer];
     while(opts.length < 4) {
       let randP = allParticles[Math.floor(Math.random() * allParticles.length)];
       if(!opts.includes(randP)) opts.push(randP);
     }
+    opts.sort(() => Math.random() - 0.5); // Mélange les 4 boutons
     
     generated.push({
       lvl: level, q: sentence, ans: answer, 
-      opts: opts, fr: `[${s.fr}] ${v.fr} [${p.fr}]`, expl: expl
+      opts: opts, fr: `${s.fr} ${v.fr} ${p.fr}.`, expl: expl
     });
   }
   return generated;
 }
 
 function startQuiz(level) {
-  // On prend les questions fixes de QUIZ_DATA + 10 questions générées aléatoirement
-  const fixedData = QUIZ_DATA.filter(q => q.lvl === level);
+  // On mélange les questions dures (exceptions) avec les procédurales (infinies)
+  const fixedData = QUIZ_DATA_FIXED.filter(q => q.lvl === level);
   const proceduralData = generateProceduralQuiz(level, 10);
   
   activeQuiz = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  
+  if(activeQuiz.length === 0) { 
+    alert("Données en cours de construction pour ce niveau !"); 
+    return; 
+  }
   
   currentQuizIndex = 0;
   loadContent('fillblank-run');
@@ -1511,8 +1509,8 @@ function renderQuizQuestion() {
       <div class="card" style="text-align:center; padding: 40px;">
         <span style="font-size: 60px;">🏆</span>
         <h3 style="color: var(--aka); margin: 20px 0;">Entraînement Terminé !</h3>
-        <p>Vous avez répondu à toutes les questions de ce niveau.</p>
-        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
+        <p>Vos réflexes sur les particules sont excellents.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
       </div>`;
     return;
   }
@@ -1521,8 +1519,7 @@ function renderQuizQuestion() {
   const displaySentence = q.q.replace("___", `<span class="quiz-blank" id="quiz-blank-spot">?</span>`);
   
   let optionsHtml = '';
-  const shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
-  shuffledOpts.forEach(opt => {
+  q.opts.forEach(opt => {
     optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this)">${opt}</button>`;
   });
 
