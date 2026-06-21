@@ -195,6 +195,37 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 .dict-icon { font-size: 50px; line-height: 1; user-select: none; margin-left: 6px; /* Centrage optique du haut-parleur */ }
 .dict-hint { text-align: center; color: #888; font-style: italic; margin-bottom: 25px; font-size: 15px; }
 .dict-jp-reveal { font-size: 28px; font-family: var(--font-jp); font-weight: bold; color: var(--aka); text-align: center; margin-bottom: 20px; display: none; animation: popIn 0.3s ease-out; letter-spacing: 2px; }
+
+/* --- MODE SAMOURAÏ (SOMBRE) --- */
+body.samourai-mode {
+  --shiro: #121212;
+  --kinari: #1e1e1e;
+  --washi: #2c2c2c;
+  --sumi: #e0e0e0;
+  --sumi2: #b0b0b0;
+  --aka: #D32F2F;
+  --sakura-pale: #2a1a1c;
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+}
+body.samourai-mode .card, body.samourai-mode .kana-section, body.samourai-mode .vocab-card, 
+body.samourai-mode .kana-cell, body.samourai-mode .kanji-tile, body.samourai-mode .timeline-content, 
+body.samourai-mode .sov-word, body.samourai-mode .quiz-opt-btn, body.samourai-mode .dict-audio-box,
+body.samourai-mode .fc-face {
+  background: var(--kinari);
+  border-color: rgba(255,183,197,0.15);
+}
+body.samourai-mode .sidebar {
+  background: linear-gradient(180deg, #1a0000 0%, #2a0000 50%, #3e0000 100%);
+}
+body.samourai-mode .main-header {
+  background: rgba(18, 18, 18, 0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+body.samourai-mode .alert-box { background: #332701; color: #ffc107; border-color: #ffc107; }
+body.samourai-mode .course-table th { background: #2a1a1c; }
+body.samourai-mode .course-table td { background: var(--kinari); }
+body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
   
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
@@ -319,6 +350,33 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 <script src="./database.js"></script>
   
 <script>
+/* ─── MOTEUR DE STATISTIQUES & SAUVEGARDE ─── */
+let userStats = JSON.parse(localStorage.getItem('nihongoStats')) || {
+  lastLogin: new Date().toDateString(),
+  streak: 1,
+  answersTotal: 0,
+  answersCorrect: 0,
+  wordsMastered: 0
+};
+
+function saveStats() {
+  localStorage.setItem('nihongoStats', JSON.stringify(userStats));
+}
+
+function updateStat(isCorrect, isMastered = false) {
+  userStats.answersTotal++;
+  if(isCorrect) userStats.answersCorrect++;
+  if(isMastered) userStats.wordsMastered++;
+  saveStats();
+}
+
+function toggleSamourai() {
+  document.body.classList.toggle('samourai-mode');
+  const isSamourai = document.body.classList.contains('samourai-mode');
+  localStorage.setItem('samouraiMode', isSamourai);
+  loadContent('parametres'); // Rafraîchit l'interface du bouton
+}
+  
 /* ─── UI & AUDIO ───────────────────────────────────────────── */
 function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
@@ -1225,24 +1283,27 @@ function loadContent(id) {
   }
   else if(id === 'progression') {
     titleHeader.innerText = "Tableau de Progression & Feuille de Route";
+    const acc = userStats.answersTotal > 0 ? Math.round((userStats.answersCorrect / userStats.answersTotal) * 100) : 0;
+    
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Vos Statistiques</h3>
         <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr);">
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;" id="stat-streak">0</span>
+            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">${userStats.streak} </span>
             <span class="vocab-fr">Jours consécutifs</span>
           </div>
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;" id="stat-acc">0%</span>
-            <span class="vocab-fr">Précision Flashcards</span>
+            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;">${acc}%</span>
+            <span class="vocab-fr">Précision Globale</span>
           </div>
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;" id="stat-words">0</span>
-            <span class="vocab-fr">Mots maîtrisés</span>
+            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;">${userStats.wordsMastered}</span>
+            <span class="vocab-fr">Cartes maîtrisées</span>
           </div>
         </div>
       </div>
+      `;
 
       <div class="card">
         <h3>Chronologie d'Étude Conseillée</h3>
@@ -1325,17 +1386,15 @@ function loadContent(id) {
   }
   else if(id === 'parametres') {
     titleHeader.innerText = "Paramètres de l'Application";
+    const isSamourai = document.body.classList.contains('samourai-mode');
+    
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Préférences d'affichage</h3>
         <ul style="list-style: none; margin-left: 0;">
-          <li style="padding: 15px 0; border-bottom: 1px solid rgba(188,0,45,.1); display: flex; justify-content: space-between; align-items: center;">
-            <span><strong>Afficher les Rōmaji</strong><br><span style="font-size: 13px; color: #666;">Affiche la prononciation latine sous les Kanas.</span></span>
-            <span style="color: var(--aka); font-weight: bold;">[ ON ]</span>
-          </li>
-          <li style="padding: 15px 0; border-bottom: 1px solid rgba(188,0,45,.1); display: flex; justify-content: space-between; align-items: center;">
-            <span><strong>Mode Sombre</strong><br><span style="font-size: 13px; color: #666;">Protège vos yeux lors des révisions nocturnes.</span></span>
-            <span style="color: #999; font-weight: bold;">[ OFF ]</span>
+          <li style="padding: 15px 0; border-bottom: 1px solid rgba(188,0,45,.1); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleSamourai()">
+            <span><strong>Mode Samouraï (Sombre)</strong><br><span style="font-size: 13px; color: #666;">Protège vos yeux lors des révisions nocturnes.</span></span>
+            <span style="color: ${isSamourai ? 'var(--aka)' : '#999'}; font-weight: bold;">[ ${isSamourai ? 'ON' : 'OFF'} ]</span>
           </li>
         </ul>
       </div>`;
@@ -1414,22 +1473,25 @@ function flipFlashcard() {
 function answerCard(quality) {
   // quality : 0 (Raté), 1 (Difficile), 2 (Facile)
   if(quality === 0) {
-    // Si raté, on remet la carte dans le paquet (à quelques cartes de distance)
     currentCard.rep = 0;
-    const insertIndex = Math.min(activeDeck.length, 3); // La revoir très vite
+    const insertIndex = Math.min(activeDeck.length, 3);
     activeDeck.splice(insertIndex, 0, currentCard);
+    
+    updateStat(false); 
   } 
   else if(quality === 1) {
-    // Si difficile, on la remet à la toute fin du paquet
     currentCard.rep++;
     activeDeck.push(currentCard);
+    
+    updateStat(true, false); 
   }
   else {
-    // Si facile, la carte est validée pour la session, elle n'est pas remise dans le paquet
     currentCard.rep++;
+    
+    updateStat(true, true); 
   }
   nextFlashcard();
-}  
+}
 
 /* ─── MOTEUR QUIZ (TEXTE À TROUS) BILINGUE & PROCÉDURAL ─── */
 // On garde quelques phrases complexes en dur pour la grammaire spécifique
@@ -1550,12 +1612,16 @@ function checkQuizAnswer(selected, btnElement) {
     blankSpot.style.borderColor = '#1abc9c';
     feedbackDiv.className = 'quiz-feedback correct';
     feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong><br>${explanation}`;
+    
+    updateStat(true); 
   } else {
     btnElement.classList.add('wrong-ans');
     allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
     blankSpot.innerText = correct;
     feedbackDiv.className = 'quiz-feedback wrong';
     feedbackDiv.innerHTML = `<strong>❌ Erreur. La bonne réponse était 「${correct}」.</strong><br>${explanation}`;
+    
+    updateStat(false); 
   }
   
   document.getElementById('quiz-next-btn').style.display = 'block';
@@ -1680,9 +1746,13 @@ function checkSovAnswer() {
   if (userOrder === correctOrder) {
     feedbackDiv.className = 'quiz-feedback correct';
     feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>La structure SOV est respectée.`;
+    
+    updateStat(true); 
   } else {
     feedbackDiv.className = 'quiz-feedback wrong';
     feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre correct était : <strong>${q.order.join(" ")}</strong>`;
+    
+    updateStat(false); 
   }
 }
 
@@ -1809,12 +1879,14 @@ function checkDictAnswer(selected, btnElement, correct, audioText) {
 
   if(selected === correct) {
     btnElement.classList.add('correct-ans');
+    
+    updateStat(true); 
   } else {
     btnElement.classList.add('wrong-ans');
     allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
+    
+    updateStat(false);
   }
-  document.getElementById('dict-next-btn').style.display = 'block';
-}
 
 function nextDictQuestion() {
   currentDictIndex++;
@@ -1836,6 +1908,24 @@ function nextDictQuestion() {
     }
   }
 
+// Chargement du Mode Samouraï
+  if(localStorage.getItem('samouraiMode') === 'true') {
+    document.body.classList.add('samourai-mode');
+  }
+
+  // Calcul des Jours Consécutifs (Streak)
+  const today = new Date().toDateString();
+  if (userStats.lastLogin !== today) {
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (userStats.lastLogin === yesterday.toDateString()) {
+      userStats.streak++; // Ajoute +1 jour si connecté hier
+    } else {
+      userStats.streak = 1; // Remet à 1 si on a raté une journée
+    }
+    userStats.lastLogin = today;
+    saveStats();
+  }
   // Lancement du premier cours
   setTimeout(() => loadContent('cours-01'), 100);
 
