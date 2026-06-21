@@ -1129,24 +1129,52 @@ function loadContent(id) {
             <span class="vocab-fr">Algorithme de répétition espacée</span>
           </div>
           
-          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('fillblank-menu')">
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka);" onclick="loadContent('fillblank-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
             <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
             <span class="vocab-fr">Testez vos Particules & Grammaire</span>
           </div>
           
+          <!-- BOUTON CONSTRUCTEUR SOV ACTIF -->
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('sov-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏗️</span>
             <span class="vocab-jp" style="font-size: 18px;">Constructeur SOV</span>
             <span class="vocab-fr">Maîtrisez l'ordre des mots</span>
           </div>
-          
+
           <div class="vocab-card" style="padding: 24px; opacity: 0.6;">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎧</span>
             <span class="vocab-jp" style="font-size: 18px;">Dictée Aveugle</span>
             <span class="vocab-fr">Bientôt disponible</span>
           </div>
         </div>
+      </div>`;
+  }
+  
+  // --- NOUVEAUX MENUS SOV ---
+  else if(id === 'sov-menu') {
+    titleHeader.innerText = "Constructeur de Phrases";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Pensez à la Japonaise (Sujet-Objet-Verbe)</h3>
+        <p>Le verbe se place toujours à la fin. Reconstituez la traduction de la phrase française en tapant sur les blocs dans le bon ordre.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startSov('N5')">
+            <span class="vocab-jp">N5</span>
+            <span class="vocab-fr">Phrases de base</span>
+          </div>
+          <div class="vocab-card" onclick="startSov('N4')">
+            <span class="vocab-jp">N4</span>
+            <span class="vocab-fr">Phrases intermédiaires</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'sov-run') {
+    titleHeader.innerText = "Construisez la phrase";
+    contentDiv.innerHTML = `
+      <div class="card" id="sov-area" style="padding: 30px 20px;">
+        <!-- Injecté par JavaScript -->
       </div>`;
   }
   // --- NOUVEAUX MENUS SOV (A coller juste sous les menus "fillblank-run") ---
@@ -1582,7 +1610,7 @@ let placedWords = [];
 
 function startSov(level) {
   activeSovQuiz = SOV_DATA.filter(q => q.lvl === level);
-  activeSovQuiz.sort(() => Math.random() - 0.5); // Mélange les phrases
+  activeSovQuiz.sort(() => Math.random() - 0.5);
   currentSovIndex = 0;
   loadContent('sov-run');
   renderSovQuestion();
@@ -1601,8 +1629,6 @@ function renderSovQuestion() {
   }
 
   const q = activeSovQuiz[currentSovIndex];
-  
-  // Prépare les mots et les mélange
   placedWords = [];
   bankWords = [...q.order].map((word, idx) => ({ id: idx, text: word }));
   bankWords.sort(() => Math.random() - 0.5);
@@ -1638,7 +1664,7 @@ function updateSovUI() {
 function moveWordToSentence(bankIndex) {
   const word = bankWords.splice(bankIndex, 1)[0];
   placedWords.push(word);
-  speak(word.text); // Prononce le mot cliqué
+  speak(word.text);
   updateSovUI();
 }
 
@@ -1657,7 +1683,6 @@ function checkSovAnswer() {
   document.getElementById('sov-check-btn').style.display = 'none';
   document.getElementById('sov-next-btn').style.display = 'block';
 
-  // Bloquer les clics une fois vérifié
   const allWords = document.querySelectorAll('.sov-word');
   allWords.forEach(w => w.onclick = null);
 
