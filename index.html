@@ -1148,6 +1148,32 @@ function loadContent(id) {
         </div>
       </div>`;
   }
+  // --- NOUVEAUX MENUS SOV (A coller juste sous les menus "fillblank-run") ---
+  else if(id === 'sov-menu') {
+    titleHeader.innerText = "Constructeur de Phrases";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Pensez à la Japonaise (Sujet-Objet-Verbe)</h3>
+        <p>Le verbe se place toujours à la fin. Reconstituez la traduction de la phrase française en tapant sur les blocs dans le bon ordre.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startSov('N5')">
+            <span class="vocab-jp">N5</span>
+            <span class="vocab-fr">Phrases de base</span>
+          </div>
+          <div class="vocab-card" onclick="startSov('N4')">
+            <span class="vocab-jp">N4</span>
+            <span class="vocab-fr">Phrases intermédiaires</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'sov-run') {
+    titleHeader.innerText = "Construisez la phrase";
+    contentDiv.innerHTML = `
+      <div class="card" id="sov-area" style="padding: 30px 20px;">
+        <!-- Injecté par JavaScript -->
+      </div>`;
+  }
   else if(id === 'flashcards-menu') {
     titleHeader.innerText = "Configuration du Paquet";
     contentDiv.innerHTML = `
@@ -1534,7 +1560,120 @@ function nextQuizQuestion() {
   currentQuizIndex++;
   renderQuizQuestion();
 }
+/* ─── MOTEUR CONSTRUCTEUR SOV ─── */
+const SOV_DATA = [
+  // NIVEAU N5
+  { lvl: 'N5', fr: "Je mange une pomme.", order: ["私", "は", "りんご", "を", "食べます"] },
+  { lvl: 'N5', fr: "Je vais à Tokyo demain.", order: ["明日", "東京", "に", "行きます"] },
+  { lvl: 'N5', fr: "Le chat est dans le jardin.", order: ["庭", "に", "猫", "が", "います"] },
+  { lvl: 'N5', fr: "J'écris avec un stylo.", order: ["ペン", "で", "書きます"] },
+  { lvl: 'N5', fr: "Je ne suis pas étudiant.", order: ["私", "は", "学生", "じゃありません"] },
+  // NIVEAU N4
+  { lvl: 'N4', fr: "Je peux parler japonais.", order: ["日本語", "が", "話せます"] },
+  { lvl: 'N4', fr: "On dirait qu'il va pleuvoir.", order: ["雨", "が", "降り", "そうです"] },
+  { lvl: 'N4', fr: "Je suis déjà allé au Japon.", order: ["日本", "に", "行った", "こと", "が", "あります"] }
+];
 
+let activeSovQuiz = [];
+let currentSovIndex = 0;
+let bankWords = [];
+let placedWords = [];
+
+function startSov(level) {
+  activeSovQuiz = SOV_DATA.filter(q => q.lvl === level);
+  activeSovQuiz.sort(() => Math.random() - 0.5); // Mélange les phrases
+  currentSovIndex = 0;
+  loadContent('sov-run');
+  renderSovQuestion();
+}
+
+function renderSovQuestion() {
+  if (currentSovIndex >= activeSovQuiz.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🏯</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Entraînement SOV Terminé !</h3>
+        <p>Vos réflexes de construction de phrases s'améliorent.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+
+  const q = activeSovQuiz[currentSovIndex];
+  
+  // Prépare les mots et les mélange
+  placedWords = [];
+  bankWords = [...q.order].map((word, idx) => ({ id: idx, text: word }));
+  bankWords.sort(() => Math.random() - 0.5);
+
+  updateSovUI();
+}
+
+function updateSovUI() {
+  const q = activeSovQuiz[currentSovIndex];
+  
+  let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
+  placedWords.forEach((wordObj, i) => {
+    sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordObj.text}</div>`;
+  });
+
+  let bankHtml = '';
+  bankWords.forEach((wordObj, i) => {
+    bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordObj.text}</div>`;
+  });
+
+  document.getElementById('sov-area').innerHTML = `
+    <div class="sov-header">Traduisez : "${q.fr}"</div>
+    <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
+    <div class="sov-bank-area" id="sov-bank">${bankHtml}</div>
+    <div id="quiz-feedback" class="quiz-feedback"></div>
+    <div class="sov-controls">
+      <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
+      <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
+    </div>
+  `;
+}
+
+function moveWordToSentence(bankIndex) {
+  const word = bankWords.splice(bankIndex, 1)[0];
+  placedWords.push(word);
+  speak(word.text); // Prononce le mot cliqué
+  updateSovUI();
+}
+
+function moveWordToBank(sentenceIndex) {
+  const word = placedWords.splice(sentenceIndex, 1)[0];
+  bankWords.push(word);
+  updateSovUI();
+}
+
+function checkSovAnswer() {
+  const q = activeSovQuiz[currentSovIndex];
+  const userOrder = placedWords.map(w => w.text).join("");
+  const correctOrder = q.order.join("");
+  
+  const feedbackDiv = document.getElementById('quiz-feedback');
+  document.getElementById('sov-check-btn').style.display = 'none';
+  document.getElementById('sov-next-btn').style.display = 'block';
+
+  // Bloquer les clics une fois vérifié
+  const allWords = document.querySelectorAll('.sov-word');
+  allWords.forEach(w => w.onclick = null);
+
+  if (userOrder === correctOrder) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>La structure SOV est respectée.`;
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre correct était : <strong>${q.order.join(" ")}</strong>`;
+  }
+}
+
+function nextSovQuestion() {
+  currentSovIndex++;
+  renderSovQuestion();
+}
+  
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
