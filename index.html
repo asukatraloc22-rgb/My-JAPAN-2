@@ -680,7 +680,7 @@ function loadContent(id) {
         </ul>
         <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant).</p>
       </div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(KANJI_N5)}</div>`;
+      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(window.DB_KANJI.N5)}</div>`;
   }
 
   // --- NIVEAU JLPT N4 ---
@@ -692,7 +692,7 @@ function loadContent(id) {
         <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société (社), au travail (業), aux actions complexes et à la nature.</p>
         <p>L'architecture de ces Kanjis est souvent basée sur des "clés" (radicaux) que vous avez déjà apprises au niveau N5.</p>
       </div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(KANJI_N4)}</div>`;
+      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(window.DB_KANJI.N4)}</div>`;
   }
   else if(id === 'cours-08') {
     titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif";
@@ -813,7 +813,7 @@ function loadContent(id) {
         <h3>Le pont vers la fluidité</h3>
         <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (articles simples, affiches, e-mails professionnels). Les Kanjis y abordent les émotions, les sentiments complexes, l'économie et la politique de base.</p>
       </div>
-      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(KANJI_N3)}</div>`;
+      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(window.DB_KANJI.N3)}</div>`;
   }
   else if(id === 'cours-12') {
     titleHeader.innerText = "Cours 12 : Passif, Causatif et Causatif-Passif";
@@ -949,7 +949,7 @@ function loadContent(id) {
         <p>Le JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le passeport pour travailler dans une entreprise japonaise.</p>
         <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion d'entreprise, la justice et l'économie.</p>
       </div>
-      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(KANJI_N2)}</div>`;
+      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(window.DB_KANJI.N2)}</div>`;
   }
   else if(id === 'cours-15') {
     titleHeader.innerText = "Cours 15 : Grammaire N2 (Rigidité et Nuances)";
@@ -992,7 +992,7 @@ function loadContent(id) {
         <p>Le JLPT N1 couvre l'ensemble des ~2136 Kanjis d'usage courant (Jōyō Kanji). Ce sont des idéogrammes que l'on retrouve dans la littérature classique, les documents juridiques, les thèses universitaires ou les journaux très spécialisés.</p>
         <p>Ils expriment souvent des émotions complexes, des concepts philosophiques abstraits ou des actions extrêmement précises.</p>
       </div>
-      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(KANJI_N1)}</div>`;
+      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(window.DB_KANJI.N1)}</div>`;
   }
   else if(id === 'cours-17') {
     titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
@@ -1349,9 +1349,9 @@ function startFlashcards(deckType) {
   let sourceData = [];
   
   if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
-  else if(deckType === 'kanji5') sourceData = KANJI_N5;
-  else if(deckType === 'kanji4') sourceData = KANJI_N4;
-  else if(deckType === 'kanji3') sourceData = KANJI_N3;
+  else if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
+  else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
+  else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
   
   // Prépare les cartes avec les variables de l'algorithme
   activeDeck = sourceData.map(item => ({
@@ -1520,28 +1520,43 @@ function nextQuizQuestion() {
   currentQuizIndex++;
   renderQuizQuestion();
 }
-/* ─── MOTEUR CONSTRUCTEUR SOV ─── */
-const SOV_DATA = [
-  // NIVEAU N5
-  { lvl: 'N5', fr: "Je mange une pomme.", order: ["私", "は", "りんご", "を", "食べます"] },
-  { lvl: 'N5', fr: "Je vais à Tokyo demain.", order: ["明日", "東京", "に", "行きます"] },
-  { lvl: 'N5', fr: "Le chat est dans le jardin.", order: ["庭", "に", "猫", "が", "います"] },
-  { lvl: 'N5', fr: "J'écris avec un stylo.", order: ["ペン", "で", "書きます"] },
-  { lvl: 'N5', fr: "Je ne suis pas étudiant.", order: ["私", "は", "学生", "じゃありません"] },
-  // NIVEAU N4
-  { lvl: 'N4', fr: "Je peux parler japonais.", order: ["日本語", "が", "話せます"] },
-  { lvl: 'N4', fr: "On dirait qu'il va pleuvoir.", order: ["雨", "が", "降り", "そうです"] },
-  { lvl: 'N4', fr: "Je suis déjà allé au Japon.", order: ["日本", "に", "行った", "こと", "が", "あります"] }
-];
-
+/* ─── MOTEUR CONSTRUCTEUR SOV (PROCÉDURAL) ─── */
 let activeSovQuiz = [];
 let currentSovIndex = 0;
 let bankWords = [];
 let placedWords = [];
 
+// Le Générateur Magique
+function generateProceduralSOV(level, count = 5) {
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || Object.keys(vocab).length === 0) return []; // Sécurité si base vide
+  
+  let generated = [];
+  for(let i=0; i<count; i++) {
+     // Pioche aléatoire des mots
+     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     
+     // Construction de la phrase japonaise correcte
+     let jpOrder = [s.jp, "は", p.jp, "に", v.jp];
+     // Construction de la traduction française basique
+     let frTranslation = s.fr + " " + v.fr + " à " + p.fr + ".";
+     
+     generated.push({ lvl: level, fr: frTranslation, order: jpOrder });
+  }
+  return generated;
+}
+
 function startSov(level) {
-  activeSovQuiz = SOV_DATA.filter(q => q.lvl === level);
-  activeSovQuiz.sort(() => Math.random() - 0.5);
+  // Au lieu de lire une liste fixe, on génère 5 nouvelles phrases uniques !
+  activeSovQuiz = generateProceduralSOV(level, 5);
+  
+  if (activeSovQuiz.length === 0) {
+    alert("Base de données de vocabulaire en construction pour ce niveau !");
+    return;
+  }
+  
   currentSovIndex = 0;
   loadContent('sov-run');
   renderSovQuestion();
