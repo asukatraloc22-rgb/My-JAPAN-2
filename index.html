@@ -1451,9 +1451,55 @@ const QUIZ_DATA = [
 let activeQuiz = [];
 let currentQuizIndex = 0;
 
+// Générateur procédural de grammaire
+function generateProceduralQuiz(level, count = 10) {
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects) return [];
+  
+  let generated = [];
+  const allParticles = ["は", "が", "を", "に", "で", "へ", "と"];
+  
+  for(let i = 0; i < count; i++) {
+    let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+    let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+    let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+    
+    // Pile ou face : on cache soit la particule du sujet, soit celle du lieu
+    let hideTopic = Math.random() > 0.5;
+    let sentence, answer, expl;
+    
+    if(hideTopic) {
+      sentence = `${s.jp} ___ ${p.jp}に${v.jp}。`;
+      answer = "は";
+      expl = "La particule『は』marque le thème principal de la phrase.";
+    } else {
+      sentence = `${s.jp}は${p.jp} ___ ${v.jp}。`;
+      answer = "に";
+      expl = "La particule『に』indique la destination du mouvement.";
+    }
+    
+    // On génère 3 mauvaises particules pour le QCM
+    let opts = [answer];
+    while(opts.length < 4) {
+      let randP = allParticles[Math.floor(Math.random() * allParticles.length)];
+      if(!opts.includes(randP)) opts.push(randP);
+    }
+    
+    generated.push({
+      lvl: level, q: sentence, ans: answer, 
+      opts: opts, fr: `[${s.fr}] ${v.fr} [${p.fr}]`, expl: expl
+    });
+  }
+  return generated;
+}
+
 function startQuiz(level) {
-  activeQuiz = QUIZ_DATA.filter(q => q.lvl === level);
-  activeQuiz.sort(() => Math.random() - 0.5);
+  // On prend les questions fixes de QUIZ_DATA + 10 questions générées aléatoirement
+  const fixedData = QUIZ_DATA.filter(q => q.lvl === level);
+  const proceduralData = generateProceduralQuiz(level, 10);
+  
+  activeQuiz = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  
   currentQuizIndex = 0;
   loadContent('fillblank-run');
   renderQuizQuestion();
@@ -1652,16 +1698,56 @@ function nextSovQuestion() {
 let activeDict = [];
 let currentDictIndex = 0;
 
+// Générateur procédural de dictées
+function generateProceduralDictation(level, count = 10) {
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects) return [];
+  
+  let generated = [];
+  for(let i = 0; i < count; i++) {
+     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     
+     // Phrase correcte
+     let jp = `${s.jp}は${p.jp}に${v.jp}`;
+     let fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
+     
+     // Création de pièges dynamiques (on change 1 seul élément)
+     let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
+     let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
+     let wrongV = vocab.verbs_motion.find(x => x.jp !== v.jp) || vocab.verbs_motion[0];
+     
+     generated.push({ 
+       jp: jp, 
+       fr: fr, 
+       wrong_jp: [
+         `${wrongS.jp}は${p.jp}に${v.jp}`, // Piège sujet
+         `${s.jp}は${wrongP.jp}に${v.jp}`, // Piège lieu
+         `${s.jp}は${p.jp}に${wrongV.jp}`  // Piège verbe
+       ], 
+       wrong_fr: [
+         `[${wrongS.fr}] ${v.fr} [${p.fr}]`,
+         `[${s.fr}] ${v.fr} [${wrongP.fr}]`,
+         `[${s.fr}] ${wrongV.fr} [${p.fr}]`
+       ] 
+     });
+  }
+  return generated;
+}
+
 function startDictation(level) {
-  // Récupère les données depuis database.js
-  const data = window.DB_DICTATION[level];
-  if(!data || data.length === 0) { 
+  // On récupère les phrases fixes ET on génère 10 phrases procédurales
+  const fixedData = window.DB_DICTATION[level] || [];
+  const proceduralData = generateProceduralDictation(level, 10);
+  
+  // On mélange le tout !
+  activeDict = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  
+  if(activeDict.length === 0) { 
     alert("Données en cours de construction pour ce niveau !"); 
     return; 
   }
-  
-  // Mélange les questions
-  activeDict = [...data].sort(() => Math.random() - 0.5);
   currentDictIndex = 0;
   loadContent('dictation-run');
   renderDictation();
