@@ -164,7 +164,8 @@ const DB_VOCAB = {
       { jp: "凱旋します", kana: "がいせんします", romaji: "gaisenshimasu", fr: "revient triomphalement à" },
       { jp: "左遷されます", kana: "させんされます", romaji: "sasensaremasu", fr: "est rétrogradé / banni à" }
     ]
-  };
+  }
+};
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
 const DB_DICTATION = {
