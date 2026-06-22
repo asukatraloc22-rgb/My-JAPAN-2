@@ -1171,6 +1171,16 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Mode Survie</span>
             <span class="vocab-fr">Chrono-Challenge de vitesse</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('matchup-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🧩</span>
+            <span class="vocab-jp" style="font-size: 18px;">Jeu des Paires</span>
+            <span class="vocab-fr">Associez visuellement Kanjis et Sens</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('keyboard-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">✍️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Saisie Manuelle</span>
+            <span class="vocab-fr">Tapez vos réponses au clavier</span>
+          </div>
         </div>
       </div>`;
   }
@@ -1285,6 +1295,46 @@ function loadContent(id) {
   else if(id === 'survival-run') {
     titleHeader.innerText = "CHALLENGE SURVIE EN COURS...";
     contentDiv.innerHTML = `<div class="card" id="survival-area" style="padding: 40px 20px; background: var(--sakura-pale);"></div>`;
+  }
+    else if(id === 'matchup-menu') {
+    titleHeader.innerText = "Jeu des Paires : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Nettoyez la grille de Kanjis</h3>
+        <p>Sélectionnez une carte en Japonais puis associez-la à sa bonne signification en Français pour faire disparaître le duo.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startMatchupMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Grille Débutant</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grille Élémentaire</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Grille Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Grille Avancée</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Grille Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'matchup-run') {
+    titleHeader.innerText = "ASSOCIATION DES PAIRES...";
+    contentDiv.innerHTML = `
+      <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
+        <p style="text-align: center; margin-bottom: 20px; font-weight: bold; color: var(--aka);">Associez les Kanjis à leurs définitions françaises :</p>
+        <div class="kana-grid" id="matchup-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px; margin: 0 auto; gap: 15px;"></div>
+      </div>`;
+  }
+    else if(id === 'keyboard-menu') {
+    titleHeader.innerText = "Saisie Manuelle : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'épreuve de production écrite</h3>
+        <p>Ici, pas de devinettes possibles ! Lisez la phrase à trous et utilisez le clavier virtuel pour taper vous-même la bonne particule.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startKeyboardMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Particules de base</span></div>
+          <div class="vocab-card" onclick="startKeyboardMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grammaire intermédiaire</span></div>
+          <div class="vocab-card" onclick="startKeyboardMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Grammaire avancée</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'keyboard-run') {
+    titleHeader.innerText = "SAISIE AU CLAVIER...";
+    contentDiv.innerHTML = `<div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateur d'Examens JLPT";
@@ -1842,7 +1892,7 @@ function nextDictQuestion() {
   currentDictIndex++;
   renderDictation();
 }
-
+  
 /* ─── MOTEUR SIMULATEUR EXAMEN JLPT N5 ─── */
 let examQuestions = [];
 let currentExamIndex = 0;
@@ -2137,6 +2187,224 @@ function endSurvivalGame() {
       <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
     </div>
   `;
+}
+  
+/* ─── MOTEUR DE JEU : LE JEU DES PAIRES (MATCH-UP) ─── */
+let matchupSelectedCard = null;
+let matchupPairsCount = 0;
+let matchupLevel = 'N5';
+
+function startMatchupMode(level) {
+  matchupLevel = level;
+  matchupSelectedCard = null;
+  
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On pioche 4 Kanjis uniques au hasard pour faire 8 cartes au total (4 paires)
+  let pool = [...window.DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, 4);
+  matchupPairsCount = pool.length;
+
+  let cards = [];
+  pool.forEach(item => {
+    // Carte Kanji
+    cards.push({ id: `jp-${item.j}`, type: 'jp', value: item.j, matchId: item.f });
+    // Carte Français
+    cards.push({ id: `fr-${item.j}`, type: 'fr', value: item.f, matchId: item.j });
+  });
+
+  // Mélange complet de la grille
+  cards.sort(() => Math.random() - 0.5);
+
+  loadContent('matchup-run');
+  
+  const gridEl = document.getElementById('matchup-grid');
+  if (!gridEl) return;
+
+  let gridHtml = "";
+  cards.forEach(card => {
+    gridHtml += `
+      <div class="kana-cell" id="${card.id}" style="padding: 20px 10px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; user-select: none;" onclick="selectMatchupCard('${card.id}', '${card.type}', '${card.value}', '${card.matchId}')">
+        <span style="${card.type === 'jp' ? "font-family: var(--font-jp); font-size: 26px;" : "font-size: 13px; color: var(--aka);"}" id="text-${card.id}">${card.value}</span>
+      </div>`;
+  });
+  gridEl.innerHTML = gridHtml;
+}
+
+function selectMatchupCard(id, type, value, matchId) {
+  const cardEl = document.getElementById(id);
+  if (!cardEl || cardEl.style.visibility === 'hidden' || cardEl.classList.contains('correct-ans')) return;
+
+  // Si on clique sur la carte déjà sélectionnée, on désélectionne
+  if (matchupSelectedCard && matchupSelectedCard.id === id) {
+    cardEl.style.background = "";
+    cardEl.style.borderColor = "";
+    matchupSelectedCard = null;
+    return;
+  }
+
+  // Allumage visuel de la carte cliquée
+  cardEl.style.background = "var(--sakura-pale)";
+  cardEl.style.borderColor = "var(--aka)";
+
+  // Si c'est la première carte cliquée de la paire
+  if (!matchupSelectedCard) {
+    matchupSelectedCard = { id, type, value, matchId };
+    return;
+  }
+
+  // Si c'est la deuxième carte cliquée, on vérifie si ça matche
+  // On s'assure qu'on ne clique pas sur le même type (ex: deux Kanjis d'affilée)
+  if (matchupSelectedCard.type !== type && matchupSelectedCard.matchId === value) {
+    // C'EST UN MATCH !
+    const firstCardEl = document.getElementById(matchupSelectedCard.id);
+    
+    // Animation de validation verte
+    cardEl.style.background = "#e8f8f5"; cardEl.style.borderColor = "#1abc9c";
+    firstCardEl.style.background = "#e8f8f5"; firstCardEl.style.borderColor = "#1abc9c";
+    
+    matchupPairsCount--;
+    matchupSelectedCard = null;
+    updateStat(true, false, matchupLevel);
+
+    // On fait disparaître les paires en douceur
+    setTimeout(() => {
+      cardEl.style.visibility = "hidden";
+      firstCardEl.style.visibility = "hidden";
+      
+      // Si plus de cartes à l'écran, victoire !
+      if (matchupPairsCount === 0) {
+        endMatchupGame();
+      }
+    }, 400);
+
+  } else {
+    // ERREUR ! Pas de correspondance
+    const firstCardEl = document.getElementById(matchupSelectedCard.id);
+    cardEl.style.background = "#fdedec"; cardEl.style.borderColor = "#e74c3c";
+    firstCardEl.style.background = "#fdedec"; firstCardEl.style.borderColor = "#e74c3c";
+
+    updateStat(false, false, matchupLevel);
+    matchupSelectedCard = null;
+
+    // Réinitialisation visuelle après un court flash rouge
+    setTimeout(() => {
+      cardEl.style.background = ""; cardEl.style.borderColor = "";
+      firstCardEl.style.background = ""; firstCardEl.style.borderColor = "";
+    }, 400);
+  }
+}
+
+function endMatchupGame() {
+  userStats.xp += 30; // +30 XP fixés pour avoir vidé la grille
+  saveStats();
+
+  const contentDiv = document.getElementById('content');
+  if (!contentDiv) return;
+
+  contentDiv.innerHTML = `
+    <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+      <span style="font-size: 70px;">🧩</span>
+      <h2 style="color: #1abc9c; margin: 20px 0;">Grille Nettoyée !</h2>
+      <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Félicitations, toutes les associations de Kanjis sont correctes.</p>
+      <div style="font-size:18px; font-weight:bold; color:#1abc9c; margin-bottom:30px;">🎁 Gain Récompense : +30 XP d'association !</div>
+      <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+    </div>
+  `;
+}
+  
+/* ─── MOTEUR DE JEU : CLAVIER HIRAGANA (SAISIE MANUELLE) ─── */
+let kbQuestions = [];
+let kbCurrentIndex = 0;
+let kbUserInput = "";
+
+function startKeyboardMode(level) {
+  kbQuestions = generateProceduralQuiz(level, 5); // On réutilise l'algorithme des particules
+  if(kbQuestions.length === 0) { alert("Données non disponibles !"); return; }
+  kbCurrentIndex = 0;
+  loadContent('keyboard-run');
+  renderKeyboardQuestion();
+}
+
+function renderKeyboardQuestion() {
+  if(kbCurrentIndex >= kbQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+        <span style="font-size: 60px;">✍️</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Saisie Terminée !</h3>
+        <p>Vous ne pouvez plus tricher par élimination, bravo !</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+  kbUserInput = "";
+  updateKeyboardUI();
+}
+
+function updateKeyboardUI() {
+  const q = kbQuestions[kbCurrentIndex];
+  // On remplace le trou par ce que l'utilisateur tape
+  const displaySentence = q.q.replace("___", `<span class="quiz-blank" style="color:var(--aka); border-bottom:3px solid var(--aka); min-width:50px; display:inline-block; text-align:center;">${kbUserInput}</span>`);
+  
+  // Génération du mini-clavier (les particules principales + pièges)
+  const keys = ["は", "が", "を", "に", "で", "へ", "と", "も", "や", "から", "まで", "ね", "よ"];
+  let kbHtml = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px; max-width: 400px; margin-left: auto; margin-right: auto;">';
+  keys.forEach(k => {
+    kbHtml += `<button class="quiz-opt-btn" style="min-width:50px; padding:10px;" onclick="typeKeyboard('${k}')">${k}</button>`;
+  });
+  // Bouton Effacer
+  kbHtml += `<button class="quiz-opt-btn" style="min-width:50px; padding:10px; background:#fdedec; color:#e74c3c; border-color:#e74c3c;" onclick="deleteKeyboard()">⌫</button>`;
+  kbHtml += '</div>';
+
+  document.getElementById('keyboard-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--sumi2);">Tapez la particule manquante :</div>
+    <div class="quiz-sentence">${displaySentence}</div>
+    <div class="quiz-translation">"${q.fr}"</div>
+    ${kbHtml}
+    <div id="kb-feedback" class="quiz-feedback"></div>
+    <div style="display:flex; justify-content:center; gap:10px; margin-top:20px;">
+      <button class="btn-primary" id="kb-check-btn" onclick="checkKeyboardAnswer()">Valider</button>
+      <button class="btn-primary" id="kb-next-btn" style="display:none; background:var(--sumi);" onclick="nextKeyboardQuestion()">Suivant ➔</button>
+    </div>
+  `;
+}
+
+function typeKeyboard(kana) {
+  kbUserInput += kana;
+  updateKeyboardUI();
+}
+
+function deleteKeyboard() {
+  kbUserInput = kbUserInput.slice(0, -1);
+  updateKeyboardUI();
+}
+
+function checkKeyboardAnswer() {
+  const q = kbQuestions[kbCurrentIndex];
+  const feedbackDiv = document.getElementById('kb-feedback');
+  document.getElementById('kb-check-btn').style.display = 'none';
+  document.getElementById('kb-next-btn').style.display = 'block';
+
+  // Désactiver les touches du clavier
+  const buttons = document.getElementById('keyboard-area').querySelectorAll('.quiz-opt-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if(kbUserInput === q.ans) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>${q.expl}`;
+    updateStat(true);
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>Il fallait taper : <strong>${q.ans}</strong><br>${q.expl}`;
+    updateStat(false);
+  }
+}
+
+function nextKeyboardQuestion() {
+  kbCurrentIndex++;
+  renderKeyboardQuestion();
 }
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
