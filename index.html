@@ -1720,7 +1720,7 @@ function generateProceduralDictation(level, count = 10) {
 }
 
 function startDictation(level) {
-  // Ligne modifiée avec sécurité renforcée pour le N4
+  // Sécurité : lit window.DB_DICTATION s'il existe, sinon prend un tableau vide
   const fixedData = (window.DB_DICTATION && window.DB_DICTATION[level]) ? window.DB_DICTATION[level] : [];
   const proceduralData = generateProceduralDictation(level, 10);
   
