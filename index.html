@@ -1382,29 +1382,38 @@ function loadContent(id) {
     contentDiv.innerHTML = `<div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
-    titleHeader.innerText = "Simulateur d'Examens JLPT";
+    titleHeader.innerText = "Simulateurs d'Examens JLPT";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Conditions réelles d'examen</h3>
-        <p>Entraînez-vous avec la même structure, le même temps et les mêmes barèmes que l'examen officiel du JLPT.</p>
-        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" style="border-color: var(--aka);">
-            <span class="vocab-jp">JLPT N5 (Débutant)</span>
-            <span class="vocab-fr">Durée : 30 minutes (Format condensé)<br>Kanjis, Grammaire, SOV, Écoute</span>
-            <button class="btn-primary" style="margin-top: 15px; width: 100%;" onclick="startJlptN5Exam()">Lancer le test blanc</button>
+        <h3>Évaluez votre niveau en conditions réelles</h3>
+        <p>Ces examens blancs génèrent des questions aléatoires basées sur la base de données du niveau choisi. Un chronomètre défile, aucune triche n'est possible. Il faut 60% de bonnes réponses pour obtenir le diplôme !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr; gap: 15px;">
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N5')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N5</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Débutant (20 questions / 15 min)</span>
           </div>
-          <div class="vocab-card">
-            <span class="vocab-jp">JLPT N4 (Élémentaire)</span>
-            <span class="vocab-fr">Durée : 35 minutes<br>En attente des données de grammaire N4</span>
-            <button class="btn-primary" style="margin-top: 15px; width: 100%; background: #ccc; cursor: not-allowed;" disabled>Verrouillé</button>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N4')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N4</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Élémentaire (25 questions / 20 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N3')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N3</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Intermédiaire (30 questions / 25 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N2')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N2</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Avancé (35 questions / 30 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N1')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N1</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Expert (40 questions / 40 min)</span>
           </div>
         </div>
       </div>`;
   }
-  // 👈 RAJOUTER CE BLOC JUSTE ICI
   else if(id === 'exam-run') {
-    titleHeader.innerText = "EXAMEN JLPT N5 EN COURS...";
-    contentDiv.innerHTML = `<div class="card" id="exam-area" style="padding: 40px 20px;"></div>`;
+    titleHeader.innerText = "ÉPREUVE EN COURS...";
+    contentDiv.innerHTML = `<div class="card" id="exam-area" style="padding: 40px 20px; background: var(--kinari);"></div>`;
   }
 else if(id === 'progression') {
     titleHeader.innerText = "Tableau de Progression & Feuille de Route";
@@ -2622,6 +2631,160 @@ function nextReverseQuestion() {
   revCurrentIndex++;
   renderReverseQuestion();
 }  
+
+/* ─── MOTEUR D'EXAMENS JLPT UNIVERSEL ─── */
+let examTimer = null;
+let examTimeLeft = 0;
+let examQuestions = [];
+let examCurrentIndex = 0;
+let examScore = 0;
+let examLevel = 'N5';
+
+function startExam(level) {
+  examLevel = level;
+  examScore = 0;
+  examCurrentIndex = 0;
+
+  // Configuration dynamique (Temps en secondes et Nombre de questions)
+  const configs = {
+    'N5': { time: 15 * 60, limit: 20 },
+    'N4': { time: 20 * 60, limit: 25 },
+    'N3': { time: 25 * 60, limit: 30 },
+    'N2': { time: 30 * 60, limit: 35 },
+    'N1': { time: 40 * 60, limit: 40 }
+  };
+  
+  if(!configs[level]) return;
+  examTimeLeft = configs[level].time;
+  let totalQ = configs[level].limit;
+  examQuestions = [];
+
+  // 1. Piocher la moitié des questions dans les KANJIS
+  if (typeof DB_KANJI !== 'undefined' && DB_KANJI[level]) {
+    let pool = [...DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, Math.floor(totalQ / 2));
+    pool.forEach(k => {
+      let opts = [k.f];
+      while(opts.length < 4) {
+        let rand = DB_KANJI[level][Math.floor(Math.random() * DB_KANJI[level].length)].f;
+        if(!opts.includes(rand)) opts.push(rand);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      examQuestions.push({ q: `Sens du Kanji : 「 ${k.j} 」`, opts: opts, ans: k.f });
+    });
+  }
+
+  // 2. Piocher l'autre moitié dans le VOCABULAIRE
+  if (typeof DB_VOCAB !== 'undefined' && DB_VOCAB[level]) {
+    let pool = [];
+    if(DB_VOCAB[level].subjects) pool = pool.concat(DB_VOCAB[level].subjects);
+    if(DB_VOCAB[level].places) pool = pool.concat(DB_VOCAB[level].places);
+    
+    let vocabs = pool.sort(() => Math.random() - 0.5).slice(0, Math.ceil(totalQ / 2));
+    vocabs.forEach(v => {
+      let opts = [v.fr];
+      while(opts.length < 4) {
+        let rand = pool[Math.floor(Math.random() * pool.length)].fr;
+        if(!opts.includes(rand)) opts.push(rand);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      examQuestions.push({ q: `Traduction : 「 <ruby>${v.jp}<rt>${v.kana}</rt></ruby> 」`, opts: opts, ans: v.fr });
+    });
+  }
+
+  examQuestions.sort(() => Math.random() - 0.5); // Mélange final
+  loadContent('exam-run');
+  
+  // Gestion du chronomètre
+  clearInterval(examTimer);
+  examTimer = setInterval(() => {
+    examTimeLeft--;
+    const clockEl = document.getElementById('exam-clock');
+    if (clockEl) {
+      let m = Math.floor(examTimeLeft / 60).toString().padStart(2, '0');
+      let s = (examTimeLeft % 60).toString().padStart(2, '0');
+      clockEl.innerText = `⏱️ ${m}:${s}`;
+      if (examTimeLeft <= 60) { // Dernière minute en rouge
+        clockEl.style.color = '#fff';
+        clockEl.style.background = '#e74c3c';
+      }
+    }
+    if (examTimeLeft <= 0) finishExam(true);
+  }, 1000);
+
+  renderExamQuestion();
+}
+
+function renderExamQuestion() {
+  if (examCurrentIndex >= examQuestions.length) {
+    finishExam(false);
+    return;
+  }
+  const q = examQuestions[examCurrentIndex];
+  let optionsHtml = '';
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.ans.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:18px;" onclick="checkExamAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  let m = Math.floor(examTimeLeft / 60).toString().padStart(2, '0');
+  let s = (examTimeLeft % 60).toString().padStart(2, '0');
+
+  document.getElementById('exam-area').innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid var(--sakura-pale); padding-bottom: 10px;">
+      <span style="font-weight:bold; color:var(--sumi); font-size:18px;">Question ${examCurrentIndex + 1} / ${examQuestions.length}</span>
+      <span id="exam-clock" style="font-weight:bold; background:var(--sakura-pale); color:var(--aka); padding:6px 16px; border-radius:20px; font-size:18px;">⏱️ ${m}:${s}</span>
+    </div>
+    <div style="font-size:24px; text-align:center; margin-bottom:30px; font-weight:bold; color:var(--sumi); line-height: 1.4;">${q.q}</div>
+    <div style="max-width:500px; margin:0 auto;">${optionsHtml}</div>
+    <button class="btn-primary" id="exam-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextExamQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkExamAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('exam-area').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    examScore++;
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+  }
+  document.getElementById('exam-next-btn').style.display = 'block';
+}
+
+function nextExamQuestion() {
+  examCurrentIndex++;
+  renderExamQuestion();
+}
+
+function finishExam(timeout = false) {
+  clearInterval(examTimer);
+  const contentDiv = document.getElementById('content');
+  if (!contentDiv) return;
+
+  const percentage = Math.round((examScore / examQuestions.length) * 100);
+  const passed = percentage >= 60; // Seuil de validation officiel
+  
+  if(passed) {
+    userStats.xp += (examQuestions.length * 10);
+    saveStats();
+  }
+
+  contentDiv.innerHTML = `
+    <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+      <span style="font-size: 70px;">${timeout ? '⏰' : (passed ? '🎓' : '❌')}</span>
+      <h2 style="color: var(--aka); margin: 20px 0;">${timeout ? 'Temps Écoulé !' : 'Examen Terminé !'}</h2>
+      <div style="font-size:22px; margin-bottom:10px;">Score : <strong>${examScore} / ${examQuestions.length}</strong> (${percentage}%)</div>
+      <div style="font-size:18px; font-weight:bold; color: ${passed ? '#1abc9c' : '#e74c3c'}; margin-bottom:30px;">
+        ${passed ? 'Félicitations, vous avez validé ce niveau ! (+ XP)' : 'Échec. Révisez vos leçons et réessayez !'}
+      </div>
+      <button class="btn-primary" onclick="loadContent('examens')">Retour aux Examens</button>
+    </div>
+  `;
+}
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
