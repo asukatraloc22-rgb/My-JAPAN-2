@@ -1201,28 +1201,6 @@ function loadContent(id) {
         <h3>Que voulez-vous réviser aujourd'hui ?</h3>
         <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" onclick="startFlashcards('kana')">
-            <span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span>
-          </div>
-          <div class="vocab-card" onclick="startFlashcards('kanji5')">
-            <span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span>
-          </div>
-          <div class="vocab-card" onclick="startFlashcards('kanji4')">
-            <span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span>
-          </div>
-          <div class="vocab-card" onclick="startFlashcards('kanji3')">
-            <span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span>
-          </div>
-        </div>
-      </div>`;
-  }
-  else if(id === 'flashcards-menu') {
-    titleHeader.innerText = "Configuration du Paquet";
-    contentDiv.innerHTML = `
-      <div class="card">
-        <h3>Que voulez-vous réviser aujourd'hui ?</h3>
-        <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
-        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
           <div class="vocab-card" onclick="startFlashcards('kana')"><span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span></div>
           <div class="vocab-card" onclick="startFlashcards('kanji5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span></div>
           <div class="vocab-card" onclick="startFlashcards('kanji4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span></div>
