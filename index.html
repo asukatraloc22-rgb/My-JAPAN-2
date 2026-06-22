@@ -1482,11 +1482,11 @@ function generateProceduralQuiz(level, count = 10) {
     let sentence, answer, expl;
     
     if(hideTopic) {
-      sentence = `${s.jp} ___ ${p.jp}に${v.jp}。`;
+      sentence = `<ruby>${s.jp}<rt>${s.kana}</rt></ruby> ___ <ruby>${p.jp}<rt>${p.kana}</rt></ruby>に<ruby>${v.jp}<rt>${v.kana}</rt></ruby>。`;
       answer = "は";
       expl = "La particule『は』(wa) marque le thème principal de la phrase.";
     } else {
-      sentence = `${s.jp}は${p.jp} ___ ${v.jp}。`;
+      sentence = `<ruby>${s.jp}<rt>${s.kana}</rt></ruby>は<ruby>${p.jp}<rt>${p.kana}</rt></ruby> ___ <ruby>${v.jp}<rt>${v.kana}</rt></ruby>。`;
       answer = "に";
       expl = "La particule『に』(ni) indique la destination d'un déplacement.";
     }
@@ -1632,14 +1632,27 @@ function renderSovQuestion() {
 
 function updateSovUI() {
   const q = activeSovQuiz[currentSovIndex];
+  
   let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
   placedWords.forEach((wordObj, i) => {
-    sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordObj.text}</div>`;
+    // 👈 MAGIE DU FURIGANA : On cherche le mot dans la base pour récupérer son .kana
+    const vocabLevel = q.lvl;
+    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
+    
+    sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordDisplay}</div>`;
   });
+
   let bankHtml = '';
   bankWords.forEach((wordObj, i) => {
-    bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordObj.text}</div>`;
+    // 👈 MAGIE DU FURIGANA : Même chose pour la banque de mots disponibles
+    const vocabLevel = q.lvl;
+    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
+    
+    bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
   });
+
   document.getElementById('sov-area').innerHTML = `
     <div class="sov-header">Traduisez : "${q.fr}"</div>
     <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
@@ -1648,7 +1661,8 @@ function updateSovUI() {
     <div class="sov-controls">
       <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
       <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
-    </div>`;
+    </div>
+  `;
 }
 
 function moveWordToSentence(bankIndex) {
