@@ -192,7 +192,7 @@ body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-
 /* --- STYLES DICTÉE AVEUGLE --- */
 .dict-audio-box { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px auto 30px; padding: 20px; background: var(--sakura-pale); border-radius: 50%; width: 120px; height: 120px; cursor: pointer; border: 4px solid var(--sakura); transition: all 0.2s; box-shadow: var(--shadow-sm); }
 .dict-audio-box:hover, .dict-audio-box:active { transform: scale(1.05); border-color: var(--aka); background: white; }
-.dict-icon { font-size: 50px; line-height: 1; user-select: none; margin-left: 6px; /* Centrage optique du haut-parleur */ }
+.dict-icon { font-size: 50px; line-height: 1; user-select: none; margin-left: 6px; }
 .dict-hint { text-align: center; color: #888; font-style: italic; margin-bottom: 25px; font-size: 15px; }
 .dict-jp-reveal { font-size: 28px; font-family: var(--font-jp); font-weight: bold; color: var(--aka); text-align: center; margin-bottom: 20px; display: none; animation: popIn 0.3s ease-out; letter-spacing: 2px; }
 
@@ -374,7 +374,7 @@ function toggleSamourai() {
   document.body.classList.toggle('samourai-mode');
   const isSamourai = document.body.classList.contains('samourai-mode');
   localStorage.setItem('samouraiMode', isSamourai);
-  loadContent('parametres'); // Rafraîchit l'interface du bouton
+  loadContent('parametres');
 }
   
 /* ─── UI & AUDIO ───────────────────────────────────────────── */
@@ -452,7 +452,7 @@ const HIRAGANA_YOON = [
   {j:'ぎゃ',r:'gya'}, {j:'ぎゅ',r:'gyu'}, {j:'ぎょ',r:'gyo'},
   {j:'じゃ',r:'ja'}, {j:'じゅ',r:'ju'}, {j:'じょ',r:'jo'},
   {j:'びゃ',r:'bya'}, {j:'びゅ',r:'byu'}, {j:'びょ',r:'byo'},
-  {j:'ぴゃ',r:'pya'}, {j:'ぴゅ',r:'pyu'}, {j:'ぴょ',r:'pyo'}
+  {j:'ぴゃ',r:'pya'}, {j:'ぴゅ',r:'pu'}, {j:'ぴょ',r:'pyo'}
 ];
 
 const KATAKANA_BASE = [
@@ -485,13 +485,11 @@ const KATAKANA_YOON = [
   {j:'ヒャ',r:'hya'}, {j:'ヒュ',r:'hyu'}, {j:'ヒョ',r:'hyo'},
   {j:'ミャ',r:'mya'}, {j:'ミュ',r:'myu'}, {j:'ミョ',r:'myo'},
   {j:'リャ',r:'rya'}, {j:'リュ',r:'ryu'}, {j:'リョ',r:'ryo'},
-  {j:'ギャ',r:'gya'}, {j:'ギュ',r:'gyu'}, {j:'ギョ',r:'gyo'},
+  {j:'ギャ',r:'gya'}, {j:'ギゅ',r:'gyu'}, {j:'ギょ',r:'gyo'},
   {j:'ジャ',r:'ja'}, {j:'ジュ',r:'ju'}, {j:'ジョ',r:'jo'},
   {j:'ビャ',r:'bya'}, {j:'ビュ',r:'byu'}, {j:'ビョ',r:'byo'},
   {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
 ];
-
-
 
 /* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
 function generateKanaGrid(dataArray) {
@@ -508,6 +506,7 @@ function generateYoonGrid(dataArray) {
 }
 function generateKanjiGrid(dataArray) {
   let html = `<div class="kanji-grid">`;
+  if(!dataArray) return `<p>Données non chargées.</p>`;
   dataArray.forEach(k => {
     html += `<div class="kanji-tile" onclick="speak('${k.j}')"><span class="kt-char">${k.j}</span><div class="kt-readings"><span class="kt-on">${k.on}</span><span class="kt-kun">${k.kun}</span></div><span class="kt-fr">${k.f}</span></div>`;
   }); return html + `</div>`;
@@ -619,7 +618,7 @@ function loadContent(id) {
         <h3>3. Faire une proposition ou inviter</h3>
         <ul>
           <li><strong>〜ましょう (mashō) :</strong> Signifie "Faisons / Allons-y". (Ex: 行きましょう - Allons-y !).</li>
-          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". (Ex: お茶を飲みませんか - Voulez-vous boire un thé ?).</li>
+          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". (Ex: お茶を慢みませんか - Voulez-vous boire un thé ?).</li>
         </ul>
       </div>`;
   }
@@ -687,7 +686,7 @@ function loadContent(id) {
         <table class="course-table">
           <tr><th>Compteur</th><th>Utilisation</th><th>Exemple</th></tr>
           <tr><td><strong>〜つ (tsu)</strong></td><td>Objets génériques (1: hitotsu, 2: futatsu...)</td><td>りんごを二<strong>つ</strong>買います。</td></tr>
-          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (1: hitori, 2: futari)</td><td>学生が三<strong>人</strong>います。</td></tr>
+          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (1: hitori, 2: futari)</td><td>学生 que 三<strong>人</strong>います。</td></tr>
           <tr><td><strong>〜枚 (mai)</strong></td><td>Objets plats et fins (feuilles, billets)</td><td>紙を五<strong>枚</strong>ください。</td></tr>
           <tr><td><strong>〜本 (hon)</strong></td><td>Objets longs (bouteilles, stylos)</td><td>ペンが四<strong>本</strong>あります。</td></tr>
           <tr><td><strong>〜匹 (hiki)</strong></td><td>Petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。</td></tr>
@@ -740,7 +739,7 @@ function loadContent(id) {
         </ul>
         <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant).</p>
       </div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(window.DB_KANJI.N5)}</div>`;
+      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N5 : null)}</div>`;
   }
 
   // --- NIVEAU JLPT N4 ---
@@ -752,7 +751,7 @@ function loadContent(id) {
         <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société (社), au travail (業), aux actions complexes et à la nature.</p>
         <p>L'architecture de ces Kanjis est souvent basée sur des "clés" (radicaux) que vous avez déjà apprises au niveau N5.</p>
       </div>
-      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(window.DB_KANJI.N4)}</div>`;
+      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N4 : null)}</div>`;
   }
   else if(id === 'cours-08') {
     titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif";
@@ -848,9 +847,9 @@ function loadContent(id) {
         <h3>1. Le transfert d'objets</h3>
         <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don.</p>
         <ul>
-          <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる。</em></li>
-          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne. L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる。</em></li>
-          <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう。</em></li>
+          <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる．</em></li>
+          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne. L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる．</em></li>
+          <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう．</em></li>
         </ul>
 
         <h3>2. Les faveurs (Verbe en TE + Don/Réception)</h3>
@@ -873,7 +872,7 @@ function loadContent(id) {
         <h3>Le pont vers la fluidité</h3>
         <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (articles simples, affiches, e-mails professionnels). Les Kanjis y abordent les émotions, les sentiments complexes, l'économie et la politique de base.</p>
       </div>
-      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(window.DB_KANJI.N3)}</div>`;
+      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N3 : null)}</div>`;
   }
   else if(id === 'cours-12') {
     titleHeader.innerText = "Cours 12 : Passif, Causatif et Causatif-Passif";
@@ -1009,14 +1008,14 @@ function loadContent(id) {
         <p>Le JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le passeport pour travailler dans une entreprise japonaise.</p>
         <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion d'entreprise, la justice et l'économie.</p>
       </div>
-      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(window.DB_KANJI.N2)}</div>`;
+      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N2 : null)}</div>`;
   }
   else if(id === 'cours-15') {
     titleHeader.innerText = "Cours 15 : Grammaire N2 (Rigidité et Nuances)";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le japonais formel (堅い表現 - Katai hyōgen)</h3>
-        <p>Le N2 est rempli de tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors de discours d'entreprise.</p>
+        <p>Le N2 is rempli de tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors de discours d'entreprise.</p>
         <table class="course-table">
           <tr><th>Expression N2</th><th>Sens / Équivalent basique</th><th>Exemple d'utilisation</th></tr>
           <tr><td><strong>〜に際して (ni saishite)</strong></td><td>À l'occasion de... (très formel)</td><td>ご案内に際して (À l'occasion de votre visite...)</td></tr>
@@ -1052,7 +1051,7 @@ function loadContent(id) {
         <p>Le JLPT N1 couvre l'ensemble des ~2136 Kanjis d'usage courant (Jōyō Kanji). Ce sont des idéogrammes que l'on retrouve dans la littérature classique, les documents juridiques, les thèses universitaires ou les journaux très spécialisés.</p>
         <p>Ils expriment souvent des émotions complexes, des concepts philosophiques abstraits ou des actions extrêmement précises.</p>
       </div>
-      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(window.DB_KANJI.N1)}</div>`;
+      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N1 : null)}</div>`;
   }
   else if(id === 'cours-17') {
     titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
@@ -1104,7 +1103,7 @@ function loadContent(id) {
       </div>`;
   }
 
-// --- ZONE D'ENTRAÎNEMENT & MENUS ASSOCIÉS ---
+  // --- ZONE D'ENTRAÎNEMENT & MENUS ASSOCIÉS ---
   else if(id === 'exercices') {
     titleHeader.innerText = "Zone d'Entraînement";
     contentDiv.innerHTML = `
@@ -1112,26 +1111,21 @@ function loadContent(id) {
         <h3>Choisissez votre exercice</h3>
         <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
             <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
             <span class="vocab-fr">Algorithme de répétition espacée</span>
           </div>
-          
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('fillblank-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
             <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
             <span class="vocab-fr">Testez vos Particules & Grammaire</span>
           </div>
-          
-          <!-- BOUTON CONSTRUCTEUR SOV ACTIF -->
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('sov-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏗️</span>
             <span class="vocab-jp" style="font-size: 18px;">Constructeur SOV</span>
             <span class="vocab-fr">Maîtrisez l'ordre des mots</span>
           </div>
-
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('dictation-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎧</span>
             <span class="vocab-jp" style="font-size: 18px;">Dictée Aveugle</span>
@@ -1140,8 +1134,6 @@ function loadContent(id) {
         </div>
       </div>`;
   }
-
-// --- NOUVEAUX MENUS DICTÉE AVEUGLE ---
   else if(id === 'dictation-menu') {
     titleHeader.innerText = "Dictée Aveugle";
     contentDiv.innerHTML = `
@@ -1162,12 +1154,8 @@ function loadContent(id) {
   }
   else if(id === 'dictation-run') {
     titleHeader.innerText = "Écoutez attentivement";
-    contentDiv.innerHTML = `
-      <div class="card" id="dict-area" style="padding: 30px 20px;">
-        </div>`;
+    contentDiv.innerHTML = `<div class="card" id="dict-area" style="padding: 30px 20px;"></div>`;
   }
-    
-  // --- NOUVEAUX MENUS SOV ---
   else if(id === 'sov-menu') {
     titleHeader.innerText = "Constructeur de Phrases";
     contentDiv.innerHTML = `
@@ -1188,12 +1176,8 @@ function loadContent(id) {
   }
   else if(id === 'sov-run') {
     titleHeader.innerText = "Construisez la phrase";
-    contentDiv.innerHTML = `
-      <div class="card" id="sov-area" style="padding: 30px 20px;">
-        <!-- Injecté par JavaScript -->
-      </div>`;
+    contentDiv.innerHTML = `<div class="card" id="sov-area" style="padding: 30px 20px;"></div>`;
   }
-  
   else if(id === 'flashcards-menu') {
     titleHeader.innerText = "Configuration du Paquet";
     contentDiv.innerHTML = `
@@ -1254,13 +1238,8 @@ function loadContent(id) {
   }
   else if(id === 'fillblank-run') {
     titleHeader.innerText = "Complétez la phrase";
-    contentDiv.innerHTML = `
-      <div class="card" id="quiz-area" style="padding: 40px 20px;">
-        <!-- Injecté par JavaScript -->
-      </div>`;
+    contentDiv.innerHTML = `<div class="card" id="quiz-area" style="padding: 40px 20px;"></div>`;
   }
-
-  // --- PARAMÈTRES ET COMPTES ---
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateur d'Examens JLPT";
     contentDiv.innerHTML = `
@@ -1290,7 +1269,7 @@ function loadContent(id) {
         <h3>Vos Statistiques</h3>
         <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr);">
           <div class="vocab-card">
-            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">${userStats.streak} </span>
+            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">${userStats.streak}</span>
             <span class="vocab-fr">Jours consécutifs</span>
           </div>
           <div class="vocab-card">
@@ -1303,12 +1282,9 @@ function loadContent(id) {
           </div>
         </div>
       </div>
-      `;
-
       <div class="card">
         <h3>Chronologie d'Étude Conseillée</h3>
-        <p>Pour ne brûler aucune étape et garantir une mémorisation à long terme, suivez cette feuille de route académique. <strong>Ne passez pas à l'étape suivante tant que la précédente n'est pas maîtrisée à 80%.</strong></p>
-
+        <p>Suivez cette feuille de route académique. <strong>Ne passez pas à l'étape suivante tant que la précédente n'est pas maîtrisée à 80%.</strong></p>
         <div class="timeline">
           <div class="timeline-step">
             <div class="timeline-badge">1</div>
@@ -1317,67 +1293,18 @@ function loadContent(id) {
               <span class="timeline-duration">⏳ Durée : 1 à 2 semaines minimum</span>
               <ul>
                 <li><strong>Théorie :</strong> Étudier Cours 1 (Hiragana) et Cours 2 (Katakana).</li>
-                <li><strong>Pratique :</strong> Utiliser les <em>Flashcards SRS (Paquet Kana)</em> tous les jours jusqu'à ce que la lecture soit instantanée. Ne touchez pas encore à la grammaire.</li>
+                <li><strong>Pratique :</strong> Utiliser les <em>Flashcards SRS</em> tous les jours.</li>
               </ul>
             </div>
           </div>
-
           <div class="timeline-step">
             <div class="timeline-badge">2</div>
             <div class="timeline-content">
               <h4>Étape 2 : Le Moteur de la Langue (N5)</h4>
               <span class="timeline-duration">⏳ Durée : 2 à 3 semaines minimum</span>
               <ul>
-                <li><strong>Théorie :</strong> Assimiler Cours 3 (SOV), Cours 4 (Particules) et Cours 5 (Verbes Masu).</li>
-                <li><strong>Pratique :</strong> Faire l'exercice <em>Texte à trous N5</em> en boucle pour forcer votre cerveau à automatiser les particules は, が, を, に, で.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="timeline-step">
-            <div class="timeline-badge">3</div>
-            <div class="timeline-content">
-              <h4>Étape 3 : Enrichissement et Premiers Kanjis (N5)</h4>
-              <span class="timeline-duration">⏳ Durée : 3 à 4 semaines minimum</span>
-              <ul>
-                <li><strong>Théorie :</strong> Cours 5.1 à 5.4 (Adjectifs, Compteurs, Vocabulaire N5) et Cours 6 (Kanji N5).</li>
-                <li><strong>Pratique :</strong> Alterner <em>Flashcards Vocabulaire</em> et <em>Flashcards Kanji N5</em>. Tentez le test blanc JLPT N5 à la fin de cette période.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="timeline-step">
-            <div class="timeline-badge">4</div>
-            <div class="timeline-content">
-              <h4>Étape 4 : La Survie au Japon (N4)</h4>
-              <span class="timeline-duration">⏳ Durée : 6 à 8 semaines minimum</span>
-              <ul>
-                <li><strong>Théorie :</strong> Tous les modules N4 (Potentiel, Volitif, Conditionnels complexes).</li>
-                <li><strong>Pratique :</strong> Combinez <em>Flashcards Kanji N4</em> et <em>Textes à trous N4</em>. (Le futur module "Constructeur SOV" sera vital ici).</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="timeline-step">
-            <div class="timeline-badge">5</div>
-            <div class="timeline-content">
-              <h4>Étape 5 : L'Indépendance (N3)</h4>
-              <span class="timeline-duration">⏳ Durée : 3 à 4 mois minimum</span>
-              <ul>
-                <li><strong>Théorie :</strong> Modules N3 (Passif, Causatif, Keigo, Nuances temporelles).</li>
-                <li><strong>Pratique :</strong> Vous devez commencer à lire du vrai contenu japonais (NHK Easy News). Continuez le SRS quotidiennement pour les Kanjis N3.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="timeline-step">
-            <div class="timeline-badge">6</div>
-            <div class="timeline-content">
-              <h4>Étape 6 : Bilinguisme Professionnel (N2 & N1)</h4>
-              <span class="timeline-duration">⏳ Durée : 6 mois à 1 an par niveau</span>
-              <ul>
-                <li><strong>Théorie :</strong> Grammaire rigide N2 et tournures littéraires N1.</li>
-                <li><strong>Pratique :</strong> Immersion totale (Journaux, Romans, Podcasts natifs) couplée à l'entretien de la mémoire via les Flashcards SRS N1.</li>
+                <li><strong>Théorie :</strong> Assimiler Cours 3 (SOV), Cours 4 (Particules) et Cours 5.</li>
+                <li><strong>Pratique :</strong> Faire les exercices de grammaire.</li>
               </ul>
             </div>
           </div>
@@ -1387,7 +1314,6 @@ function loadContent(id) {
   else if(id === 'parametres') {
     titleHeader.innerText = "Paramètres de l'Application";
     const isSamourai = document.body.classList.contains('samourai-mode');
-    
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Préférences d'affichage</h3>
@@ -1405,54 +1331,46 @@ function loadContent(id) {
 let activeDeck = [];
 let currentCard = null;
 
-// Initialise un paquet de cartes
 function startFlashcards(deckType) {
   let sourceData = [];
-  
   if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
-  else if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
-  else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
-  else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
+  else if(window.DB_KANJI) {
+    if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
+    else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
+    else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
+  }
   
-  // Prépare les cartes avec les variables de l'algorithme
   activeDeck = sourceData.map(item => ({
     jp: item.j,
     reading: item.on ? `ON: ${item.on}<br>KUN: ${item.kun}` : item.r,
     meaning: item.f || 'Syllabe',
-    rep: 0 // Nombre de répétitions réussies
+    rep: 0
   }));
   
-  // Mélange aléatoire (Fisher-Yates)
   for (let i = activeDeck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
   }
-  
   loadContent('flashcards-run');
   nextFlashcard();
 }
 
 function nextFlashcard() {
   const area = document.getElementById('flashcard-area');
-  
   if(activeDeck.length === 0) {
     area.innerHTML = `
       <div style="text-align:center; padding: 40px;">
         <span style="font-size: 60px;">🎉</span>
         <h3 style="color: var(--aka); margin: 20px 0;">Session Terminée !</h3>
-        <p>Excellent travail. L'algorithme a validé toutes vos cartes pour aujourd'hui.</p>
+        <p>Excellent travail.</p>
         <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
       </div>`;
     return;
   }
-  
-  currentCard = activeDeck.shift(); // Prend la première carte de la file
-  
+  currentCard = activeDeck.shift();
   document.getElementById('fc-front-text').innerText = currentCard.jp;
   document.getElementById('fc-back-jp').innerHTML = currentCard.reading;
   document.getElementById('fc-back-fr').innerText = currentCard.meaning;
-  
-  // Réinitialise l'interface
   document.getElementById('fc-card-element').classList.remove('is-flipped');
   document.getElementById('srs-controls').style.display = 'none';
   document.getElementById('flip-hint').style.display = 'block';
@@ -1460,41 +1378,33 @@ function nextFlashcard() {
 
 function flipFlashcard() {
   const card = document.getElementById('fc-card-element');
-  if(card.classList.contains('is-flipped')) return; // Déjà retournée
-  
+  if(card.classList.contains('is-flipped')) return;
   card.classList.add('is-flipped');
   document.getElementById('flip-hint').style.display = 'none';
   document.getElementById('srs-controls').style.display = 'flex';
-  
-  speak(currentCard.jp); // Prononce le mot au moment où on retourne
+  speak(currentCard.jp);
 }
 
-// Algorithme d'évaluation
 function answerCard(quality) {
-  // quality : 0 (Raté), 1 (Difficile), 2 (Facile)
   if(quality === 0) {
     currentCard.rep = 0;
     const insertIndex = Math.min(activeDeck.length, 3);
     activeDeck.splice(insertIndex, 0, currentCard);
-    
     updateStat(false); 
   } 
   else if(quality === 1) {
     currentCard.rep++;
     activeDeck.push(currentCard);
-    
     updateStat(true, false); 
   }
   else {
     currentCard.rep++;
-    
     updateStat(true, true); 
   }
   nextFlashcard();
 }
 
 /* ─── MOTEUR QUIZ (TEXTE À TROUS) BILINGUE & PROCÉDURAL ─── */
-// On garde quelques phrases complexes en dur pour la grammaire spécifique
 const QUIZ_DATA_FIXED = [
   { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』marque le Complément d'Objet Direct." },
   { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』indique le moyen ou l'instrument utilisé." },
@@ -1505,8 +1415,8 @@ const QUIZ_DATA_FIXED = [
 let activeQuiz = [];
 let currentQuizIndex = 0;
 
-// Le Générateur Magique de Grammaire
 function generateProceduralQuiz(level, count = 10) {
+  if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
   if (!vocab || !vocab.subjects) return [];
   
@@ -1517,8 +1427,6 @@ function generateProceduralQuiz(level, count = 10) {
     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-    
-    // Pile ou face : on cache soit le Sujet, soit la Destination
     let hideTopic = Math.random() > 0.5;
     let sentence, answer, expl;
     
@@ -1532,13 +1440,12 @@ function generateProceduralQuiz(level, count = 10) {
       expl = "La particule『に』(ni) indique la destination d'un déplacement.";
     }
     
-    // Préparation du QCM avec 3 mauvaises particules aléatoires
     let opts = [answer];
     while(opts.length < 4) {
       let randP = allParticles[Math.floor(Math.random() * allParticles.length)];
       if(!opts.includes(randP)) opts.push(randP);
     }
-    opts.sort(() => Math.random() - 0.5); // Mélange les 4 boutons
+    opts.sort(() => Math.random() - 0.5);
     
     generated.push({
       lvl: level, q: sentence, ans: answer, 
@@ -1549,17 +1456,14 @@ function generateProceduralQuiz(level, count = 10) {
 }
 
 function startQuiz(level) {
-  // On mélange les questions dures (exceptions) avec les procédurales (infinies)
   const fixedData = QUIZ_DATA_FIXED.filter(q => q.lvl === level);
   const proceduralData = generateProceduralQuiz(level, 10);
-  
   activeQuiz = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
   
   if(activeQuiz.length === 0) { 
-    alert("Données en cours de construction pour ce niveau !"); 
+    alert("Données non disponibles !"); 
     return; 
   }
-  
   currentQuizIndex = 0;
   loadContent('fillblank-run');
   renderQuizQuestion();
@@ -1576,32 +1480,26 @@ function renderQuizQuestion() {
       </div>`;
     return;
   }
-
   const q = activeQuiz[currentQuizIndex];
   const displaySentence = q.q.replace("___", `<span class="quiz-blank" id="quiz-blank-spot">?</span>`);
-  
   let optionsHtml = '';
   q.opts.forEach(opt => {
     optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this)">${opt}</button>`;
   });
-
   document.getElementById('quiz-area').innerHTML = `
     <div class="quiz-sentence">${displaySentence}</div>
     <div class="quiz-translation">"${q.fr}"</div>
     <div class="quiz-options" id="quiz-options-container">${optionsHtml}</div>
     <div id="quiz-feedback" class="quiz-feedback"></div>
-    <button class="btn-primary quiz-next-btn" id="quiz-next-btn" onclick="nextQuizQuestion()">Question Suivante ➔</button>
-  `;
+    <button class="btn-primary quiz-next-btn" id="quiz-next-btn" onclick="nextQuizQuestion()">Question Suivante ➔</button>`;
 }
 
 function checkQuizAnswer(selected, btnElement) {
   const q = activeQuiz[currentQuizIndex];
   const correct = q.ans;
   const explanation = q.expl;
-
   const allBtns = document.getElementById('quiz-options-container').querySelectorAll('.quiz-opt-btn');
   allBtns.forEach(btn => btn.disabled = true);
-  
   const feedbackDiv = document.getElementById('quiz-feedback');
   const blankSpot = document.getElementById('quiz-blank-spot');
   
@@ -1612,7 +1510,6 @@ function checkQuizAnswer(selected, btnElement) {
     blankSpot.style.borderColor = '#1abc9c';
     feedbackDiv.className = 'quiz-feedback correct';
     feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong><br>${explanation}`;
-    
     updateStat(true); 
   } else {
     btnElement.classList.add('wrong-ans');
@@ -1620,10 +1517,8 @@ function checkQuizAnswer(selected, btnElement) {
     blankSpot.innerText = correct;
     feedbackDiv.className = 'quiz-feedback wrong';
     feedbackDiv.innerHTML = `<strong>❌ Erreur. La bonne réponse était 「${correct}」.</strong><br>${explanation}`;
-    
     updateStat(false); 
   }
-  
   document.getElementById('quiz-next-btn').style.display = 'block';
 }
 
@@ -1631,43 +1526,36 @@ function nextQuizQuestion() {
   currentQuizIndex++;
   renderQuizQuestion();
 }
+
 /* ─── MOTEUR CONSTRUCTEUR SOV (PROCÉDURAL) ─── */
 let activeSovQuiz = [];
 let currentSovIndex = 0;
 let bankWords = [];
 let placedWords = [];
 
-// Le Générateur Magique
 function generateProceduralSOV(level, count = 5) {
+  if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
-  if (!vocab || Object.keys(vocab).length === 0) return []; // Sécurité si base vide
+  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
   
   let generated = [];
   for(let i=0; i<count; i++) {
-     // Pioche aléatoire des mots
      let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
      let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
      let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-     
-     // Construction de la phrase japonaise correcte
      let jpOrder = [s.jp, "は", p.jp, "に", v.jp];
-     // Construction de la traduction française basique
      let frTranslation = s.fr + " " + v.fr + " à " + p.fr + ".";
-     
      generated.push({ lvl: level, fr: frTranslation, order: jpOrder });
   }
   return generated;
 }
 
 function startSov(level) {
-  // Au lieu de lire une liste fixe, on génère 5 nouvelles phrases uniques !
   activeSovQuiz = generateProceduralSOV(level, 5);
-  
   if (activeSovQuiz.length === 0) {
-    alert("Base de données de vocabulaire en construction pour ce niveau !");
+    alert("Base de données indisponible !");
     return;
   }
-  
   currentSovIndex = 0;
   loadContent('sov-run');
   renderSovQuestion();
@@ -1679,33 +1567,28 @@ function renderSovQuestion() {
       <div class="card" style="text-align:center; padding: 40px;">
         <span style="font-size: 60px;">🏯</span>
         <h3 style="color: var(--aka); margin: 20px 0;">Entraînement SOV Terminé !</h3>
-        <p>Vos réflexes de construction de phrases s'améliorent.</p>
+        <p>Vos réflexes s'améliorent.</p>
         <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
       </div>`;
     return;
   }
-
   const q = activeSovQuiz[currentSovIndex];
   placedWords = [];
   bankWords = [...q.order].map((word, idx) => ({ id: idx, text: word }));
   bankWords.sort(() => Math.random() - 0.5);
-
   updateSovUI();
 }
 
 function updateSovUI() {
   const q = activeSovQuiz[currentSovIndex];
-  
   let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
   placedWords.forEach((wordObj, i) => {
     sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordObj.text}</div>`;
   });
-
   let bankHtml = '';
   bankWords.forEach((wordObj, i) => {
     bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordObj.text}</div>`;
   });
-
   document.getElementById('sov-area').innerHTML = `
     <div class="sov-header">Traduisez : "${q.fr}"</div>
     <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
@@ -1714,8 +1597,7 @@ function updateSovUI() {
     <div class="sov-controls">
       <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
       <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
-    </div>
-  `;
+    </div>`;
 }
 
 function moveWordToSentence(bankIndex) {
@@ -1735,23 +1617,18 @@ function checkSovAnswer() {
   const q = activeSovQuiz[currentSovIndex];
   const userOrder = placedWords.map(w => w.text).join("");
   const correctOrder = q.order.join("");
-  
   const feedbackDiv = document.getElementById('quiz-feedback');
   document.getElementById('sov-check-btn').style.display = 'none';
   document.getElementById('sov-next-btn').style.display = 'block';
-
-  const allWords = document.querySelectorAll('.sov-word');
-  allWords.forEach(w => w.onclick = null);
+  document.querySelectorAll('.sov-word').forEach(w => w.onclick = null);
 
   if (userOrder === correctOrder) {
     feedbackDiv.className = 'quiz-feedback correct';
     feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>La structure SOV est respectée.`;
-    
     updateStat(true); 
   } else {
     feedbackDiv.className = 'quiz-feedback wrong';
-    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre correct était : <strong>${q.order.join(" ")}</strong>`;
-    
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre était : <strong>${q.order.join(" ")}</strong>`;
     updateStat(false); 
   }
 }
@@ -1765,8 +1642,8 @@ function nextSovQuestion() {
 let activeDict = [];
 let currentDictIndex = 0;
 
-// Générateur procédural de dictées
 function generateProceduralDictation(level, count = 10) {
+  if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
   if (!vocab || !vocab.subjects) return [];
   
@@ -1775,29 +1652,17 @@ function generateProceduralDictation(level, count = 10) {
      let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
      let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
      let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-     
-     // Phrase correcte
      let jp = `${s.jp}は${p.jp}に${v.jp}`;
      let fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
      
-     // Création de pièges dynamiques (on change 1 seul élément)
      let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
      let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
      let wrongV = vocab.verbs_motion.find(x => x.jp !== v.jp) || vocab.verbs_motion[0];
      
      generated.push({ 
-       jp: jp, 
-       fr: fr, 
-       wrong_jp: [
-         `${wrongS.jp}は${p.jp}に${v.jp}`, // Piège sujet
-         `${s.jp}は${wrongP.jp}に${v.jp}`, // Piège lieu
-         `${s.jp}は${p.jp}に${wrongV.jp}`  // Piège verbe
-       ], 
-       wrong_fr: [
-         `[${wrongS.fr}] ${v.fr} [${p.fr}]`,
-         `[${s.fr}] ${v.fr} [${wrongP.fr}]`,
-         `[${s.fr}] ${wrongV.fr} [${p.fr}]`
-       ] 
+       jp: jp, fr: fr, 
+       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}に${v.jp}`, `${s.jp}は${p.jp}に${wrongV.jp}`], 
+       wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
      });
   }
   return generated;
@@ -1806,11 +1671,10 @@ function generateProceduralDictation(level, count = 10) {
 function startDictation(level) {
   const fixedData = window.DB_DICTATION ? (window.DB_DICTATION[level] || []) : [];
   const proceduralData = generateProceduralDictation(level, 10);
-  
   activeDict = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
   
   if(activeDict.length === 0) { 
-    alert("Données en cours de construction pour ce niveau !"); 
+    alert("Données non disponibles !"); 
     return; 
   }
   currentDictIndex = 0;
@@ -1829,10 +1693,8 @@ function renderDictation() {
       </div>`;
     return;
   }
-
   const q = activeDict[currentDictIndex];
   const isReverse = Math.random() > 0.5;
-  
   const audioText = isReverse ? q.fr : q.jp;
   const audioLang = isReverse ? 'fr-FR' : 'ja-JP';
   const correctText = isReverse ? q.jp : q.fr;
@@ -1848,16 +1710,12 @@ function renderDictation() {
   });
 
   const subtitle = isReverse ? 'Français ➔ Japonais' : 'Japonais ➔ Français';
-
   document.getElementById('dict-area').innerHTML = `
-    <div class="dict-audio-box" onclick="speak('${audioText.replace(/'/g, "\\'")}', '${audioLang}')">
-      <span class="dict-icon">🔊</span>
-    </div>
+    <div class="dict-audio-box" onclick="speak('${audioText.replace(/'/g, "\\'")}', '${audioLang}')"><span class="dict-icon">🔊</span></div>
     <div class="dict-hint">Écoutez la phrase et choisissez la bonne traduction.<br><strong>(${subtitle})</strong></div>
     <div id="dict-reveal" class="dict-jp-reveal"></div>
     <div class="quiz-options" id="dict-options-container">${optionsHtml}</div>
-    <button class="btn-primary quiz-next-btn" id="dict-next-btn" onclick="nextDictQuestion()">Continuer ➔</button>
-  `;
+    <button class="btn-primary quiz-next-btn" id="dict-next-btn" onclick="nextDictQuestion()">Continuer ➔</button>`;
   
   setTimeout(() => speak(audioText, audioLang), 500);
 }
@@ -1865,7 +1723,6 @@ function renderDictation() {
 function checkDictAnswer(selected, btnElement, correct, audioText) {
   const allBtns = document.getElementById('dict-options-container').querySelectorAll('.quiz-opt-btn');
   allBtns.forEach(btn => btn.disabled = true);
-  
   const revealDiv = document.getElementById('dict-reveal');
   revealDiv.innerText = audioText;
   revealDiv.style.display = 'block';
@@ -1879,12 +1736,12 @@ function checkDictAnswer(selected, btnElement, correct, audioText) {
     updateStat(false);
   }
   document.getElementById('dict-next-btn').style.display = 'block';
-} // ← Cet accolade manquait !
+}
 
 function nextDictQuestion() {
   currentDictIndex++;
   renderDictation();
-} // ← Cet accolade manquait aussi !
+}
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
