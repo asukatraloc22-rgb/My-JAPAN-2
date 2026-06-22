@@ -1037,9 +1037,9 @@ function loadContent(id) {
     titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Comprendre la presse et le monde professionnel</h3>
-        <p>Le JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le passeport pour travailler dans une entreprise japonaise.</p>
-        <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion d'entreprise, la justice et l'économie.</p>
+        <h3>Comprendre la presse et les médias</h3>
+        <p>Le niveau JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le palier indispensable pour travailler dans une entreprise japonaise ou lire des articles de société de manière fluide.</p>
+        <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion, la justice et l'économie.</p>
       </div>
       <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N2 : null)}</div>`;
   }
@@ -1048,30 +1048,41 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Le japonais formel (堅い表現 - Katai hyōgen)</h3>
-        <p>Le N2 is rempli de tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors de discours d'entreprise.</p>
+        <p>Le N2 introduit de nombreuses tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors des discours protocolaires.</p>
         <table class="course-table">
-          <tr><th>Expression N2</th><th>Sens / Équivalent basique</th><th>Exemple d'utilisation</th></tr>
-          <tr><td><strong>〜に際して (ni saishite)</strong></td><td>À l'occasion de... (très formel)</td><td>ご案内に際して (À l'occasion de votre visite...)</td></tr>
-          <tr><td><strong>〜にあたって (ni atatte)</strong></td><td>Au moment de... (pour une occasion spéciale)</td><td>開会にあたって、一言ご挨拶申し上げます。(À l'occasion de l'ouverture, je voudrais dire un mot.)</td></tr>
-          <tr><td><strong>〜つつある (tsutsu aru)</strong></td><td>Être en train de (processus de changement)</td><td>景気は改善されつつある (L'économie est en cours d'amélioration)</td></tr>
+          <tr><th>Expression N2</th><th>Sens exact</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜に<ruby>際<rt>さい</rt></ruby>して (ni saishite)</strong></td>
+            <td><strong>À l'occasion de... / Au moment de...</strong> (Style écrit très formel).</td>
+            <td>お<ruby>申込<rt>もうしこみ</rt></ruby>に<strong>際して</strong>は、<ruby>写真<rt>しゃしん</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。<br><em>(À l'occasion de votre inscription, une photo est requise.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜にわたって (ni watatte)</strong></td>
+            <td><strong>Sur l'ensemble de... / Tout au long de...</strong> (Étendue de temps ou d'espace).</td>
+            <td><ruby>会議<rt>かいぎ</rt></ruby>は3<ruby>日間<rt>にちかん</rt></ruby><strong>にわたって</strong><ruby>行<rt>おこな</rt></ruby>われた。<br><em>(La réunion s'est déroulée sur une durée de trois jours.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜つつある (tsutsu aru)</strong></td>
+            <td><strong>Être en cours de...</strong> (Un processus de changement continu).</td>
+            <td><ruby>日本<rt>にほん</rt></ruby>の<ruby>景気<rt>けいき</rt></ruby>は<ruby>回復<rt>かいふく</rt></ruby>し<strong>つつある</strong>。<br><em>(L'économie japonaise est en train de se redresser.)</em></td>
+          </tr>
         </table>
 
-        <h3>2. L'impossibilité psychologique ou de situation</h3>
-        <p>En N2, on n'utilise plus seulement le verbe "ne pas pouvoir" (dekinai), on ajoute des nuances pour expliquer <em>pourquoi</em> on ne peut pas. C'est très utile en clientèle.</p>
+        <h3>2. L'impossibilité ou l'obligation nuancée</h3>
+        <p>En clientèle ou dans le cadre professionnel, refuser catégoriquement avec <em>~dekinai</em> est impoli. Le N2 apporte de la subtilité.</p>
         <table class="course-table">
-          <tr><th>Expression N2</th><th>Sens et Nuance</th><th>Exemple d'utilisation</th></tr>
-          <tr><td><strong>〜かねる (kaneru)</strong></td><td>Ne pas pouvoir (car la position ou la morale l'interdit). Utilisé pour refuser poliment.</td><td>そのご意見には賛成しかねます。(Je ne peux me résoudre à approuver cette opinion.)</td></tr>
-          <tr><td><strong>〜ざるを得ない (zaru o enai)</strong></td><td>Être obligé de... (malgré soi). On n'a pas d'autre choix.</td><td>予定を変更せざるを得ない。(Nous sommes obligés de modifier le programme.)</td></tr>
+          <tr><th>Expression N2</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜かねる (kaneru)</strong></td>
+            <td><strong>Ne pas pouvoir se résoudre à...</strong> (La morale, le protocole ou la position l'interdit). Refus poli idéal.</td>
+            <td>そのご<ruby>意見<rt>いけん</rt></ruby>には<ruby>賛成<rt>さんせい</rt></ruby><strong>しかねます</strong>。<br><em>(Je ne peux me résoudre à approuver cette opinion.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ざるを得ない (zaru o enai)</strong></td>
+            <td><strong>Être obligé de... / N'avoir d'autre choix que...</strong> (Malgré soi, dicté par la situation).</td>
+            <td><ruby>台風<rt>たいふう</rt></ruby>のため、<ruby>予定<rt>よてい</rt></ruby>を<ruby>変更<rt>へんこう</rt></ruby><strong>せざるを得ない</strong>。<br><em>(À cause du typhon, nous sommes obligés de modifier le programme.)</em></td>
+          </tr>
         </table>
-
-        <h3>3. L'affirmation forte et la conviction</h3>
-        <div class="example-box">
-          <p><strong>〜に違いない (ni chigainai) :</strong> "Il est certain que / Il n'y a pas d'erreur, c'est..."<br>
-          <em>Ex: 犯人は彼に違いない。(Il est certain que c'est lui le coupable).</em></p>
-          <br>
-          <p><strong>〜に決まっている (ni kimatte iru) :</strong> "Il est évident que / C'est couru d'avance". Plus subjectif et oral que chigainai.<br>
-          <em>Ex: そんなの嘘に決まっている！ (C'est évident que c'est un mensonge !).</em></p>
-        </div>
       </div>`;
   }
 
@@ -1081,8 +1092,8 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>L'ultime étape : Littérature et Spécialisation</h3>
-        <p>Le JLPT N1 couvre l'ensemble des ~2136 Kanjis d'usage courant (Jōyō Kanji). Ce sont des idéogrammes que l'on retrouve dans la littérature classique, les documents juridiques, les thèses universitaires ou les journaux très spécialisés.</p>
-        <p>Ils expriment souvent des émotions complexes, des concepts philosophiques abstraits ou des actions extrêmement précises.</p>
+        <p>Le niveau JLPT N1 couvre l'intégralité des ~2136 Kanjis d'usage courant (常用漢字 - Jōyō Kanji). Ce sont les idéogrammes que l'on retrouve dans la haute littérature, les textes de loi, les éditoriaux politiques et les publications académiques.</p>
+        <p>Ils expriment souvent des concepts philosophiques abstraits ou des mouvements d'une extrême précision.</p>
       </div>
       <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N1 : null)}</div>`;
   }
@@ -1091,48 +1102,39 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. Les tournures de la littérature japonaise</h3>
-        <p>La grammaire N1 est si poussée que même de nombreux Japonais natifs hésitent sur certaines nuances s'ils ne lisent pas régulièrement. Elle est archaïque, emphatique et souvent très poétique ou dramatique.</p>
+        <p>La grammaire N1 est si poussée que même de nombreux Japonais natifs hésitent sur certaines nuances s'ils ne lisent pas régulièrement. Elle est archaïque, emphatique et hautement dramatique.</p>
         
-        <h3>2. Succession immédiate et dramatique</h3>
-        <p>En français, on dirait "À peine eut-il fait ceci, que cela se produisit". Le N1 adore ces expressions au timing serré.</p>
+        <h3>2. Succession immédiate et théâtrale</h3>
+        <p>Le N1 adore insister sur des actions qui se bousculent dans le temps de manière fulgurante.</p>
         <table class="course-table">
           <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
           <tr>
-            <td><strong>〜や否や (ya ina ya)</strong></td>
-            <td>Dès que... (Succession immédiate, souvent surprenante). Verbe au dictionnaire.</td>
-            <td>彼は私の顔を見る<strong>や否や</strong>、逃げ出した。<br><em>(Dès qu'il a vu mon visage, il s'est enfui).</em></td>
+            <td><strong>〜や<ruby>否<rt>いな</rt></ruby>や (ya ina ya)</strong></td>
+            <td><strong>À peine... que / Dès que...</strong> (Une succession immédiate et surprenante). S'attache au verbe neutre.</td>
+            <td><ruby>彼<rt>かれ</rt></ruby>は私の<ruby>顔<rt>かお</rt></ruby>を<ruby>見<rt>み</rt></ruby>る<strong>や否や</strong>、<ruby>逃<rt>に</rt></ruby>げ出した。<br><em>(Dès qu'il a vu mon visage, il s'est enfui.)</em></td>
           </tr>
           <tr>
-            <td><strong>〜が早いか (ga hayai ka)</strong></td>
-            <td>À peine... que. (Action presque simultanée, souvent intentionnelle).</td>
-            <td>ベルが鳴る<strong>が早いか</strong>、生徒たちは教室を飛び出した。<br><em>(À peine la cloche a-t-elle sonné que les élèves ont bondi hors de la classe).</em></td>
+            <td><strong>〜が<ruby>早<rt>はや</rt></ruby>いか (ga hayai ka)</strong></td>
+            <td><strong>À peine eut-il fait ceci... que cela arriva.</strong> (Action presque simultanée).</td>
+            <td>ベルが<ruby>鳴<rt>な</rt></ruby>る<strong>が早いか</strong>、<ruby>生徒<rt>せいと</rt></ruby>たちは<ruby>教室<rt>きょうしつ</rt></ruby>を<ruby>飛<rt>と</rt></ruby>び出した。<br><em>(À peine la cloche a-t-elle sonné que les élèves ont bondi hors de la classe.)</em></td>
           </tr>
         </table>
 
-        <h3>3. L'emphase et l'extrême</h3>
-        <p>Pour insister sur la rareté, l'évidence ou le caractère extrême d'une situation.</p>
+        <h3>3. L'emphase et la cause absolue</h3>
+        <p>Pour mettre en lumière le caractère exceptionnel, paradoxal ou extrême d'une situation.</p>
         <table class="course-table">
           <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
           <tr>
             <td><strong>〜だに (dani)</strong></td>
-            <td>"Rien que de..." (Souvent utilisé avec imaginer, penser, entendre).</td>
-            <td>そんなことが起きるなんて、想像する<strong>だに</strong>恐ろしい。<br><em>(Rien que d'imaginer qu'une telle chose puisse arriver, c'est terrifiant).</em></td>
+            <td><strong>Rien que de... / Même seulement...</strong> (S'utilise avec imaginer, penser, entendre).</td>
+            <td>そんなことが<ruby>起<rt>お</rt></ruby>きるなんて、<ruby>想像<rt>そうぞう</rt></ruby>する<strong>だに</strong>おそろしい。<br><em>(Rien que d'imaginer qu'une telle chose puisse arriver, c'est terrifiant.)</em></td>
           </tr>
           <tr>
-            <td><strong>〜すら (sura)</strong></td>
-            <td>"Même" (Équivalent très soutenu et littéraire de さえ - sae). Indique qu'un cas extrême n'est pas rempli.</td>
-            <td>彼は自分の名前<strong>すら</strong>書けない。<br><em>(Il ne peut même pas écrire son propre nom).</em></td>
+            <td><strong>〜ばこそ (ba koso)</strong></td>
+            <td><strong>C'est précisément parce que...</strong> (Met en valeur la cause unique et paradoxale). Forme conditionnelle + こそ.</td>
+            <td><ruby>愛<rt>あい</rt></ruby>していれば<strong>こそ</strong>、<ruby>厳<rt>きび</rt></ruby>しく<ruby>叱<rt>しか</rt></ruby>るのです。<br><em>(C'est précisément parce que je l'aime que je le gronde sévèrement.)</em></td>
           </tr>
         </table>
-
-        <h3>4. Les causes formelles (C'est précisément parce que...)</h3>
-        <div class="example-box">
-          <p><strong>〜ばこそ (ba koso) :</strong> Met en lumière la raison unique et paradoxale d'un acte.</p>
-          <p><em>Ex: 愛していれ<strong>ばこそ</strong>、厳しく叱るのです。</em><br>(C'est précisément parce que je l'aime que je le gronde sévèrement).</p>
-          <br>
-          <p><strong>〜ゆえに (yue ni) :</strong> "En raison de". Très utilisé dans les dissertations académiques ou les démonstrations mathématiques.</p>
-          <p><em>Ex: 悪天候<strong>ゆえに</strong>、試合は中止となった。</em><br>(En raison du mauvais temps, le match a été annulé).</p>
-        </div>
       </div>`;
   }
 
