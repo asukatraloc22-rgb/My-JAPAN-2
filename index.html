@@ -1696,7 +1696,8 @@ let currentDictIndex = 0;
 function generateProceduralDictation(level, count = 10) {
   if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
-  if (!vocab || !vocab.subjects) return [];
+  // Sécurité renforcée si le niveau ou ses sous-données n'existent pas
+  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
   
   let generated = [];
   for(let i = 0; i < count; i++) {
@@ -1712,7 +1713,7 @@ function generateProceduralDictation(level, count = 10) {
      
      generated.push({ 
        jp: jp, fr: fr, 
-       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}に${v.jp}`, `${s.jp}は${p.jp}に${wrongV.jp}`], 
+       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}に${v.jp}`, `${s.jp}は${wrongV.jp}`], 
        wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
      });
   }
