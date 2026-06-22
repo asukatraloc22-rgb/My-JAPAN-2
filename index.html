@@ -1181,6 +1181,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Saisie Manuelle</span>
             <span class="vocab-fr">Tapez vos réponses au clavier</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('reverse-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🔄</span>
+            <span class="vocab-jp" style="font-size: 18px;">Leçon Inversée</span>
+            <span class="vocab-fr">Du Français vers le Japonais</span>
+          </div>
         </div>
       </div>`;
   }
@@ -1335,6 +1340,25 @@ function loadContent(id) {
   else if(id === 'keyboard-run') {
     titleHeader.innerText = "SAISIE AU CLAVIER...";
     contentDiv.innerHTML = `<div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'reverse-menu') {
+    titleHeader.innerText = "Leçon Inversée : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Production Active</h3>
+        <p>L'application vous donne un mot ou un sens en français. Retrouvez le Kanji ou le vocabulaire japonais correspondant pour forcer votre cerveau à produire de la langue.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startReverseMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Base (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Élémentaire (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Intermédiaire (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Avancé (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Expert (Inversé)</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'reverse-run') {
+    titleHeader.innerText = "TRADUCTION INVERSÉE...";
+    contentDiv.innerHTML = `<div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateur d'Examens JLPT";
@@ -2406,6 +2430,109 @@ function nextKeyboardQuestion() {
   kbCurrentIndex++;
   renderKeyboardQuestion();
 }
+
+/* ─── MOTEUR DE JEU : LEÇON INVERSÉE (FRANÇAIS ➔ JAPONAIS) ─── */
+let revQuestions = [];
+let revCurrentIndex = 0;
+
+function startReverseMode(level) {
+  revQuestions = [];
+  
+  // Génération de questions Kanjis
+  if (typeof DB_KANJI !== 'undefined' && DB_KANJI[level]) {
+    const kanjis = [...DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, 5);
+    kanjis.forEach(k => {
+      let options = [k.j];
+      while (options.length < 4) {
+        let rand = DB_KANJI[level][Math.floor(Math.random() * DB_KANJI[level].length)].j;
+        if (!options.includes(rand)) options.push(rand);
+      }
+      options.sort(() => Math.random() - 0.5);
+      revQuestions.push({ q: k.f, ans: k.j, opts: options, type: 'Kanji' });
+    });
+  }
+
+  // Génération de questions Vocabulaire
+  if (typeof DB_VOCAB !== 'undefined' && DB_VOCAB[level] && DB_VOCAB[level].subjects) {
+    const vocab = DB_VOCAB[level];
+    const pool = [...vocab.subjects, ...vocab.places];
+    const words = pool.sort(() => Math.random() - 0.5).slice(0, 5);
+    words.forEach(w => {
+      let correctHtml = `<ruby>${w.jp}<rt>${w.kana}</rt></ruby>`;
+      let options = [correctHtml];
+      while (options.length < 4) {
+        let randW = pool[Math.floor(Math.random() * pool.length)];
+        let randHtml = `<ruby>${randW.jp}<rt>${randW.kana}</rt></ruby>`;
+        if (!options.includes(randHtml)) options.push(randHtml);
+      }
+      options.sort(() => Math.random() - 0.5);
+      revQuestions.push({ q: w.fr, ans: correctHtml, opts: options, type: 'Vocabulaire' });
+    });
+  }
+
+  revQuestions.sort(() => Math.random() - 0.5);
+
+  if (revQuestions.length === 0) { alert("Données indisponibles !"); return; }
+  
+  revCurrentIndex = 0;
+  loadContent('reverse-run');
+  renderReverseQuestion();
+}
+
+function renderReverseQuestion() {
+  if (revCurrentIndex >= revQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+        <span style="font-size: 60px;">🔄</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Leçon Terminée !</h3>
+        <p>Passer du français au japonais est un excellent exercice mental, bravo !</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+
+  const q = revQuestions[revCurrentIndex];
+  let optionsHtml = '';
+  q.opts.forEach(opt => {
+    // Échappement des guillemets pour éviter les conflits HTML
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.ans.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:22px; padding: 15px;" onclick="checkReverseAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('reverse-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Trouvez la traduction (${q.type})</div>
+    <div style="font-size:26px; text-align:center; margin-bottom:30px; color:var(--sumi); font-weight:bold;">"${q.q}"</div>
+    <div id="reverse-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="rev-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="rev-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextReverseQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkReverseAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('reverse-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('rev-feedback');
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong>`;
+    updateStat(true);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML.includes(correct)) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong>`;
+    updateStat(false);
+  }
+  document.getElementById('rev-next-btn').style.display = 'block';
+}
+
+function nextReverseQuestion() {
+  revCurrentIndex++;
+  renderReverseQuestion();
+}  
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
