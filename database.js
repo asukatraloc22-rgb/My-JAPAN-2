@@ -122,6 +122,49 @@ const DB_VOCAB = {
       { jp: "退職します", kana: "たいしょくします", romaji: "taishoku shimasu", fr: "démissionne / part en retraite de" }
     ]
   },
+   N2: {
+    subjects: [
+      { jp: "裁判員", kana: "さいばんいん", romaji: "saiban'in", fr: "Le juré (justice)" },
+      { jp: "担当者", kana: "たんとうしゃ", romaji: "tantōsha", fr: "Le responsable (d'un dossier)" },
+      { jp: "候補者", kana: "こうほしゃ", romaji: "kōhosha", fr: "Le candidat" },
+      { jp: "取材班", kana: "しゅざいはん", romaji: "shuzaihan", fr: "L'équipe de reportage / Les journalistes" },
+      { jp: "主催者", kana: "しゅさいしゃ", romaji: "shusaisha", fr: "L'organisateur" }
+    ],
+    places: [
+      { jp: "選挙区", kana: "せんきょく", romaji: "senkyoku", fr: "la circonscription électorale" },
+      { jp: "裁判所", kana: "さいばんしょ", romaji: "saibansho", fr: "le tribunal" },
+      { jp: "開発課", kana: "かいはつか", romaji: "kaihatsuka", fr: "le département de développement" },
+      { jp: "事務局", kana: "じむきょく", romaji: "jimukyoku", fr: "le secrétariat général" },
+      { jp: "目的地", kana: "もくてきち", romaji: "mokutekichi", fr: "la destination" }
+    ],
+    verbs_motion: [
+      { jp: "赴任します", kana: "ふにんします", romaji: "funinshimasu", fr: "part prendre son poste à" },
+      { jp: "進出します", kana: "しんしゅつします", romaji: "shinshutsu shimasu", fr: "s'implante à / se développe vers" },
+      { jp: "視察します", kana: "しさつします", romaji: "shisatsushimasu", fr: "inspecte / fait une visite officielle à" },
+      { jp: "同行します", kana: "どうこうします", romaji: "dōkōshimasu", fr: "accompagne (quelqu'un) à" }
+    ]
+  },
+  N1: {
+    subjects: [
+      { jp: "容疑者", kana: "ようぎしゃ", romaji: "yōgisha", fr: "Le suspect" },
+      { jp: "開拓者", kana: "かいたくしゃ", romaji: "kaitakusha", fr: "Le pionnier" },
+      { jp: "大統領", kana: "だいとうりょう", romaji: "daitōryō", fr: "Le président (d'un pays)" },
+      { jp: "派遣団", kana: "はけんだん", romaji: "hakendan", fr: "La délégation / Les envoyés" },
+      { jp: "先駆者", kana: "せんくしゃ", romaji: "senkusha", fr: "Le précurseur" }
+    ],
+    places: [
+      { jp: "駐屯地", kana: "ちゅうとんち", romaji: "chūtonchi", fr: "la base militaire / garnison" },
+      { jp: "開拓地", kana: "かいたくち", romaji: "kaitakuchi", fr: "la terre colonisée / nouvelle colonie" },
+      { jp: "任地", kana: "にんち", romaji: "ninchi", fr: "le lieu d'affectation" },
+      { jp: "密林", kana: "みつりん", romaji: "mitsurin", fr: "la jungle / forêt dense" }
+    ],
+    verbs_motion: [
+      { jp: "赴きます", kana: "おもむきます", romaji: "omomukimasu", fr: "se rend vers (littéraire)" },
+      { jp: "潜入します", kana: "せんにゅうします", romaji: "sennyūshimasu", fr: "s'infiltre à / s'introduit secrètement dans" },
+      { jp: "凱旋します", kana: "がいせんします", romaji: "gaisenshimasu", fr: "revient triomphalement à" },
+      { jp: "左遷されます", kana: "させんされます", romaji: "sasensaremasu", fr: "est rétrogradé / banni à" }
+    ]
+  }
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
 const DB_DICTATION = {
@@ -137,6 +180,14 @@ const DB_DICTATION = {
    N3: [
     { jp: "社長がいらっしゃいました", fr: "Le directeur est arrivé (respectueux)", wrong_fr: ["Le directeur a mangé", "Je suis le directeur", "Le directeur va partir"], wrong_jp: ["社長が召し上がりました", "私は社長です", "社長が出発します"] },
     { jp: "温かいうちに食べてください", fr: "Mangez pendant que c'est chaud", wrong_fr: ["Mangez quand ce sera froid", "Ne mangez pas ceci", "C'est chaud et bon"], wrong_jp: ["冷たい内に食べてください", "これを食べないでください", "温かくて美味しいです"] }
+  ],
+   N2: [
+    { jp: "予定を変更せざるを得ない", fr: "Nous sommes obligés de modifier le programme", wrong_fr: ["Nous voulons changer de programme", "Il est impossible de changer le planning", "Le programme est annulé"], wrong_jp: ["予定を変更したいです", "予定を変更するのは不可能です", "予定は中止になりました"] },
+    { jp: "その意見には賛成しかねます", fr: "Je ne peux me résoudre à approuver cette opinion", wrong_fr: ["J'approuve totalement cette idée", "Je vais y réfléchir", "Cette opinion est stupide"], wrong_jp: ["その意見に完全に賛成します", "それについて考えてみます", "その意見は馬鹿げています"] }
+  ],
+  N1: [
+    { jp: "彼は私の顔を見るや否や逃げ出した", fr: "Dès qu'il a vu mon visage, il s'est enfui", wrong_fr: ["Il a souri en voyant mon visage", "Il m'a regardé puis est venu me parler", "À peine est-il parti que je l'ai vu"], wrong_jp: ["彼は私の顔を見て微笑んだ", "彼は私を見て話しかけてきた", "彼が出発するや否や私は彼を見た"] },
+    { jp: "愛していればこそ厳しく叱るのです", fr: "C'est précisément parce que je l'aime que je le gronde", wrong_fr: ["Je le gronde car je ne l'aime pas", "Bien que je l'aime, je suis méchant", "Je le gronde doucement"], wrong_jp: ["彼を愛していないから叱るのです", "彼を愛しているけれど、私は意地悪です", "彼を優しく叱るのです"] }
   ]
 };
 
