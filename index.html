@@ -1210,6 +1210,26 @@ function loadContent(id) {
         </div>
       </div>`;
   }
+  else if(id === 'flashcards-run') {
+    titleHeader.innerText = "Entraînement SRS en cours...";
+    contentDiv.innerHTML = `
+      <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
+        <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+          <div class="fc-container" onclick="flipFlashcard()">
+            <div class="fc-card" id="fc-card-element">
+              <div class="fc-face fc-front"><span class="fc-front-text" id="fc-front-text"></span></div>
+              <div class="fc-face fc-back"><span class="fc-back-jp" id="fc-back-jp"></span><span class="fc-back-fr" id="fc-back-fr"></span></div>
+            </div>
+          </div>
+          <div class="flip-hint" id="flip-hint">Cliquez sur la carte pour la retourner</div>
+          <div class="srs-controls" id="srs-controls">
+            <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
+            <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
+            <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
+          </div>
+        </div>
+      </div>`;
+  }  
   else if(id === 'fillblank-menu') {
     titleHeader.innerText = "Choix du niveau (Grammaire)";
     contentDiv.innerHTML = `
@@ -1358,12 +1378,12 @@ function startFlashcards(deckType) {
   let sourceData = [];
   if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
   // À mettre dans startFlashcards(deckType) :
-  else if(window.DB_KANJI) {
-    if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
-    else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
-    else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
-    else if(deckType === 'kanji2') sourceData = window.DB_KANJI.N2; // 👈 AJOUT
-    else if(deckType === 'kanji1') sourceData = window.DB_KANJI.N1; // 👈 AJOUT
+  else if(typeof DB_KANJI !== 'undefined') {
+    if(deckType === 'kanji5') sourceData = DB_KANJI.N5;
+    else if(deckType === 'kanji4') sourceData = DB_KANJI.N4;
+    else if(deckType === 'kanji3') sourceData = DB_KANJI.N3;
+    else if(deckType === 'kanji2') sourceData = DB_KANJI.N2;
+    else if(deckType === 'kanji1') sourceData = DB_KANJI.N1;
   }
   
   activeDeck = sourceData.map(item => ({
