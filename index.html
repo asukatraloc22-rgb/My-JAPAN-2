@@ -1720,12 +1720,14 @@ function generateProceduralDictation(level, count = 10) {
 }
 
 function startDictation(level) {
-  const fixedData = window.DB_DICTATION ? (window.DB_DICTATION[level] || []) : [];
+  // Ligne modifiée avec sécurité renforcée pour le N4
+  const fixedData = (window.DB_DICTATION && window.DB_DICTATION[level]) ? window.DB_DICTATION[level] : [];
   const proceduralData = generateProceduralDictation(level, 10);
+  
   activeDict = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
   
   if(activeDict.length === 0) { 
-    alert("Données non disponibles !"); 
+    alert("Données non disponibles pour ce niveau !"); 
     return; 
   }
   currentDictIndex = 0;
