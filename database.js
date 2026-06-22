@@ -98,10 +98,10 @@ const DB_VOCAB = {
       { jp: "出発します", romaji: "shuppatsu shimasu", fr: "part de / s'en va à" },
       { jp: "到着します", romaji: "tōchaku shimasu", fr: "arrive à" }
     ]
-  },
+  }
+}; // L'accolade manquante fermant DB_VOCAB a été ajoutée ici de manière robuste !
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
-// Chaque phrase possède ses mauvaises réponses en français ET en japonais.
 const DB_DICTATION = {
   N5: [
     { jp: "おはようございます", fr: "Bonjour (le matin)", wrong_fr: ["Bonsoir", "Merci beaucoup", "Au revoir"], wrong_jp: ["こんばんは", "ありがとうございます", "さようなら"] },
