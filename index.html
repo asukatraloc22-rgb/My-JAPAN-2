@@ -893,12 +893,14 @@ function loadContent(id) {
   }
     
   // --- NIVEAU JLPT N3 ---
+  // --- NIVEAU JLPT N3 ---
   else if(id === 'cours-11') {
     titleHeader.innerText = "Cours 11 : Kanjis du niveau N3";
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Le pont vers la fluidité</h3>
-        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (articles simples, affiches, e-mails professionnels). Les Kanjis y abordent les émotions, les sentiments complexes, l'économie et la politique de base.</p>
+        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (journaux simples, e-mails professionnels). Les Kanjis y abordent les émotions, l'économie et la politique de base.</p>
+        <p>Cliquez sur chaque carte pour écouter la prononciation et mémoriser les lectures ON (chinoise) et KUN (japonaise).</p>
       </div>
       <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N3 : null)}</div>`;
   }
@@ -907,27 +909,32 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>1. La forme Passive (れる / られる)</h3>
-        <p>Elle sert à exprimer qu'une action est subie par le sujet. <strong>Subtilité N3 :</strong> le "passif de contrariété". Le japonais utilise le passif pour montrer qu'on a subi un désagrément à cause de l'action de quelqu'un d'autre.</p>
+        <p>Elle sert à exprimer qu'une action est subie par le sujet. En japonais, on l'utilise énormément pour le <strong>"passif de contrariété"</strong> : montrer qu'on a subi un désagrément.</p>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
-          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる (reru)</strong></td><td>雨に降ら<strong>れる</strong> (Subir la pluie ➔ Il a plu sur moi).</td></tr>
-          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる (rareru)</strong></td><td>見<strong>られる</strong> (Être regardé).</td></tr>
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple (Forme Neutre / Polie)</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる</strong></td><td><ruby>書<rt>か</rt></ruby>く ➔ <ruby>書<rt>か</rt></ruby>かれる / <ruby>書<rt>か</rt></ruby>かれます (Être écrit)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる</strong></td><td><ruby>見<rt>み</rt></ruby>る ➔ <ruby>見<rt>み</rt></ruby>られる / <ruby>見<rt>み</rt></ruby>られます (Être regardé)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ される<br>くる ➔ こられる</td><td><ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる (Subir la pluie / Il a plu sur moi)</td></tr>
         </table>
         
         <h3>2. La forme Causative (せる / させる)</h3>
-        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un (forcer), ou de <strong>laisser faire</strong> (autoriser).</p>
+        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un (le forcer), ou de <strong>laisser faire</strong> (autoriser).</p>
         <table class="course-table">
-          <tr><th>Groupe</th><th>Transformation</th><th>Exemple N3</th></tr>
-          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる (seru)</strong></td><td>彼を待た<strong>せる</strong> (Je le fais attendre).</td></tr>
-          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる (saseru)</strong></td><td>子供に野菜を食べ<strong>させる</strong> (Je force/laisse l'enfant manger ses légumes).</td></tr>
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる</strong></td><td><ruby>話<rt>はな</rt></ruby>す ➔ <ruby>話<rt>はな</rt></ruby>させる / <ruby>話<rt>はな</rt></ruby>させます (Faire parler)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる</strong></td><td><ruby>食<rt>た</rt></ruby>べる ➔ <ruby>食<rt>た</rt></ruby>べさせる / <ruby>食<rt>た</rt></ruby>べさせます (Faire manger)</td></tr>
         </table>
-
-        <h3>3. Le Boss Final : Le Causatif-Passif (させられる)</h3>
-        <p>C'est l'un des points de grammaire les plus complexes. Il combine les deux concepts précédents pour exprimer : <strong>"On m'a forcé à faire une action (et ça m'a dérangé)".</strong></p>
         <div class="example-box">
-          <p><strong>Règle générale :</strong> Verbe Causatif ➔ Enlever RU ➔ Ajouter RARERU.</p>
-          <p><em>Ex: 食べる (Manger) ➔ 食べさせる (Faire manger) ➔ 食べさせられる (Être forcé à manger).</em></p>
-          <p><strong>Astuce G1 :</strong> Pour les verbes du groupe 1, "〜せられる" (serareru) se contracte souvent en <strong>"〜される" (sareru)</strong> à l'oral. <em>Ex: 待つ ➔ 待たされる (On m'a fait poireauter).</em></p>
+          <strong>Exemple :</strong> <ruby>先生<rt>せんせい</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>に<ruby>宿題<rt>しゅくだい</rt></ruby>を<strong>させました</strong>。<br>
+          <em>(Le professeur a fait faire les devoirs aux étudiants.)</em>
+        </div>
+
+        <h3>3. Le Causatif-Passif (させられる)</h3>
+        <p>Il combine les deux concepts précédents : <strong>"On m'a forcé à faire quelque chose et j'en suis mécontent"</strong>.</p>
+        <div class="example-box">
+          <p><strong>Règle :</strong> Verbe Causatif ➔ Enlever RU ➔ Ajouter RARERU.</p>
+          <p><strong>待つ</strong> (Attendre) ➔ <strong>待たせる</strong> (Faire attendre) ➔ <strong>待たせられる</strong> (Être forcé à attendre / Contracté en <strong>待たされる</strong> à l'oral).</p>
+          <p><em>Ex: <ruby>彼女<rt>かのじょ</rt></ruby>に1<ruby>時間<rt>じかん</rt></ruby>も<strong>待たされた</strong>。 (J'ai été forcé de poireauter une heure par ma copine.)</em></p>
         </div>
       </div>`;
   }
@@ -936,60 +943,58 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>L'art de la politesse d'entreprise</h3>
-        <p>Au niveau N3, la forme "masu" ne suffit plus dans le monde du travail. Il faut maîtriser le <strong>Keigo (敬語)</strong>, qui redéfinit votre position sociale par rapport à votre interlocuteur.</p>
+        <p>Au niveau N3, la forme standard en <em>~masu</em> ne suffit plus en entreprise. Le <strong>Keigo (敬語)</strong> permet d'ajuster son niveau de langue selon l'interlocuteur.</p>
         
         <table class="course-table">
-          <tr><th>Famille</th><th>Explication</th><th>Formes de "Manger" (食べる)</th></tr>
+          <tr><th>Famille</th><th>Explication</th><th>Formes de "Manger / Boire"</th></tr>
           <tr>
-            <td><strong>1. Sonkeigo (尊敬語)</strong><br><em>Langage de respect</em></td>
-            <td>On surélève l'action de l'interlocuteur (un client, un patron). Vous ne devez JAMAIS l'utiliser pour vos propres actions.</td>
-            <td><strong>召し上がる (Meshiagaru)</strong><br><em>Ex: 社長が召し上がった (Le PDG a mangé).</em></td>
+            <td><strong>1. Sonkeigo (尊敬語)</strong><br><em>Respect</em></td>
+            <td>On surélève l'action de l'interlocuteur (un client, votre patron). Interdit de l'utiliser pour soi-même !</td>
+            <td><strong><ruby>召<rt>め</rt></ruby>し上がる (Meshiagaru)</strong><br><em>Ex: <ruby>社長<rt>しゃちょう</rt></ruby>が<ruby>召<rt>め</rt></ruby>し上がりました。</em></td>
           </tr>
           <tr>
-            <td><strong>2. Kenjōgo (謙譲語)</strong><br><em>Langage d'humilité</em></td>
-            <td>On abaisse sa propre action pour montrer du respect à l'autre. S'utilise uniquement pour soi-même ou les membres de son entreprise face à un client.</td>
-            <td><strong>いただく (Itadaku)</strong><br><em>Ex: 私がいただきました (C'est moi qui ai mangé).</em></td>
-          </tr>
-          <tr>
-            <td><strong>3. Teineigo (丁寧語)</strong><br><em>Langage de courtoisie</em></td>
-            <td>Le langage poli standard (desu/masu). Il met simplement un filtre de politesse sur les mots sans rapport de hiérarchie stricte.</td>
-            <td><strong>食べます (Tabemasu)</strong></td>
+            <td><strong>2. Kenjōgo (謙譲語)</strong><br><em>Humilité</em></td>
+            <td>On abaisse sa propre action pour placer le client ou le patron au-dessus. S'utilise pour soi ou son équipe.</td>
+            <td><strong>いただく (Itadaku)</strong><br><em>Ex: <ruby>私<rt>わたし</rt></ruby>がいただきました。</em></td>
           </tr>
         </table>
         
-        <div class="alert-box"><strong>Verbes irréguliers à mémoriser absolument :</strong><br>
-        Aller/Venir/Être : いらっしゃる (Sonkeigo) / まいる・おる (Kenjōgo).<br>
-        Dire : おっしゃる (Sonkeigo) / もうす (Kenjōgo).</div>
+        <div class="alert-box">
+          <strong>Les 3 couples de verbes irréguliers indispensables du N3 :</strong><br><br>
+          • <strong>Aller / Venir :</strong> いらっしゃる (Respect) / <ruby>参<rt>まい</rt></ruby>る (Humilité)<br>
+          • <strong>Dire :</strong> おっしゃる (Respect) / <ruby>申<rt>もう</rt></ruby>す (Humilité)<br>
+          • <strong>Être :</strong> ご<ruby>存知<rt>ぞんじ</rt></ruby>です (Respect) / おる (Humilité)
+        </div>
       </div>`;
   }
   else if(id === 'cours-13-1') {
     titleHeader.innerText = "Cours 13.1 : Grammaire du Temps et des Limites";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>Nuancer la temporalité</h3>
-        <p>Le N3 demande une grande précision pour expliquer <em>quand</em> ou <em>pendant combien de temps</em> se déroule une action.</p>
+        <h3>Préciser le contexte temporel</h3>
+        <p>La grammaire N3 apporte une grande finesse pour expliquer <em>quand</em> ou <em>pendant quel état</em> une action se produit.</p>
         
         <table class="course-table">
-          <tr><th>Grammaire</th><th>Traduction et Sens</th><th>Exemple</th></tr>
+          <tr><th>Formule</th><th>Sens exact</th><th>Exemple d'application</th></tr>
           <tr>
             <td><strong>〜うちに (uchi ni)</strong></td>
-            <td><strong>Pendant que / Avant que...</strong><br>L'action B doit être faite pendant que l'état A est encore valable, sinon il sera trop tard.</td>
-            <td>温かい<strong>うちに</strong>食べてください。<br><em>Mangez-le pendant que c'est encore chaud.</em></td>
+            <td><strong>Pendant que / Avant que...</strong> (Sinon après, il sera trop tard).</td>
+            <td><ruby>明<rt>あか</rt></ruby>るい<strong>うちに</strong><ruby>帰<rt>かえ</rt></ruby>りましょう (Rentrons pendant qu'il fait jour).</td>
           </tr>
           <tr>
             <td><strong>〜間に (aida ni)</strong></td>
-            <td><strong>Pendant (un intervalle)...</strong><br>L'action B est courte et se produit ponctuellement pendant que l'état A (plus long) est en cours.</td>
-            <td>留守の<strong>間に</strong>泥棒が入った。<br><em>Pendant mon absence, un voleur est entré.</em></td>
+            <td><strong>Pendant que...</strong> (Une action courte survient au milieu d'un état long).</td>
+            <td><ruby>留守<rt>るす</rt></ruby>の<strong>間に</strong><ruby>泥棒<rt>どろぼう</rt></ruby>が<ruby>入<rt>はい</rt></ruby>った (Un voleur est entré pendant mon absence).</td>
           </tr>
           <tr>
             <td><strong>〜たびに (tabi ni)</strong></td>
-            <td><strong>À chaque fois que...</strong><br>Exprime une routine ou une habitude inévitable.</td>
-            <td>この曲を聞く<strong>たびに</strong>、彼を思い出す。<br><em>À chaque fois que j'écoute cette chanson, je pense à lui.</em></td>
+            <td><strong>À chaque fois que...</strong> (Une routine automatique).</td>
+            <td>この<ruby>写真<rt>しゃしん</rt></ruby>を<ruby>見<rt>み</rt></ruby>る<strong>たびに</strong><ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>す (À chaque fois que je vois cette photo, je me souviens).</td>
           </tr>
           <tr>
             <td><strong>〜ついでに (tsuide ni)</strong></td>
-            <td><strong>En profitant de l'occasion pour...</strong><br>Faire l'action B de manière opportuniste pendant qu'on fait l'action A.</td>
-            <td>散歩の<strong>ついでに</strong>手紙を出した。<br><em>J'ai profité de ma promenade pour poster la lettre.</em></td>
+            <td><strong>En profitant de l'occasion pour...</strong></td>
+            <td><ruby>散歩<rt>さんぽ</rt></ruby>の<strong>ついでに</strong><ruby>手紙<rt>てがみ</rt></ruby>を出した (J'ai profité de ma promenade pour poster la lettre).</td>
           </tr>
         </table>
       </div>`;
@@ -998,30 +1003,30 @@ function loadContent(id) {
     titleHeader.innerText = "Cours 13.2 : Décisions et Changements d'état";
     contentDiv.innerHTML = `
       <div class="card">
-        <h3>La différence entre l'effort et la conséquence</h3>
-        <p>En japonais, on fait une grande distinction entre ce qu'on décide activement de faire (volonté) et ce qui est décidé par les circonstances (passivité/règlement).</p>
+        <h3>Volonté personnelle vs Règles extérieures</h3>
+        <p>En japonais, l'expression du changement ou d'une décision varie drastiquement si l'action dépend de vous ou de facteurs extérieurs.</p>
         
         <table class="course-table">
-          <tr><th>Expression</th><th>Sens (Ce que cela implique)</th><th>Exemple</th></tr>
+          <tr><th>Structure</th><th>Ce que cela implique</th><th>Exemple explicatif</th></tr>
           <tr>
-            <td><strong>〜ことにする</strong><br>(koto ni suru)</td>
-            <td><strong>Décider de... (Action personnelle)</strong><br>Le locuteur a pris la décision par sa propre volonté.</td>
-            <td>タバコをやめる<strong>ことにした</strong>。<br><em>J'ai décidé d'arrêter de fumer.</em></td>
+            <td><strong>〜ことにする</strong></td>
+            <td><strong>Décider de...</strong> (C'est votre choix personnel).</td>
+            <td>タバコを<ruby>辞<rt>や</rt></ruby>める<strong>ことにした</strong> (J'ai décidé d'arrêter de fumer).</td>
           </tr>
           <tr>
-            <td><strong>〜ことになる</strong><br>(koto ni naru)</td>
-            <td><strong>Il a été décidé que... (Conséquence extérieure)</strong><br>La décision vient de la société, de l'entreprise ou des règles. Le locuteur n'a pas le contrôle.</td>
-            <td>来月、転勤する<strong>ことになりました</strong>。<br><em>Il a été décidé que je serais muté le mois prochain.</em></td>
+            <td><strong>〜ことになる</strong></td>
+            <td><strong>Il a été décidé que...</strong> (Par l'entreprise, les lois, le destin).</td>
+            <td><ruby>来月日本<rt>らいげつにほん</rt></ruby>へ<ruby>出張<rt>しゅっちょう</rt></ruby>する<strong>ことになった</strong> (Il a été décidé que j'irais en voyage d'affaires au Japon le mois prochain).</td>
           </tr>
           <tr>
-            <td><strong>〜ようにする</strong><br>(yō ni suru)</td>
-            <td><strong>Faire en sorte de... / Faire un effort pour...</strong><br>Exprime une habitude qu'on essaie de tenir.</td>
-            <td>毎日、運動する<strong>ようにしている</strong>。<br><em>Je fais en sorte de faire du sport tous les jours.</em></td>
+            <td><strong>〜ようにする</strong></td>
+            <td><strong>Faire en sorte de...</strong> (Faire un effort régulier).</td>
+            <td><ruby>毎日運動<rt>まいにちうんどう</rt></ruby>する<strong>ようにしている</strong> (Je fais en sorte de faire du sport tous les jours).</td>
           </tr>
           <tr>
-            <td><strong>〜ようになる</strong><br>(yō ni naru)</td>
-            <td><strong>En venir à... / Devenir capable de...</strong><br>Exprime un changement d'état ou de capacité qui s'est produit avec le temps.</td>
-            <td>日本語が話せる<strong>ようになりました</strong>。<br><em>J'en suis venu à pouvoir parler japonais (Avant je ne pouvais pas).</em></td>
+            <td><strong>〜ようになる</strong></td>
+            <td><strong>En venir à... / Devenir capable de...</strong></td>
+            <td><ruby>日本語<rt>にほんご</rt></ruby>が<ruby>話<rt>はな</rt></ruby>せる<strong>ようになりました</strong> (Je suis maintenant capable de parler japonais).</td>
           </tr>
         </table>
       </div>`;
