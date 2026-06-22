@@ -75,10 +75,30 @@ const DB_VOCAB = {
     ]
   },
   N4: {
-    // Vous pourrez ajouter vos catégories N4 ici plus tard
-    subjects: [], places: [], verbs_motion: []
-  }
-};
+    subjects: [
+      { jp: "会社員", romaji: "kaishain", fr: "L'employé de bureau" },
+      { jp: "医者", romaji: "isha", fr: "Le médecin" },
+      { jp: "看護師", romaji: "kangoshi", fr: "L'infirmier(e)" },
+      { jp: "警察官", romaji: "keisatsukan", fr: "Le policier" },
+      { jp: "社長", romaji: "shachō", fr: "Le directeur (PDG)" },
+      { jp: "留学生", romaji: "ryūgakusei", fr: "L'étudiant étranger" },
+      { jp: "家族", romaji: "kazoku", fr: "La famille" }
+    ],
+    places: [
+      { jp: "病院", romaji: "byōin", fr: "l'hôpital" },
+      { jp: "空港", romaji: "kūkō", fr: "l'aéroport" },
+      { jp: "事務所", romaji: "jimusho", fr: "le bureau (lieu)" },
+      { jp: "大使館", romaji: "taishikan", fr: "l'ambassade" },
+      { jp: "京都", romaji: "kyōto", fr: "Kyoto" },
+      { jp: "駅", romaji: "eki", fr: "la gare" }
+    ],
+    verbs_motion: [
+      { jp: "向かいます", romaji: "mukaimasu", fr: "se dirige vers" },
+      { jp: "集まります", romaji: "atsumarimasu", fr: "se rassemble à" },
+      { jp: "出発します", romaji: "shuppatsu shimasu", fr: "part de / s'en va à" },
+      { jp: "到着します", romaji: "tōchaku shimasu", fr: "arrive à" }
+    ]
+  },
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
 // Chaque phrase possède ses mauvaises réponses en français ET en japonais.
