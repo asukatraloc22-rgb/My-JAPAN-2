@@ -233,6 +233,19 @@ body.samourai-mode .alert-box { background: #332701; color: #ffc107; border-colo
 body.samourai-mode .course-table th { background: #2a1a1c; }
 body.samourai-mode .course-table td { background: var(--kinari); }
 body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
+
+/* --- MICRO-INTERACTIONS & ANIMATIONS --- */
+.main-body {
+  animation: fadeInContent 0.3s ease-in-out;
+}
+@keyframes fadeInContent {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-primary:active, .quiz-opt-btn:active:not(:disabled), .vocab-card:active {
+  transform: scale(0.94);
+}
   
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
@@ -383,6 +396,8 @@ function saveStats() {
 
 function updateStat(isCorrect, isMastered = false, levelTarget = 'N5') {
   userStats.answersTotal++;
+if (isCorrect) AudioEngine.correct();
+  else AudioEngine.wrong();
   
   // Calcul des gains d'XP
   let xpGained = isCorrect ? 10 : 2;
@@ -425,7 +440,51 @@ function resetProgress() {
 }
   
 /* ─── UI & AUDIO ───────────────────────────────────────────── */
-function toggleSidebar() {
+const AudioEngine = {
+  ctx: null,
+  init() {
+    if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  },
+  playTone(freq, type, duration) {
+    try {
+      this.init();
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, this.ctx.currentTime); // Volume doux
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch(e) {}
+  },
+  correct() { this.playTone(800, 'sine', 0.3); }, // Ding clair
+  wrong() { this.playTone(200, 'sawtooth', 0.3); }, // Tud sourd
+  fanfare() { // Petite mélodie de victoire
+    try {
+      this.init();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // Accords majeurs
+      let time = this.ctx.currentTime;
+      notes.forEach((freq) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.05, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.2);
+        time += 0.12;
+      });
+    } catch(e) {}
+  }
+};
+  
+  function toggleSidebar() {
   const sidebar = document.getElementById('sidebar');
   const mainContent = document.querySelector('.main-content');
   const toggleBtn = document.getElementById('sidebar-toggle');
@@ -564,6 +623,9 @@ function generateKanjiGrid(dataArray) {
 /* ─── MOTEUR DE GESTION DES ONGLETS ────────────────────────── */
 function loadContent(id) {
   const contentDiv = document.getElementById('content');
+  contentDiv.style.animation = 'none';
+  void contentDiv.offsetWidth; // Déclenche un reflow
+  contentDiv.style.animation = 'fadeInContent 0.3s ease-in-out';
   const titleHeader = document.getElementById('page-title');
   if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
   
@@ -2591,9 +2653,11 @@ function checkExamAnswer(selected, btnElement, correct) {
   if (selected === correct) {
     btnElement.classList.add('correct-ans');
     examScore++;
+    AudioEngine.correct(); // 👈 Le petit "Ding" de bonne réponse est ici !
   } else {
     btnElement.classList.add('wrong-ans');
     allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    AudioEngine.wrong(); // 👈 Le "Tud" d'erreur est ici !
   }
   document.getElementById('exam-next-btn').style.display = 'block';
 }
@@ -2611,9 +2675,13 @@ function finishExam(timeout = false) {
   const percentage = Math.round((examScore / examQuestions.length) * 100);
   const passed = percentage >= 60; // Seuil de validation officiel
   
-  if(passed) {
+  // 👈 DÉCLENCHEMENT DE LA FANFARE OU DU BUZZER DE FIN !
+  if (passed) {
+    AudioEngine.fanfare(); 
     userStats.xp += (examQuestions.length * 10);
     saveStats();
+  } else {
+    AudioEngine.wrong();
   }
 
   contentDiv.innerHTML = `
