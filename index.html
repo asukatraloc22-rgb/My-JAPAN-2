@@ -350,23 +350,45 @@ body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
 <script src="./database.js"></script>
   
 <script>
-/* ─── MOTEUR DE STATISTIQUES & SAUVEGARDE ─── */
+/* ─── MOTEUR DE STATISTIQUES, XP & SAUVEGARDE ─── */
 let userStats = JSON.parse(localStorage.getItem('nihongoStats')) || {
   lastLogin: new Date().toDateString(),
   streak: 1,
   answersTotal: 0,
   answersCorrect: 0,
-  wordsMastered: 0
+  wordsMastered: 0,
+  xp: 0,              // 👈 NOUVEAU
+  xpN5: 0             // 👈 NOUVEAU (Pour verrouiller le N4, objectif : 300 XP)
 };
+
+// Configuration des titres de Samouraï selon le niveau d'XP total
+function getSamouraiRank(xp) {
+  if (xp >= 1500) return { title: "Shogun 🏯", level: 5 };
+  if (xp >= 900) return { title: "Taishō (Général) ⚔️", level: 4 };
+  if (xp >= 500) return { title: "Samouraï d'Élite 🥷", level: 3 };
+  if (xp >= 150) return { title: "Bushi (Guerrier) 🥋", level: 2 };
+  return { title: "Disciple (Ronin) 🌸", level: 1 };
+}
 
 function saveStats() {
   localStorage.setItem('nihongoStats', JSON.stringify(userStats));
 }
 
-function updateStat(isCorrect, isMastered = false) {
+function updateStat(isCorrect, isMastered = false, levelTarget = 'N5') {
   userStats.answersTotal++;
+  
+  // Calcul des gains d'XP
+  let xpGained = isCorrect ? 10 : 2;
+  userStats.xp += xpGained;
+  
+  // Si l'exercice était de niveau N5, on incrémente le compteur requis pour le N4
+  if (levelTarget === 'N5') {
+    userStats.xpN5 += xpGained;
+  }
+  
   if(isCorrect) userStats.answersCorrect++;
   if(isMastered) userStats.wordsMastered++;
+  
   saveStats();
 }
 
@@ -1260,14 +1282,42 @@ function loadContent(id) {
         </div>
       </div>`;
   }
-  else if(id === 'progression') {
+else if(id === 'progression') {
     titleHeader.innerText = "Tableau de Progression & Feuille de Route";
     const acc = userStats.answersTotal > 0 ? Math.round((userStats.answersCorrect / userStats.answersTotal) * 100) : 0;
     
+    // Calcul du rang et de l'XP nécessaire pour le rang suivant
+    const rankInfo = getSamouraiRank(userStats.xp);
+    let nextRankXp = 150;
+    let nextRankName = "Bushi 🥋";
+    
+    if (rankInfo.level === 2) { nextRankXp = 500; nextRankName = "Samouraï d'Élite 🥷"; }
+    else if (rankInfo.level === 3) { nextRankXp = 900; nextRankName = "Taishō (Général) ⚔️"; }
+    else if (rankInfo.level === 4) { nextRankXp = 1500; nextRankName = "Shogun 🏯"; }
+    else if (rankInfo.level === 5) { nextRankXp = userStats.xp; nextRankName = "Maître Absolu ⛩️"; }
+
+    // Calcul du pourcentage de la jauge vers le prochain rang
+    const xpPercent = Math.min(100, Math.round((userStats.xp / nextRankXp) * 100));
+    
     contentDiv.innerHTML = `
-      <div class="card">
-        <h3>Vos Statistiques</h3>
-        <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="card" style="border-left: 5px solid var(--aka);">
+        <h3 style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+          <span>Voie du Guerrier : <strong>${rankInfo.title}</strong></span>
+          <span style="font-size:14px; background:var(--sakura-pale); color:var(--aka); padding:4px 10px; border-radius:20px;">${userStats.xp} XP</span>
+        </h3>
+        
+        <!-- Jauge d'évolution du titre de Samouraï -->
+        <div style="margin: 20px 0 10px;">
+          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+            <span>✨ Progression vers le rang de <strong>${nextRankName}</strong></span>
+            <strong>${userStats.xp} / ${nextRankXp} XP</strong>
+          </div>
+          <div style="width:100%; height:12px; background:rgba(0,0,0,0.1); border-radius:6px; overflow:hidden;">
+            <div style="width:${xpPercent}%; height:100%; background:linear-gradient(90deg, var(--sakura) 0%, var(--aka) 100%); transition: width 0.5s ease;"></div>
+          </div>
+        </div>
+
+        <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr); margin-top:25px;">
           <div class="vocab-card">
             <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">${userStats.streak}</span>
             <span class="vocab-fr">Jours consécutifs</span>
@@ -1282,6 +1332,7 @@ function loadContent(id) {
           </div>
         </div>
       </div>
+
       <div class="card">
         <h3>Chronologie d'Étude Conseillée</h3>
         <p>Suivez cette feuille de route académique. <strong>Ne passez pas à l'étape suivante tant que la précédente n'est pas maîtrisée à 80%.</strong></p>
