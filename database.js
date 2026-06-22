@@ -98,8 +98,30 @@ const DB_VOCAB = {
       { jp: "出発します", kana: "しゅっぱつします", romaji: "shuppatsu shimasu", fr: "part de / s'en va à" },
       { jp: "到着します", kana: "とうちゃくします", romaji: "tōchaku shimasu", fr: "arrive à" }
     ]
-  }
-};
+  },
+ N3: {
+    subjects: [
+      { jp: "政治家", kana: "せいじか", romaji: "seijika", fr: "Le politicien" },
+      { jp: "司会者", kana: "しかいしゃ", romaji: "shikaisha", fr: "L'animateur / Le présentateur" },
+      { jp: "裁判官", kana: "さいばんかん", romaji: "saibankan", fr: "Le juge" },
+      { jp: "労働者", kana: "ろうどうしゃ", romaji: "rōdōsha", fr: "Le travailleur / L'ouvrier" },
+      { jp: "経営者", kana: "けいえいしゃ", romaji: "keieisha", fr: "Le chef d'entreprise / Gérant" },
+      { jp: "お客さん", kana: "おきゃくさん", romaji: "okyakusan", fr: "Le client" }
+    ],
+    places: [
+      { jp: "市役所", kana: "しやくしょ", romaji: "shiyaksho", fr: "la mairie" },
+      { jp: "薬局", kana: "やっきょく", romaji: "yakkyoku", fr: "la pharmacie" },
+      { jp: "裁判所", kana: "さいばんしょ", romaji: "saibansho", fr: "le tribunal" },
+      { jp: "支店", kana: "してん", romaji: "shiten", fr: "la succursale / filiale" },
+      { jp: "会議室", kana: "かいぎしつ", romaji: "kaigishitsu", fr: "la salle de réunion" }
+    ],
+    verbs_motion: [
+      { jp: "戻ります", kana: "もどります", romaji: "modorimasu", fr: "retourne / revient à" },
+      { jp: "移転します", kana: "いてんします", romaji: "itenshimasu", fr: "déménage / est transféré à" },
+      { jp: "出席します", kana: "しゅっせきします", romaji: "shusseki shimasu", fr: "assiste à / est présent à" },
+      { jp: "退職します", kana: "たいしょくします", romaji: "taishoku shimasu", fr: "démissionne / part en retraite de" }
+    ]
+  },
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
 const DB_DICTATION = {
@@ -111,6 +133,10 @@ const DB_DICTATION = {
   ],
   N4: [
     { jp: "雨が降りそうです", fr: "On dirait qu'il va pleuvoir", wrong_fr: ["Il a plu hier", "Il pleut beaucoup", "J'aime la pluie"], wrong_jp: ["昨日雨が降りました", "雨がたくさん降っています", "雨が好きです"] }
+  ],
+   N3: [
+    { jp: "社長がいらっしゃいました", fr: "Le directeur est arrivé (respectueux)", wrong_fr: ["Le directeur a mangé", "Je suis le directeur", "Le directeur va partir"], wrong_jp: ["社長が召し上がりました", "私は社長です", "社長が出発します"] },
+    { jp: "温かいうちに食べてください", fr: "Mangez pendant que c'est chaud", wrong_fr: ["Mangez quand ce sera froid", "Ne mangez pas ceci", "C'est chaud et bon"], wrong_jp: ["冷たい内に食べてください", "これを食べないでください", "温かくて美味しいです"] }
   ]
 };
 
