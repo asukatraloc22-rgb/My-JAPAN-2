@@ -1804,11 +1804,9 @@ function generateProceduralDictation(level, count = 10) {
 }
 
 function startDictation(level) {
-  // On récupère les phrases fixes ET on génère 10 phrases procédurales
-  const fixedData = window.DB_DICTATION[level] || [];
+  const fixedData = window.DB_DICTATION ? (window.DB_DICTATION[level] || []) : [];
   const proceduralData = generateProceduralDictation(level, 10);
   
-  // On mélange le tout !
   activeDict = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
   
   if(activeDict.length === 0) { 
@@ -1833,20 +1831,16 @@ function renderDictation() {
   }
 
   const q = activeDict[currentDictIndex];
-  
-  // LE PILE OU FACE BILINGUE
-  const isReverse = Math.random() > 0.5; // 50% de chance
+  const isReverse = Math.random() > 0.5;
   
   const audioText = isReverse ? q.fr : q.jp;
   const audioLang = isReverse ? 'fr-FR' : 'ja-JP';
   const correctText = isReverse ? q.jp : q.fr;
   const wrongAnswers = isReverse ? q.wrong_jp : q.wrong_fr;
   
-  // Préparation des 4 boutons (1 vrai, 3 faux)
   let options = [correctText, ...wrongAnswers].sort(() => Math.random() - 0.5);
   let optionsHtml = '';
   options.forEach(opt => {
-    // Échappement des apostrophes pour éviter de casser le code
     const safeOpt = opt.replace(/'/g, "\\'");
     const safeCorrect = correctText.replace(/'/g, "\\'");
     const safeAudioText = audioText.replace(/'/g, "\\'");
@@ -1865,7 +1859,6 @@ function renderDictation() {
     <button class="btn-primary quiz-next-btn" id="dict-next-btn" onclick="nextDictQuestion()">Continuer ➔</button>
   `;
   
-  // Joue l'audio automatiquement après un bref instant
   setTimeout(() => speak(audioText, audioLang), 500);
 }
 
@@ -1879,19 +1872,19 @@ function checkDictAnswer(selected, btnElement, correct, audioText) {
 
   if(selected === correct) {
     btnElement.classList.add('correct-ans');
-    
     updateStat(true); 
   } else {
     btnElement.classList.add('wrong-ans');
     allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
-    
     updateStat(false);
   }
+  document.getElementById('dict-next-btn').style.display = 'block';
+} // ← Cet accolade manquait !
 
 function nextDictQuestion() {
   currentDictIndex++;
   renderDictation();
-}
+} // ← Cet accolade manquait aussi !
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
@@ -1908,28 +1901,25 @@ function nextDictQuestion() {
     }
   }
 
-// Chargement du Mode Samouraï
   if(localStorage.getItem('samouraiMode') === 'true') {
     document.body.classList.add('samourai-mode');
   }
 
-  // Calcul des Jours Consécutifs (Streak)
   const today = new Date().toDateString();
   if (userStats.lastLogin !== today) {
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     if (userStats.lastLogin === yesterday.toDateString()) {
-      userStats.streak++; // Ajoute +1 jour si connecté hier
+      userStats.streak++;
     } else {
-      userStats.streak = 1; // Remet à 1 si on a raté une journée
+      userStats.streak = 1;
     }
     userStats.lastLogin = today;
     saveStats();
   }
-  // Lancement du premier cours
+  
   setTimeout(() => loadContent('cours-01'), 100);
 
-  // ENREGISTREMENT DU SERVICE WORKER (Mode Hors Ligne)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
