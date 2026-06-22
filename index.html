@@ -1161,16 +1161,13 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Compréhension Orale</h3>
-        <p>L'application prononcera une phrase à voix haute. Tendez l'oreille, analysez les particules et le verbe, et sélectionnez la bonne traduction.</p>
+        <p>L'application prononcera une phrase à voix haute. Tendez l'oreille et sélectionnez la bonne traduction.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" onclick="startDictation('N5')">
-            <span class="vocab-jp">N5</span>
-            <span class="vocab-fr">Écoute Débutant</span>
-          </div>
-          <div class="vocab-card" onclick="startDictation('N4')">
-            <span class="vocab-jp">N4</span>
-            <span class="vocab-fr">Écoute Intermédiaire</span>
-          </div>
+          <div class="vocab-card" onclick="startDictation('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Écoute Débutant</span></div>
+          <div class="vocab-card" onclick="startDictation('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Écoute Élémentaire</span></div>
+          <div class="vocab-card" onclick="startDictation('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Écoute Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startDictation('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Écoute Avancée</span></div>
+          <div class="vocab-card" onclick="startDictation('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Écoute Expert</span></div>
         </div>
       </div>`;
   }
@@ -1183,16 +1180,13 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card">
         <h3>Pensez à la Japonaise (Sujet-Objet-Verbe)</h3>
-        <p>Le verbe se place toujours à la fin. Reconstituez la traduction de la phrase française en tapant sur les blocs dans le bon ordre.</p>
+        <p>Le verbe se place toujours à la fin. Reconstituez la traduction en tapant sur les blocs dans le bon ordre.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" onclick="startSov('N5')">
-            <span class="vocab-jp">N5</span>
-            <span class="vocab-fr">Phrases de base</span>
-          </div>
-          <div class="vocab-card" onclick="startSov('N4')">
-            <span class="vocab-jp">N4</span>
-            <span class="vocab-fr">Phrases intermédiaires</span>
-          </div>
+          <div class="vocab-card" onclick="startSov('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Phrases de base</span></div>
+          <div class="vocab-card" onclick="startSov('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Phrases élémentaires</span></div>
+          <div class="vocab-card" onclick="startSov('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Phrases intermédiaires</span></div>
+          <div class="vocab-card" onclick="startSov('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Phrases avancées</span></div>
+          <div class="vocab-card" onclick="startSov('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Phrases d'élite</span></div>
         </div>
       </div>`;
   }
@@ -1222,21 +1216,19 @@ function loadContent(id) {
         </div>
       </div>`;
   }
-  else if(id === 'flashcards-run') {
-    titleHeader.innerText = "Entraînement SRS en cours...";
+  else if(id === 'flashcards-menu') {
+    titleHeader.innerText = "Configuration du Paquet";
     contentDiv.innerHTML = `
-      <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
-        <div class="fc-container" onclick="flipFlashcard()">
-          <div class="fc-card" id="fc-card-element">
-            <div class="fc-face fc-front"><span class="fc-front-text" id="fc-front-text"></span></div>
-            <div class="fc-face fc-back"><span class="fc-back-jp" id="fc-back-jp"></span><span class="fc-back-fr" id="fc-back-fr"></span></div>
-          </div>
-        </div>
-        <div class="flip-hint" id="flip-hint">Cliquez sur la carte pour la retourner</div>
-        <div class="srs-controls" id="srs-controls">
-          <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
-          <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
-          <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
+      <div class="card">
+        <h3>Que voulez-vous réviser aujourd'hui ?</h3>
+        <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startFlashcards('kana')"><span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Kanjis Avancé</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Kanjis Expert</span></div>
         </div>
       </div>`;
   }
@@ -1247,14 +1239,11 @@ function loadContent(id) {
         <h3>Testez vos réflexes grammaticaux</h3>
         <p>Lisez la phrase, comprenez le contexte grâce à la traduction, et choisissez la particule ou la structure manquante.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
-          <div class="vocab-card" onclick="startQuiz('N5')">
-            <span class="vocab-jp">N5</span>
-            <span class="vocab-fr">Les Particules de base</span>
-          </div>
-          <div class="vocab-card" onclick="startQuiz('N4')">
-            <span class="vocab-jp">N4</span>
-            <span class="vocab-fr">Grammaire intermédiaire</span>
-          </div>
+          <div class="vocab-card" onclick="startQuiz('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Particules de base</span></div>
+          <div class="vocab-card" onclick="startQuiz('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grammaire intermédiaire</span></div>
+          <div class="vocab-card" onclick="startQuiz('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Structures Intermédiaires</span></div>
+          <div class="vocab-card" onclick="startQuiz('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Grammaire Avancée</span></div>
+          <div class="vocab-card" onclick="startQuiz('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Structures Expertes</span></div>
         </div>
       </div>`;
   }
@@ -1390,10 +1379,13 @@ let currentCard = null;
 function startFlashcards(deckType) {
   let sourceData = [];
   if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
+  // À mettre dans startFlashcards(deckType) :
   else if(window.DB_KANJI) {
     if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
     else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
     else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
+    else if(deckType === 'kanji2') sourceData = window.DB_KANJI.N2; // 👈 AJOUT
+    else if(deckType === 'kanji1') sourceData = window.DB_KANJI.N1; // 👈 AJOUT
   }
   
   activeDeck = sourceData.map(item => ({
