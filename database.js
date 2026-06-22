@@ -52,54 +52,54 @@ const DB_KANJI = {
 const DB_VOCAB = {
   N5: {
     subjects: [
-      { jp: "私", romaji: "watashi", fr: "Je" },
-      { jp: "先生", romaji: "sensei", fr: "Le professeur" },
-      { jp: "学生", romaji: "gakusei", fr: "L'étudiant" },
-      { jp: "友達", romaji: "tomodachi", fr: "L'ami" },
-      { jp: "猫", romaji: "neko", fr: "Le chat" },
-      { jp: "犬", romaji: "inu", fr: "Le chien" },
-      { jp: "彼", romaji: "kare", fr: "Il" }
+      { jp: "私", kana: "わたし", romaji: "watashi", fr: "Je" },
+      { jp: "先生", kana: "せんせい", romaji: "sensei", fr: "Le professeur" },
+      { jp: "学生", kana: "がくせい", romaji: "gakusei", fr: "L'étudiant" },
+      { jp: "友達", kana: "ともだち", romaji: "tomodachi", fr: "L'ami" },
+      { jp: "猫", kana: "ねこ", romaji: "neko", fr: "Le chat" },
+      { jp: "犬", kana: "いぬ", romaji: "inu", fr: "Le chien" },
+      { jp: "彼", kana: "かれ", romaji: "kare", fr: "Il" }
     ],
     places: [
-      { jp: "学校", romaji: "gakkō", fr: "l'école" },
-      { jp: "東京", romaji: "tōkyō", fr: "Tokyo" },
-      { jp: "庭", romaji: "niwa", fr: "le jardin" },
-      { jp: "日本", romaji: "nihon", fr: "le Japon" },
-      { jp: "部屋", romaji: "heya", fr: "la chambre" },
-      { jp: "店", romaji: "mise", fr: "le magasin" }
+      { jp: "学校", kana: "がっこう", romaji: "gakkō", fr: "l'école" },
+      { jp: "東京", kana: "とうきょう", romaji: "tōkyō", fr: "Tokyo" },
+      { jp: "庭", kana: "にわ", romaji: "niwa", fr: "le jardin" },
+      { jp: "日本", kana: "にほん", romaji: "nihon", fr: "le Japon" },
+      { jp: "部屋", kana: "へや", romaji: "heya", fr: "la chambre" },
+      { jp: "店", kana: "みせ", romaji: "mise", fr: "le magasin" }
     ],
     verbs_motion: [
-      { jp: "行きます", romaji: "ikimasu", fr: "vais / va à" },
-      { jp: "来ます", romaji: "kimasu", fr: "viens / vient à" },
-      { jp: "帰ります", romaji: "kaerimasu", fr: "rentre à" }
+      { jp: "行きます", kana: "いきます", romaji: "ikimasu", fr: "vais / va à" },
+      { jp: "来ます", kana: "きます", romaji: "kimasu", fr: "viens / vient à" },
+      { jp: "帰ります", kana: "かえります", romaji: "kaerimasu", fr: "rentre à" }
     ]
   },
   N4: {
     subjects: [
-      { jp: "会社員", romaji: "kaishain", fr: "L'employé de bureau" },
-      { jp: "医者", romaji: "isha", fr: "Le médecin" },
-      { jp: "看護師", romaji: "kangoshi", fr: "L'infirmier(e)" },
-      { jp: "警察官", romaji: "keisatsukan", fr: "Le policier" },
-      { jp: "社長", romaji: "shachō", fr: "Le directeur (PDG)" },
-      { jp: "留学生", romaji: "ryūgakusei", fr: "L'étudiant étranger" },
-      { jp: "家族", romaji: "kazoku", fr: "La famille" }
+      { jp: "会社員", kana: "かいしゃいん", romaji: "kaishain", fr: "L'employé de bureau" },
+      { jp: "医者", kana: "いしゃ", romaji: "isha", fr: "Le médecin" },
+      { jp: "看護師", kana: "かんごし", romaji: "kangoshi", fr: "L'infirmier(e)" },
+      { jp: "警察官", kana: "けいさつかん", romaji: "keisatsukan", fr: "Le policier" },
+      { jp: "社長", kana: "しゃちょう", romaji: "shachō", fr: "Le directeur (PDG)" },
+      { jp: "留学生", kana: "りゅうがくせい", romaji: "ryūgakusei", fr: "L'étudiant étranger" },
+      { jp: "家族", kana: "かぞく", romaji: "kazoku", fr: "La famille" }
     ],
     places: [
-      { jp: "病院", romaji: "byōin", fr: "l'hôpital" },
-      { jp: "空港", romaji: "kūkō", fr: "l'aéroport" },
-      { jp: "事務所", romaji: "jimusho", fr: "le bureau (lieu)" },
-      { jp: "大使館", romaji: "taishikan", fr: "l'ambassade" },
-      { jp: "京都", romaji: "kyōto", fr: "Kyoto" },
-      { jp: "駅", romaji: "eki", fr: "la gare" }
+      { jp: "病院", kana: "びょういん", romaji: "byōin", fr: "l'hôpital" },
+      { jp: "空港", kana: "くうこう", romaji: "kūkō", fr: "l'aéroport" },
+      { jp: "事務所", kana: "じむしょ", romaji: "jimusho", fr: "le bureau (lieu)" },
+      { jp: "大使館", kana: "たいしかん", romaji: "taishikan", fr: "l'ambassade" },
+      { jp: "京都", kana: "きょうと", romaji: "kyōto", fr: "Kyoto" },
+      { jp: "駅", kana: "えき", romaji: "eki", fr: "la gare" }
     ],
     verbs_motion: [
-      { jp: "向かいます", romaji: "mukaimasu", fr: "se dirige vers" },
-      { jp: "集まります", romaji: "atsumarimasu", fr: "se rassemble à" },
-      { jp: "出発します", romaji: "shuppatsu shimasu", fr: "part de / s'en va à" },
-      { jp: "到着します", romaji: "tōchaku shimasu", fr: "arrive à" }
+      { jp: "向かいます", kana: "むかいます", romaji: "mukaimasu", fr: "se dirige vers" },
+      { jp: "集まります", kana: "あつまります", romaji: "atsumarimasu", fr: "se rassemble à" },
+      { jp: "出発します", kana: "しゅっぱつします", romaji: "shuppatsu shimasu", fr: "part de / s'en va à" },
+      { jp: "到着します", kana: "とうちゃくします", romaji: "tōchaku shimasu", fr: "arrive à" }
     ]
   }
-}; // L'accolade manquante fermant DB_VOCAB a été ajoutée ici de manière robuste !
+};
 
 // 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
 const DB_DICTATION = {
