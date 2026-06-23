@@ -1287,6 +1287,11 @@ function loadContent(id) {
         <h3>Choisissez votre exercice</h3>
         <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
         <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('detective-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🕵️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Détective</span>
+            <span class="vocab-fr">L'épreuve des Radicaux</span>
+          </div>
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
             <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
@@ -1514,6 +1519,27 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'detective-menu') {
+    titleHeader.innerText = "Le Détective : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art de l'observation</h3>
+        <p>Un Kanji inconnu apparaît. Observez sa structure et identifiez sa <strong>Clé principale (Radical)</strong>. Lisez bien les histoires en fin de question pour comprendre l'étymologie !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startDetectiveMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Radicaux Débutant</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Radicaux Élémentaire</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Radicaux Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Radicaux Avancé</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Radicaux Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'detective-run') {
+    titleHeader.innerText = "ANALYSE DU KANJI...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="detective-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -2801,6 +2827,104 @@ function finishExam(timeout = false) {
       <button class="btn-primary" onclick="loadContent('examens')">Retour aux Examens</button>
     </div>
   `;
+}
+/* ─── MOTEUR DE JEU : LE DÉTECTIVE (RADICAUX) ─── */
+let detQuestions = [];
+let detCurrentIndex = 0;
+
+function startDetectiveMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On récupère tous les kanjis du niveau qui ont un radical
+  let pool = [...window.DB_KANJI[level]].filter(k => k.rad);
+  if (pool.length === 0) return;
+
+  // On sélectionne 10 Kanjis aléatoires pour la partie
+  pool.sort(() => Math.random() - 0.5);
+  let selectedKanjis = pool.slice(0, 10);
+
+  detQuestions = selectedKanjis.map(k => {
+    let correctRad = k.rad;
+    let options = [correctRad];
+
+    // On cherche 3 faux radicaux aléatoires et uniques
+    let wrongPool = [...new Set(pool.filter(x => x.rad !== correctRad).map(x => x.rad))];
+    wrongPool.sort(() => Math.random() - 0.5);
+    options.push(...wrongPool.slice(0, 3));
+
+    // Mélange final des 4 boutons
+    options.sort(() => Math.random() - 0.5);
+
+    return { kanji: k.j, meaning: k.f, correct: correctRad, opts: options, story: k.story };
+  });
+
+  detCurrentIndex = 0;
+  loadContent('detective-run');
+  renderDetectiveQuestion();
+}
+
+function renderDetectiveQuestion() {
+  if (detCurrentIndex >= detQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🕵️</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Enquête Terminée !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">L'architecture des Kanjis n'a plus de secrets pour vous.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = detQuestions[detCurrentIndex];
+  let optionsHtml = '';
+  
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.correct.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:18px; padding:14px;" onclick="checkDetectiveAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('detective-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Question ${detCurrentIndex + 1} / 10</div>
+    <div style="font-size: 80px; font-family: var(--font-jp); text-align: center; color: var(--sumi); line-height: 1.2;">${q.kanji}</div>
+    <div style="text-align:center; color:#666; font-size:18px; margin-bottom:30px; font-style:italic;">"${q.meaning}"</div>
+    <p style="text-align:center; font-weight:bold; margin-bottom:20px;">Quel est le radical (la clé) de ce Kanji ?</p>
+    <div id="det-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="det-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="det-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextDetectiveQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkDetectiveAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('det-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('det-feedback');
+  const q = detQuestions[detCurrentIndex];
+
+  // Le petit bijou d'apprentissage : L'histoire s'affiche toujours !
+  const storyHtml = `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed rgba(0,0,0,0.1); font-size:14px; color:#444;"><strong>💡 Le saviez-vous ?</strong><br>${q.story}</div>`;
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Excellente déduction !</strong>${storyHtml}`;
+    updateStat(true);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong> Le radical était 「${correct}」.${storyHtml}`;
+    updateStat(false);
+  }
+  document.getElementById('det-next-btn').style.display = 'block';
+}
+
+function nextDetectiveQuestion() {
+  detCurrentIndex++;
+  renderDetectiveQuestion();
 }
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
