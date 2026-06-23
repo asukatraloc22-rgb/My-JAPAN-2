@@ -266,6 +266,40 @@ body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
   .vocab-grid { grid-template-columns: 1fr !important; } /* Force 1 seule colonne sur mobile */
   .fc-container { height: 350px; } /* Adapte les flashcards */
 }
+
+/* --- MODAL KANJI DETAILED --- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.kanji-modal { background: var(--shiro); border-radius: var(--radius); width: 90%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+.modal-overlay.active .kanji-modal { transform: translateY(0); }
+.modal-header { background: var(--sakura-pale); padding: 30px 20px 20px; text-align: center; border-bottom: 2px solid var(--sakura); position: relative; }
+.modal-close { position: absolute; top: 15px; right: 15px; background: white; border: 1px solid var(--sakura); border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; color: var(--aka); font-weight: bold; transition: all 0.2s; display:flex; align-items:center; justify-content:center;}
+.modal-close:hover { background: var(--aka); color: white; transform: rotate(90deg); }
+.modal-k-char { font-family: var(--font-jp); font-size: 75px; color: var(--sumi); line-height: 1; margin-bottom: 10px; display: block; text-shadow: 2px 2px 0px white;}
+.modal-k-meaning { font-size: 20px; color: var(--aka); font-weight: bold; font-family: var(--font-title); }
+.modal-body { padding: 25px; }
+.modal-section { margin-bottom: 20px; }
+.modal-section h5 { font-family: var(--font-title); color: var(--sumi2); font-size: 16px; margin-bottom: 12px; border-bottom: 1px dashed rgba(188,0,45,0.2); padding-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.modal-readings { display: flex; gap: 10px; }
+.modal-read-badge { flex: 1; background: var(--kinari); border-radius: 8px; padding: 12px 10px; text-align: center; border: 1px solid rgba(0,0,0,0.05); }
+.modal-read-badge span { display: block; font-size: 11px; color: #888; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;}
+.modal-read-badge strong { font-size: 16px; color: var(--sumi); font-family: var(--font-jp); }
+.modal-story { background: #fffde7; border-left: 4px solid #f1c40f; padding: 16px; border-radius: 0 8px 8px 0; font-size: 14.5px; line-height: 1.6; color: #333; }
+.modal-words { display: flex; flex-direction: column; gap: 10px; }
+.modal-word-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: white; border: 1px solid rgba(188,0,45,0.1); border-radius: 8px; transition: transform 0.2s, border-color 0.2s; cursor: pointer; box-shadow: var(--shadow-sm); }
+.modal-word-item:hover { transform: translateX(5px); border-color: var(--sakura); }
+.mw-jp { font-family: var(--font-jp); font-size: 20px; font-weight: bold; color: var(--sumi); display: flex; flex-direction: column; }
+.mw-kana { font-size: 12px; color: var(--aka); font-weight: normal; margin-bottom: 2px; }
+.mw-fr { font-size: 14px; color: #666; text-align: right; max-width: 50%; line-height: 1.3;}
+
+/* Adaptation de la modale pour le mode Samouraï */
+body.samourai-mode .kanji-modal { background: var(--kinari); border-color: rgba(255,183,197,0.15); }
+body.samourai-mode .modal-header { background: var(--sakura-pale); }
+body.samourai-mode .modal-word-item { background: #2c2c2c; border-color: rgba(255,255,255,0.05); }
+body.samourai-mode .modal-story { background: #332701; border-color: #ffc107; color: #e0e0e0; }
+body.samourai-mode .modal-read-badge { background: #2c2c2c; }
+body.samourai-mode .modal-k-char { text-shadow: none; }
+  
 </style>
 </head>
 <body>
@@ -378,7 +412,12 @@ body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
     <div class="main-body" id="content"></div>
   </main>
 </div>
-
+<!-- MODAL KANJI CACHÉE -->
+<div class="modal-overlay" id="kanji-modal-overlay" onclick="closeKanjiModal(event)">
+  <div class="kanji-modal" id="kanji-modal-box">
+    <!-- Le contenu sera injecté ici par JavaScript -->
+  </div>
+</div>
 <script src="./database.js"></script>
   
 <script>
@@ -613,25 +652,90 @@ const KATAKANA_YOON = [
   {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
 ];
 
-/* ─── RENDERING DE TABLEAUX ────────────────────────────────── */
-function generateKanaGrid(dataArray) {
-  let html = `<div class="kana-grid">`;
-  dataArray.forEach(c => {
-    if(c.e) html += `<div class="kana-cell empty"></div>`;
-    else html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
-  }); return html + `</div>`;
-}
-function generateYoonGrid(dataArray) {
-  let html = `<div class="yoon-grid">`;
-  dataArray.forEach(c => { html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`; });
-  return html + `</div>`;
-}
+/* ─── RENDERING DE TABLEAUX ET MODALES ───────────────────────── */
 function generateKanjiGrid(dataArray) {
   let html = `<div class="kanji-grid">`;
   if(!dataArray) return `<p>Données non chargées.</p>`;
   dataArray.forEach(k => {
-    html += `<div class="kanji-tile" onclick="speak('${k.j}')"><span class="kt-char">${k.j}</span><div class="kt-readings"><span class="kt-on">${k.on}</span><span class="kt-kun">${k.kun}</span></div><span class="kt-fr">${k.f}</span></div>`;
-  }); return html + `</div>`;
+    // 👈 NOUVEAU : Au clic, on ouvre la modale au lieu de juste lire le son
+    html += `<div class="kanji-tile" onclick="openKanjiModal('${k.j}')">
+               <span class="kt-char">${k.j}</span>
+               <div class="kt-readings">
+                 <span class="kt-on">${k.on}</span>
+                 <span class="kt-kun">${k.kun}</span>
+               </div>
+               <span class="kt-fr">${k.f}</span>
+             </div>`;
+  }); 
+  return html + `</div>`;
+}
+
+function openKanjiModal(kanjiChar) {
+  // 1. Chercher le kanji dans toutes les listes de la DB
+  let foundKanji = null;
+  for (let level in window.DB_KANJI) {
+    foundKanji = window.DB_KANJI[level].find(k => k.j === kanjiChar);
+    if (foundKanji) break;
+  }
+  if(!foundKanji) return;
+
+  // 2. Jouer le son de base
+  speak(kanjiChar);
+
+  const modalBox = document.getElementById('kanji-modal-box');
+  
+  // 3. Construire la liste de vocabulaire
+  let wordsHtml = '';
+  if(foundKanji.words && foundKanji.words.length > 0) {
+    foundKanji.words.forEach(w => {
+      const safeWord = w.jp.replace(/'/g, "\\'");
+      wordsHtml += `
+        <div class="modal-word-item" onclick="speak('${safeWord}')">
+          <div class="mw-jp"><span class="mw-kana">${w.kana}</span>${w.jp}</div>
+          <div class="mw-fr">${w.fr}</div>
+        </div>`;
+    });
+  } else {
+    wordsHtml = '<p style="font-size:14px; color:#888; text-align:center;">Aucun vocabulaire associé.</p>';
+  }
+
+  // 4. Injecter les données et l'histoire
+  modalBox.innerHTML = `
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeKanjiModal(event, true)">✕</button>
+      <span class="modal-k-char">${foundKanji.j}</span>
+      <span class="modal-k-meaning">${foundKanji.f}</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-readings modal-section">
+        <div class="modal-read-badge"><span>ON (Chinois)</span><strong>${foundKanji.on || '-'}</strong></div>
+        <div class="modal-read-badge"><span>KUN (Japonais)</span><strong>${foundKanji.kun || '-'}</strong></div>
+      </div>
+      
+      <div class="modal-section">
+        <h5><span style="font-size:18px;">🔑</span> Radical & Étymologie</h5>
+        <div style="font-size: 14px; font-weight: bold; color: var(--aka); margin-bottom: 8px;">Clé : ${foundKanji.rad || 'Inconnue'}</div>
+        <div class="modal-story">${foundKanji.story || 'Aucune histoire disponible pour ce kanji.'}</div>
+      </div>
+      
+      <div class="modal-section">
+        <h5><span style="font-size:18px;">📚</span> Vocabulaire Dérivé (Jukugo)</h5>
+        <div class="modal-words">
+          ${wordsHtml}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 5. Afficher la modale avec animation
+  document.getElementById('kanji-modal-overlay').classList.add('active');
+}
+
+function closeKanjiModal(e, force = false) {
+  // Ferme la modale si on clique sur la croix ou à l'extérieur de la boîte
+  if (force || e.target.id === 'kanji-modal-overlay') {
+    document.getElementById('kanji-modal-overlay').classList.remove('active');
+  }
 }
 
 /* ─── MOTEUR DE GESTION DES ONGLETS ────────────────────────── */
