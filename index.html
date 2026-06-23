@@ -2035,39 +2035,6 @@ function generateProceduralDictation(level, count = 10) {
      });
   }
   return generated;
-}function generateProceduralDictation(level, count = 10) {
-  if(!window.DB_VOCAB) return [];
-  const vocab = window.DB_VOCAB[level];
-  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
-  
-  let generated = [];
-  for(let i = 0; i < count; i++) {
-     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
-     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
-     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-     
-     let pattern = Math.floor(Math.random() * 2);
-     let jp, fr;
-
-     if (pattern === 0) {
-       jp = `${s.jp}は${p.jp}に${v.jp}`;
-       fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
-     } else {
-       jp = `${s.jp}は${p.jp}から${v.jp}`;
-       fr = `[${s.fr}] ${v.fr} depuis [${p.fr}]`;
-     }
-     
-     let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
-     let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
-     let wrongV = vocab.verbs_motion.find(x => x.jp !== v.jp) || vocab.verbs_motion[0];
-     
-     generated.push({ 
-       jp: jp, fr: fr, 
-       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}から${v.jp}`, `${s.jp}は${wrongV.jp}`], 
-       wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
-     });
-  }
-  return generated;
 }
 
 function startDictation(level) {
