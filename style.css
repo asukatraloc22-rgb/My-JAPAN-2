@@ -1,5 +1,5 @@
-<style>
-:root{
+
+root{
   --aka:#BC002D;--aka2:#E8002D;--aka-pale:#fce8ed;
   --sakura:#FFB7C5;--sakura2:#FF8FAB;--sakura-pale:#fff0f5;--sakura-deep:#e75480;
   --shiro:#fffef9;--kinari:#fdf6ee;--washi:#f5efe6;
@@ -290,4 +290,4 @@ body.samourai-mode .modal-story { background: #332701; border-color: #ffc107; co
 body.samourai-mode .modal-read-badge { background: #2c2c2c; }
 body.samourai-mode .modal-k-char { text-shadow: none; }
   
-</style>
+
