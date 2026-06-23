@@ -1297,6 +1297,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Le Forgeron</span>
             <span class="vocab-fr">Créateur de Mots Composés</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('piege-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🪤</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Piège</span>
+            <span class="vocab-fr">Test de Lecture (ON/KUN)</span>
+          </div>
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
             <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
@@ -1566,6 +1571,27 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="forgeron-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'piege-menu') {
+    titleHeader.innerText = "Le Piège : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Esquivez les pièges de prononciation</h3>
+        <p>Un mot japonais apparaît. Vous devez trouver sa bonne prononciation en Hiragana. Attention : les mauvaises réponses contiennent souvent l'autre lecture (ON ou KUN) du Kanji pour vous induire en erreur !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startPiegeMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Lectures Débutant</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Lectures Élémentaire</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Lectures Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Lectures Avancé</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Lectures Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'piege-run') {
+    titleHeader.innerText = "DÉTECTION DE LA LECTURE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="piege-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -3077,6 +3103,115 @@ function checkForgeronAnswer() {
 function nextForgeronQuestion() {
   forgeCurrentIndex++;
   renderForgeronQuestion();
+}
+
+/* ─── MOTEUR DE JEU : LE PIÈGE (TEST ON/KUN) ─── */
+let piegeQuestions = [];
+let piegeCurrentIndex = 0;
+
+function startPiegeMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) return alert("Données indisponibles !");
+  
+  let allWords = [];
+  // On extrait tous les mots et on garde une référence à leur Kanji parent pour créer des pièges
+  window.DB_KANJI[level].forEach(k => {
+    if(k.words) {
+      k.words.forEach(w => {
+        allWords.push({ ...w, parentKanji: k });
+      });
+    }
+  });
+
+  if(allWords.length === 0) return alert("Aucun vocabulaire pour ce niveau.");
+  
+  // On sélectionne 10 mots au hasard
+  allWords.sort(() => Math.random() - 0.5);
+  let selectedWords = allWords.slice(0, 10);
+
+  piegeQuestions = selectedWords.map(w => {
+    let correctKana = w.kana;
+    let options = [correctKana];
+    
+    // PIÈGE 1 : On ajoute les autres lectures (mots) du MÊME Kanji
+    w.parentKanji.words.forEach(otherW => {
+      if (otherW.kana !== correctKana && !options.includes(otherW.kana)) {
+        options.push(otherW.kana);
+      }
+    });
+
+    // On remplit le reste avec des lectures aléatoires d'autres mots
+    while(options.length < 4) {
+      let randKana = allWords[Math.floor(Math.random() * allWords.length)].kana;
+      if(!options.includes(randKana)) options.push(randKana);
+    }
+    
+    // On garde exactement 4 options et on les mélange
+    options = options.slice(0, 4).sort(() => Math.random() - 0.5);
+    
+    return { word: w.jp, meaning: w.fr, correct: correctKana, opts: options };
+  });
+
+  piegeCurrentIndex = 0;
+  loadContent('piege-run');
+  renderPiegeQuestion();
+}
+
+function renderPiegeQuestion() {
+  if (piegeCurrentIndex >= piegeQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🪤</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Champ de mines traversé !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Vous savez désormais différencier les lectures ON et KUN selon le contexte.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = piegeQuestions[piegeCurrentIndex];
+  let optionsHtml = '';
+  
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.correct.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:22px; padding:15px; font-weight:normal;" onclick="checkPiegeAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('piege-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Mot ${piegeCurrentIndex + 1} / 10</div>
+    <div style="font-size: 50px; font-family: var(--font-jp); font-weight:bold; text-align: center; color: var(--sumi); margin-bottom: 5px;">${q.word}</div>
+    <div style="text-align:center; color:#666; font-size:18px; margin-bottom:30px; font-style:italic;">"${q.meaning}"</div>
+    <div id="piege-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="piege-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="piege-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextPiegeQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkPiegeAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('piege-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('piege-feedback');
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne lecture !</strong>`;
+    updateStat(true);
+    // On fait parler la voix japonaise pour ancrer la prononciation !
+    speak(document.querySelector('.font-jp') ? document.querySelector('.font-jp').innerText : correct);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Piégé !</strong> La bonne prononciation était <strong>${correct}</strong>.`;
+    updateStat(false);
+  }
+  document.getElementById('piege-next-btn').style.display = 'block';
+}
+
+function nextPiegeQuestion() {
+  piegeCurrentIndex++;
+  renderPiegeQuestion();
 }
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
