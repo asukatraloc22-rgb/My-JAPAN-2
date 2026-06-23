@@ -2013,8 +2013,8 @@ let currentDictIndex = 0;
 function generateProceduralDictation(level, count = 10) {
   if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
-  // Sécurité renforcée si le niveau ou ses sous-données n'existent pas
   if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
+// ... la suite de la bonne fonction ...
   
   let generated = [];
   for(let i = 0; i < count; i++) {
