@@ -1303,8 +1303,9 @@ function loadContent(id) {
   }
   else if(id === 'dictation-run') {
     titleHeader.innerText = "Écoutez attentivement";
-    contentDiv.innerHTML = `<div class="card" id="dict-area" style="padding: 30px 20px;"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="dict-area" style="padding: 30px 20px;"></div>`;
   }
   else if(id === 'sov-menu') {
     titleHeader.innerText = "Constructeur de Phrases";
@@ -1323,8 +1324,9 @@ function loadContent(id) {
   }
   else if(id === 'sov-run') {
     titleHeader.innerText = "Construisez la phrase";
-    contentDiv.innerHTML = `<div class="card" id="sov-area" style="padding: 30px 20px;"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="sov-area" style="padding: 30px 20px;"></div>`;
   }
   else if(id === 'flashcards-menu') {
     titleHeader.innerText = "Configuration du Paquet";
@@ -1345,6 +1347,7 @@ function loadContent(id) {
   else if(id === 'flashcards-run') {
     titleHeader.innerText = "Entraînement SRS en cours...";
     contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
         <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
           <div class="fc-container" onclick="flipFlashcard()">
@@ -1358,7 +1361,6 @@ function loadContent(id) {
             <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
             <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
             <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
-            <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
           </div>
         </div>
       </div>`;
@@ -1380,10 +1382,11 @@ function loadContent(id) {
   }
   else if(id === 'fillblank-run') {
     titleHeader.innerText = "Complétez la phrase";
-    contentDiv.innerHTML = `<div class="card" id="quiz-area" style="padding: 40px 20px;"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="quiz-area" style="padding: 40px 20px;"></div>`;
   }
-    else if(id === 'survival-menu') {
+  else if(id === 'survival-menu') {
     titleHeader.innerText = "Mode Survie : Choix du Rang";
     contentDiv.innerHTML = `
       <div class="card">
@@ -1400,10 +1403,11 @@ function loadContent(id) {
   }
   else if(id === 'survival-run') {
     titleHeader.innerText = "CHALLENGE SURVIE EN COURS...";
-    contentDiv.innerHTML = `<div class="card" id="survival-area" style="padding: 40px 20px; background: var(--sakura-pale);"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="survival-area" style="padding: 40px 20px; background: var(--sakura-pale);"></div>`;
   }
-    else if(id === 'matchup-menu') {
+  else if(id === 'matchup-menu') {
     titleHeader.innerText = "Jeu des Paires : Configuration";
     contentDiv.innerHTML = `
       <div class="card">
@@ -1421,13 +1425,13 @@ function loadContent(id) {
   else if(id === 'matchup-run') {
     titleHeader.innerText = "ASSOCIATION DES PAIRES...";
     contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
         <p style="text-align: center; margin-bottom: 20px; font-weight: bold; color: var(--aka);">Associez les Kanjis à leurs définitions françaises :</p>
-        <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
         <div class="kana-grid" id="matchup-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px; margin: 0 auto; gap: 15px;"></div>
       </div>`;
   }
-    else if(id === 'keyboard-menu') {
+  else if(id === 'keyboard-menu') {
     titleHeader.innerText = "Saisie Manuelle : Configuration";
     contentDiv.innerHTML = `
       <div class="card">
@@ -1442,10 +1446,11 @@ function loadContent(id) {
   }
   else if(id === 'keyboard-run') {
     titleHeader.innerText = "SAISIE AU CLAVIER...";
-    contentDiv.innerHTML = `<div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
   }
-    else if(id === 'reverse-menu') {
+  else if(id === 'reverse-menu') {
     titleHeader.innerText = "Leçon Inversée : Configuration";
     contentDiv.innerHTML = `
       <div class="card">
@@ -1462,8 +1467,9 @@ function loadContent(id) {
   }
   else if(id === 'reverse-run') {
     titleHeader.innerText = "TRADUCTION INVERSÉE...";
-    contentDiv.innerHTML = `<div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -1497,8 +1503,9 @@ function loadContent(id) {
   }
   else if(id === 'exam-run') {
     titleHeader.innerText = "ÉPREUVE EN COURS...";
-    contentDiv.innerHTML = `<div class="card" id="exam-area" style="padding: 40px 20px; background: var(--kinari);"></div>`;
-    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('examens')">Retour</button>
+      <div class="card" id="exam-area" style="padding: 40px 20px; background: var(--kinari);"></div>`;
   }
 else if(id === 'progression') {
     titleHeader.innerText = "Tableau de Progression & Feuille de Route";
@@ -2014,15 +2021,23 @@ function generateProceduralDictation(level, count = 10) {
   if(!window.DB_VOCAB) return [];
   const vocab = window.DB_VOCAB[level];
   if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
-// ... la suite de la bonne fonction ...
   
   let generated = [];
   for(let i = 0; i < count; i++) {
      let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
      let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
      let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-     let jp = `${s.jp}は${p.jp}に${v.jp}`;
-     let fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
+     
+     let pattern = Math.floor(Math.random() * 2);
+     let jp, fr;
+
+     if (pattern === 0) {
+       jp = `${s.jp}は${p.jp}に${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
+     } else {
+       jp = `${s.jp}は${p.jp}から${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} depuis [${p.fr}]`;
+     }
      
      let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
      let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
@@ -2030,7 +2045,7 @@ function generateProceduralDictation(level, count = 10) {
      
      generated.push({ 
        jp: jp, fr: fr, 
-       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}に${v.jp}`, `${s.jp}は${wrongV.jp}`], 
+       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}から${v.jp}`, `${s.jp}は${wrongV.jp}`], 
        wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
      });
   }
