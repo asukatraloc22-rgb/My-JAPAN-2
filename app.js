@@ -1,1 +1,2843 @@
+/* ─── MOTEUR DE STATISTIQUES, XP & SAUVEGARDE ─── */
+let userStats = JSON.parse(localStorage.getItem('nihongoStats')) || {
+  lastLogin: new Date().toDateString(),
+  streak: 1,
+  answersTotal: 0,
+  answersCorrect: 0,
+  wordsMastered: 0,
+  xp: 0,              // 👈 NOUVEAU
+  xpN5: 0             // 👈 NOUVEAU (Pour verrouiller le N4, objectif : 300 XP)
+};
 
+// Configuration des titres de Samouraï selon le niveau d'XP total
+function getSamouraiRank(xp) {
+  if (xp >= 1500) return { title: "Shogun 🏯", level: 5 };
+  if (xp >= 900) return { title: "Taishō (Général) ⚔️", level: 4 };
+  if (xp >= 500) return { title: "Samouraï d'Élite 🥷", level: 3 };
+  if (xp >= 150) return { title: "Bushi (Guerrier) 🥋", level: 2 };
+  return { title: "Disciple (Ronin) 🌸", level: 1 };
+}
+
+function saveStats() {
+  localStorage.setItem('nihongoStats', JSON.stringify(userStats));
+}
+
+function updateStat(isCorrect, isMastered = false, levelTarget = 'N5') {
+  userStats.answersTotal++;
+if (isCorrect) AudioEngine.correct();
+  else AudioEngine.wrong();
+  
+  // Calcul des gains d'XP
+  let xpGained = isCorrect ? 10 : 2;
+  userStats.xp += xpGained;
+  
+  // Si l'exercice était de niveau N5, on incrémente le compteur requis pour le N4
+  if (levelTarget === 'N5') {
+    userStats.xpN5 += xpGained;
+  }
+  
+  if(isCorrect) userStats.answersCorrect++;
+  if(isMastered) userStats.wordsMastered++;
+  
+  saveStats();
+}
+
+function toggleSamourai() {
+  document.body.classList.toggle('samourai-mode');
+  const isSamourai = document.body.classList.contains('samourai-mode');
+  localStorage.setItem('samouraiMode', isSamourai);
+  loadContent('parametres');
+}
+
+function toggleFurigana() {
+  document.body.classList.toggle('hide-furigana');
+  localStorage.setItem('hideFurigana', document.body.classList.contains('hide-furigana'));
+  loadContent('parametres');
+}
+
+function setVoiceSpeed(speed) {
+  localStorage.setItem('voiceSpeed', speed);
+  loadContent('parametres');
+}
+
+function resetProgress() {
+  if(confirm("⚠️ ATTENTION : Voulez-vous vraiment effacer toute votre progression (XP, jours consécutifs, etc.) ? Cette action est définitive.")) {
+    localStorage.removeItem('nihongoStats');
+    location.reload(); // Recharge la page à zéro
+  }
+}
+  
+/* ─── UI & AUDIO ───────────────────────────────────────────── */
+const AudioEngine = {
+  ctx: null,
+  init() {
+    if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // 👈 LE FIX EST LÀ : On force le réveil du contexte audio bloqué par le navigateur
+    if(this.ctx.state === 'suspended') this.ctx.resume(); 
+  },
+  playTone(freq, type, duration) {
+    try {
+      this.init();
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, this.ctx.currentTime); // Volume doux
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch(e) {}
+  },
+  correct() { this.playTone(800, 'sine', 0.3); }, // Ding clair
+  wrong() { this.playTone(200, 'sawtooth', 0.3); }, // Tud sourd
+  fanfare() { // Petite mélodie de victoire
+    try {
+      this.init();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // Accords majeurs
+      let time = this.ctx.currentTime;
+      notes.forEach((freq) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.05, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(time);
+        osc.stop(time + 0.2);
+        time += 0.12;
+      });
+    } catch(e) {}
+  }
+};
+  
+  function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.querySelector('.main-content');
+  const toggleBtn = document.getElementById('sidebar-toggle');
+  sidebar.classList.toggle('collapsed');
+  mainContent.classList.toggle('expanded');
+  if (sidebar.classList.contains('collapsed')) {
+    toggleBtn.innerText = '▶';
+    document.querySelectorAll('.submenu').forEach(menu => menu.style.display = 'none');
+    document.querySelectorAll('.chevron').forEach(icon => icon.style.transform = 'rotate(-90deg)');
+  } else { toggleBtn.innerText = '◀'; }
+}
+
+function toggleMenu(menuId) {
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar.classList.contains('collapsed')) toggleSidebar();
+  const menu = document.getElementById(menuId);
+  const chevron = document.getElementById('chevron-' + menuId);
+  if (menu.style.display === 'none') { menu.style.display = 'block'; chevron.style.transform = 'rotate(0deg)';
+  } else { menu.style.display = 'none'; chevron.style.transform = 'rotate(-90deg)'; }
+}
+
+function speak(text, lang = 'ja-JP') {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(text); 
+    u.lang = lang; 
+    // Récupère la vitesse sauvegardée (par défaut 1.0)
+    u.rate = parseFloat(localStorage.getItem('voiceSpeed')) || 1.0;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function createPetal() {
+  const container = document.getElementById('petals');
+  if(!container) return;
+  const p = document.createElement('div'); p.classList.add('petal');
+  p.style.left = Math.random() * 100 + 'vw'; p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+  const size = (Math.random() * 10 + 8) + 'px'; p.style.width = size; p.style.height = size;
+  container.appendChild(p); setTimeout(() => { p.remove(); }, 9000);
+}
+setInterval(createPetal, 300);
+
+/* ─── RENDERING DE TABLEAUX ET MODALES ───────────────────────── */
+function generateKanaGrid(dataArray) {
+  let html = `<div class="kana-grid">`;
+  dataArray.forEach(c => {
+    if(c.e) html += `<div class="kana-cell empty"></div>`;
+    else html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
+  }); return html + `</div>`;
+}
+
+function generateYoonGrid(dataArray) {
+  let html = `<div class="yoon-grid">`;
+  dataArray.forEach(c => { html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`; });
+  return html + `</div>`;
+}
+  function generateKanjiGrid(dataArray) {
+  let html = `<div class="kanji-grid">`;
+  if(!dataArray) return `<p>Données non chargées.</p>`;
+  dataArray.forEach(k => {
+    // 👈 NOUVEAU : Au clic, on ouvre la modale au lieu de juste lire le son
+    html += `<div class="kanji-tile" onclick="openKanjiModal('${k.j}')">
+               <span class="kt-char">${k.j}</span>
+               <div class="kt-readings">
+                 <span class="kt-on">${k.on}</span>
+                 <span class="kt-kun">${k.kun}</span>
+               </div>
+               <span class="kt-fr">${k.f}</span>
+             </div>`;
+  }); 
+  return html + `</div>`;
+}
+
+function openKanjiModal(kanjiChar) {
+  // 1. Chercher le kanji dans toutes les listes de la DB
+  let foundKanji = null;
+  for (let level in window.DB_KANJI) {
+    foundKanji = window.DB_KANJI[level].find(k => k.j === kanjiChar);
+    if (foundKanji) break;
+  }
+  if(!foundKanji) return;
+
+  // 2. Jouer le son de base
+  speak(kanjiChar);
+
+  const modalBox = document.getElementById('kanji-modal-box');
+  
+  // 3. Construire la liste de vocabulaire
+  let wordsHtml = '';
+  if(foundKanji.words && foundKanji.words.length > 0) {
+    foundKanji.words.forEach(w => {
+      const safeWord = w.jp.replace(/'/g, "\\'");
+      wordsHtml += `
+        <div class="modal-word-item" onclick="speak('${safeWord}')">
+          <div class="mw-jp"><span class="mw-kana">${w.kana}</span>${w.jp}</div>
+          <div class="mw-fr">${w.fr}</div>
+        </div>`;
+    });
+  } else {
+    wordsHtml = '<p style="font-size:14px; color:#888; text-align:center;">Aucun vocabulaire associé.</p>';
+  }
+
+  // 4. Injecter les données et l'histoire
+  modalBox.innerHTML = `
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeKanjiModal(event, true)">✕</button>
+      <span class="modal-k-char">${foundKanji.j}</span>
+      <span class="modal-k-meaning">${foundKanji.f}</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-readings modal-section">
+        <div class="modal-read-badge"><span>ON (Chinois)</span><strong>${foundKanji.on || '-'}</strong></div>
+        <div class="modal-read-badge"><span>KUN (Japonais)</span><strong>${foundKanji.kun || '-'}</strong></div>
+      </div>
+      
+      <div class="modal-section">
+        <h5><span style="font-size:18px;">🔑</span> Radical & Étymologie</h5>
+        <div style="font-size: 14px; font-weight: bold; color: var(--aka); margin-bottom: 8px;">Clé : ${foundKanji.rad || 'Inconnue'}</div>
+        <div class="modal-story">${foundKanji.story || 'Aucune histoire disponible pour ce kanji.'}</div>
+      </div>
+      
+      <div class="modal-section">
+        <h5><span style="font-size:18px;">📚</span> Vocabulaire Dérivé (Jukugo)</h5>
+        <div class="modal-words">
+          ${wordsHtml}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 5. Afficher la modale avec animation
+  document.getElementById('kanji-modal-overlay').classList.add('active');
+}
+
+function closeKanjiModal(e, force = false) {
+  // Ferme la modale si on clique sur la croix ou à l'extérieur de la boîte
+  if (force || e.target.id === 'kanji-modal-overlay') {
+    document.getElementById('kanji-modal-overlay').classList.remove('active');
+  }
+}
+
+/* ─── MOTEUR DE GESTION DES ONGLETS ────────────────────────── */
+function loadContent(id) {
+  const contentDiv = document.getElementById('content');
+  contentDiv.style.animation = 'none';
+  void contentDiv.offsetWidth; // Déclenche un reflow
+  contentDiv.style.animation = 'fadeInContent 0.3s ease-in-out';
+  const titleHeader = document.getElementById('page-title');
+  if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  
+  document.querySelectorAll('.sub-item, .nav-item').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = Array.from(document.querySelectorAll('.sub-item, .nav-item')).find(btn => btn.getAttribute('onclick')?.includes(`'${id}'`));
+  if(activeBtn) activeBtn.classList.add('active');
+
+  // --- NIVEAU JLPT N5 ---
+  if(id === 'cours-01') {
+    titleHeader.innerText = "Cours 01 : Hiragana Complet";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. L'Alphabet Phonétique Natif</h3>
+        <p>Les hiragana sont la base absolue du japonais. Ils vous permettent de lire sans rōmaji et d'accéder aux <em>furigana</em>. Chaque caractère = 1 consonne + 1 voyelle, sauf <strong>ん (n)</strong>.</p>
+        <h3>2. Sons modifiés et combinés</h3>
+        <ul>
+          <li><strong>Sons voicés :</strong> L'ajout de <em>dakuten</em> (") ou <em>handakuten</em> (°) modifie le son d'une syllabe.</li>
+          <li><strong>Yōon :</strong> Les petites syllabes <em>ya, yu, yo</em> fusionnent avec le son précédent.</li>
+        </ul>
+        <div class="alert-box"><strong>À savoir :</strong> Le petit tsu (っ) double la consonne suivante. Les particules は se prononce "wa", et を se prononce "o".</div>
+      </div>
+      <div class="kana-section"><h4>Gojūon (Base - Cliquez pour écouter)</h4>${generateKanaGrid(HIRAGANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten (Sons voicés)</h4>${generateKanaGrid(HIRAGANA_DAKUTEN)}</div>
+      <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(HIRAGANA_YOON)}</div>`;
+  } 
+  else if(id === 'cours-02') {
+    titleHeader.innerText = "Cours 02 : Katakana Complet";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les mots étrangers (Gairaigo)</h3>
+        <p>Le katakana est utilisé pour écrire les mots empruntés aux langues étrangères et les onomatopées.</p>
+        <h3>2. Pièges et Astuces</h3>
+        <ul>
+          <li><strong>Tiret d'allongement (ー) :</strong> Il allonge la voyelle précédente (ex: コーヒー - kō-hī).</li>
+          <li><strong>Différences visuelles :</strong> Attention aux paires qui se ressemblent beaucoup ! ツ (tsu) s'écrit de haut en bas, tandis que シ (shi) s'écrit de gauche à droite.</li>
+        </ul>
+      </div>
+      <div class="kana-section"><h4>Gojūon (Base)</h4>${generateKanaGrid(KATAKANA_BASE)}</div>
+      <div class="kana-section"><h4>Dakuten & Handakuten</h4>${generateKanaGrid(KATAKANA_DAKUTEN)}</div>
+      <div class="kana-section"><h4>Yōon (Sons combinés)</h4>${generateYoonGrid(KATAKANA_YOON)}</div>`;
+  }
+  else if(id === 'cours-03') {
+    titleHeader.innerText = "Cours 03 : Structure SOV & La Copule";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le Verbe à la fin (Règle d'or)</h3>
+        <p>En japonais, la structure est <strong>Sujet - Objet - Verbe (SOV)</strong>. Le verbe est TOUJOURS placé à la toute fin de la phrase.</p>
+        
+        <h3>2. La Copule です (Le verbe "Être")</h3>
+        <p>Pour dire "A est B", on utilise "A wa B desu". <strong>です (desu)</strong> se place à la fin et se conjugue pour exprimer le temps et la négation :</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Forme polie</th><th>Exemple (C'est un chat)</th></tr>
+          <tr><td>Présent affirmatif</td><td><strong>〜です</strong> (desu)</td><td>猫です (neko desu)</td></tr>
+          <tr><td>Présent négatif</td><td><strong>〜じゃありません</strong> (ja arimasen)</td><td>猫じゃありません (neko ja arimasen)</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>〜でした</strong> (deshita)</td><td>猫でした (neko deshita)</td></tr>
+          <tr><td>Passé négatif</td><td><strong>〜じゃありませんでした</strong> (ja arimasen deshita)</td><td>猫じゃありませんでした (neko ja arimasen deshita)</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-04') {
+    titleHeader.innerText = "Cours 04 : Les Particules Complètes (N5)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le rôle des particules</h3>
+        <p>Les particules sont de petits mots invariables placés <strong>après</strong> un nom ou pronom. Elles définissent le rôle grammatical du mot précédent.</p>
+        <table class="course-table">
+          <tr><th>Particule</th><th>Rôle principal</th><th>Exemple</th></tr>
+          <tr><td><strong>は (wa)</strong></td><td>Thème (Ce dont on parle).</td><td>私<strong>は</strong>学生です (Je suis étudiant).</td></tr>
+          <tr><td><strong>が (ga)</strong></td><td>Sujet nouveau / Emphase.</td><td>猫<strong>が</strong>います (Il y a un chat).</td></tr>
+          <tr><td><strong>を (o)</strong></td><td>Complément d'Objet Direct.</td><td>すし<strong>を</strong>食べます (Je mange des sushis).</td></tr>
+          <tr><td><strong>に (ni)</strong></td><td>Destination géographique, Moment précis.</td><td>東京<strong>に</strong>行きます (Je vais à Tokyo).</td></tr>
+          <tr><td><strong>で (de)</strong></td><td>Lieu d'action, Moyen, Instrument.</td><td>電車<strong>で</strong>行きます (J'y vais en train).</td></tr>
+          <tr><td><strong>と (to)</strong></td><td>"Et" (liste exhaustive), "Avec" (une personne).</td><td>友達<strong>と</strong>行きます (J'y vais avec un ami).</td></tr>
+          <tr><td><strong>も (mo)</strong></td><td>"Aussi".</td><td>私<strong>も</strong>学生です (Moi aussi je suis étudiant).</td></tr>
+          <tr><td><strong>から / まで</strong></td><td>"Depuis" / "Jusqu'à" (Temps ou Espace).</td><td>9時<strong>から</strong>5時<strong>まで</strong> (De 9h à 5h).</td></tr>
+          <tr><td><strong>へ (e)</strong></td><td>Direction (Trajet).</td><td>日本<strong>へ</strong>行きます (Je pars vers le Japon).</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-05') {
+    titleHeader.innerText = "Cours 05 : Verbes, Désirs et Invitations";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La politesse universelle (Forme MASU)</h3>
+        <p>La forme <strong>ます (masu)</strong> est la forme standard polie. Elle ne change JAMAIS selon la personne.</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Terminaison</th><th>Exemple (Manger)</th></tr>
+          <tr><td>Présent affirmatif</td><td><strong>〜ます</strong></td><td>食べます (tabemasu)</td></tr>
+          <tr><td>Présent négatif</td><td><strong>〜ません</strong></td><td>食べません (tabemasen)</td></tr>
+          <tr><td>Passé affirmatif</td><td><strong>〜ました</strong></td><td>食べました (tabemashita)</td></tr>
+          <tr><td>Passé négatif</td><td><strong>〜ませんでした</strong></td><td>食べませんでした (tabemasen deshita)</td></tr>
+        </table>
+
+        <h3>2. Exprimer un désir (Je veux...)</h3>
+        <p>Pour dire "Je veux faire quelque chose", on enlève "masu" et on le remplace par <strong>たいです (tai desu)</strong>. Le verbe se conjugue ensuite exactement comme un adjectif en "i" !</p>
+        <div class="example-box">
+          <p>食べる (Manger) ➔ 食べ<strong>たいです</strong> (Je veux manger).</p>
+          <p>飲む (Boire) ➔ 飲み<strong>たくないです</strong> (Je ne veux pas boire).</p>
+        </div>
+
+        <h3>3. Faire une proposition ou inviter</h3>
+        <ul>
+          <li><strong>〜ましょう (mashō) :</strong> Signifie "Faisons / Allons-y". (Ex: 行きましょう - Allons-y !).</li>
+          <li><strong>〜ませんか (masen ka) :</strong> Signifie "Voulez-vous...? / Ça te dit de...?". (Ex: お茶を慢みませんか - Voulez-vous boire un thé ?).</li>
+        </ul>
+      </div>`;
+  }
+  else if(id === 'cours-05-1') {
+    titleHeader.innerText = "Cours 5.1 : Les Adjectifs (い et な)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les Adjectifs en い (i)</h3>
+        <p>Ils se terminent toujours par la syllabe い (i). Ils portent en eux-mêmes la notion de temps et de négation, c'est donc l'adjectif lui-même qui se conjugue !</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 高い (takai - grand/cher)</th></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>高いです (takai desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Remplacer le い par <strong>くないです (kunai desu)</strong></td><td>高<strong>くないです</strong> (taka<strong>kunai desu</strong>)</td></tr>
+          <tr><td>Passé affirmatif</td><td>Remplacer le い par <strong>かったです (katta desu)</strong></td><td>高<strong>かったです</strong> (taka<strong>katta desu</strong>)</td></tr>
+        </table>
+
+        <h3>2. Les Adjectifs en な (na)</h3>
+        <p>Ils fonctionnent comme des noms. Ils ne se conjuguent pas ; c'est le verbe "être" (desu) qui fait tout le travail. On utilise la particule "na" uniquement pour les relier à un nom.</p>
+        <table class="course-table">
+          <tr><th>Temps</th><th>Règle (Forme polie)</th><th>Exemple : 静か (shizuka - calme)</th></tr>
+          <tr><td>Modification d'un nom</td><td>Ajouter な (na) + Nom</td><td>静か<strong>な</strong>部屋 (shizuka <strong>na</strong> heya)</td></tr>
+          <tr><td>Présent affirmatif</td><td>Adjectif + です (desu)</td><td>静かです (shizuka desu)</td></tr>
+          <tr><td>Présent négatif</td><td>Adjectif + じゃありません (ja arimasen)</td><td>静か<strong>じゃありません</strong> (shizuka <strong>ja arimasen</strong>)</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-05-2') {
+    titleHeader.innerText = "Cours 5.2 : Existence et Possession";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Distinguer l'animé de l'inanimé</h3>
+        <ul>
+          <li><strong>あります (Arimasu) :</strong> Utilisé pour les objets inanimés et les plantes (livre, voiture, arbre, idée).</li>
+          <li><strong>います (Imasu) :</strong> Utilisé pour les êtres vivants doués de mouvement (humains, animaux).</li>
+        </ul>
+        
+        <h3>2. Structure grammaticale de l'existence</h3>
+        <div class="example-box">
+          <p><strong>[Lieu] に [Sujet] が あります/います。</strong></p>
+          <p>部屋<strong>に</strong>机<strong>が</strong>あります。(Heya ni tsukue ga arimasu) ➔ Il y a un bureau dans la chambre.</p>
+          <p>庭<strong>に</strong>犬<strong>が</strong>います。(Niwa ni inu ga imasu) ➔ Il y a un chien dans le jardin.</p>
+        </div>
+
+        <h3>3. Exprimer la possession</h3>
+        <div class="example-box">
+          <p>私<strong>は</strong>車<strong>が</strong>あります。(Watashi wa kuruma ga arimasu) ➔ J'ai une voiture.</p>
+          <p>私<strong>は</strong>兄弟<strong>が</strong>います。(Watashi wa kyōdai ga imasu) ➔ J'ai des frères et sœurs.</p>
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-05-3') {
+    titleHeader.innerText = "Cours 5.3 : Mots interrogatifs et Compteurs";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les mots interrogatifs essentiels (N5)</h3>
+        <p>En japonais, l'ordre des mots ne change pas quand on pose une question.</p>
+        <div class="vocab-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="vocab-card"><span class="vocab-jp">何</span><span class="vocab-fr">Nani / Nan (Quoi)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">誰</span><span class="vocab-fr">Dare (Qui)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">どこ</span><span class="vocab-fr">Doko (Où)</span></div>
+          <div class="vocab-card"><span class="vocab-jp">いつ</span><span class="vocab-fr">Itsu (Quand)</span></div>
+        </div>
+
+        <h3>2. Le cauchemar des compteurs</h3>
+        <table class="course-table">
+          <tr><th>Compteur</th><th>Utilisation</th><th>Exemple</th></tr>
+          <tr><td><strong>〜つ (tsu)</strong></td><td>Objets génériques (1: hitotsu, 2: futatsu...)</td><td>りんごを二<strong>つ</strong>買います。</td></tr>
+          <tr><td><strong>〜人 (nin)</strong></td><td>Pour les personnes (1: hitori, 2: futari)</td><td>学生 que 三<strong>人</strong>います。</td></tr>
+          <tr><td><strong>〜枚 (mai)</strong></td><td>Objets plats et fins (feuilles, billets)</td><td>紙を五<strong>枚</strong>ください。</td></tr>
+          <tr><td><strong>〜本 (hon)</strong></td><td>Objets longs (bouteilles, stylos)</td><td>ペンが四<strong>本</strong>あります。</td></tr>
+          <tr><td><strong>〜匹 (hiki)</strong></td><td>Petits animaux (chiens, chats, poissons)</td><td>猫が二<strong>匹</strong>います。</td></tr>
+        </table>
+      </div>`;
+  }  
+  else if(id === 'cours-05-4') {
+    titleHeader.innerText = "Cours 5.4 : Vocabulaire Essentiel N5";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le bagage lexical du N5</h3>
+        <p>Cliquez sur les cartes pour écouter la prononciation native !</p>
+      </div>
+      <div class="kana-section">
+        <h4>🕒 Le Temps et les Moments</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('今日')"><span class="vocab-jp">今日</span><span class="vocab-fr">kyō (Aujourd'hui)</span></div>
+          <div class="vocab-card" onclick="speak('明日')"><span class="vocab-jp">明日</span><span class="vocab-fr">ashita (Demain)</span></div>
+          <div class="vocab-card" onclick="speak('昨日')"><span class="vocab-jp">昨日</span><span class="vocab-fr">kinō (Hier)</span></div>
+          <div class="vocab-card" onclick="speak('毎日')"><span class="vocab-jp">毎日</span><span class="vocab-fr">mainichi (Tous les jours)</span></div>
+        </div>
+      </div>
+      <div class="kana-section">
+        <h4>👤 Personnes et Relations</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('私')"><span class="vocab-jp">私</span><span class="vocab-fr">watashi (Moi, Je)</span></div>
+          <div class="vocab-card" onclick="speak('あなた')"><span class="vocab-jp">あなた</span><span class="vocab-fr">anata (Toi, Vous)</span></div>
+          <div class="vocab-card" onclick="speak('友達')"><span class="vocab-jp">友達</span><span class="vocab-fr">tomodachi (Ami)</span></div>
+          <div class="vocab-card" onclick="speak('家族')"><span class="vocab-jp">家族</span><span class="vocab-fr">kazoku (Famille)</span></div>
+        </div>
+      </div>
+      <div class="kana-section">
+        <h4>💬 Salutations (Aisatsu)</h4>
+        <div class="vocab-grid">
+          <div class="vocab-card" onclick="speak('おはようございます')"><span class="vocab-jp" style="font-size:18px;">おはようございます</span><span class="vocab-fr">ohayō gozaimasu (Bonjour - Matin)</span></div>
+          <div class="vocab-card" onclick="speak('こんにちは')"><span class="vocab-jp" style="font-size:18px;">こんにちは</span><span class="vocab-fr">konnichiwa (Bonjour - Journée)</span></div>
+          <div class="vocab-card" onclick="speak('ありがとうございます')"><span class="vocab-jp" style="font-size:18px;">ありがとうございます</span><span class="vocab-fr">arigatō gozaimasu (Merci)</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-06') {
+    titleHeader.innerText = "Cours 06 : Kanjis du niveau N5";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les Idéogrammes empruntés</h3>
+        <p>Les Kanjis viennent de Chine et possèdent généralement deux types de lecture :</p>
+        <ul>
+          <li><strong>ON (Onyomi) :</strong> Lecture d'origine chinoise, utilisée dans les mots composés.</li>
+          <li><strong>KUN (Kunyomi) :</strong> Lecture japonaise, utilisée seule ou avec okurigana.</li>
+        </ul>
+        <p><strong>Méthode RTK :</strong> Associez chaque kanji à une histoire visuelle. (Ex: 明 = Soleil + Lune = Brillant).</p>
+      </div>
+      <div class="kana-section"><h4>La liste intégrale JLPT N5 (100+ Kanjis)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N5 : null)}</div>`;
+  }
+
+  // --- NIVEAU JLPT N4 ---
+  else if(id === 'cours-07') {
+    titleHeader.innerText = "Cours 07 : Kanjis du niveau N4";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Niveau Intermédiaire - JLPT N4</h3>
+        <p>Les Kanjis de ce niveau introduisent des concepts plus abstraits liés à la société (社), au travail (業), aux actions complexes et à la nature.</p>
+        <p>L'architecture de ces Kanjis est souvent basée sur des "clés" (radicaux) que vous avez déjà apprises au niveau N5.</p>
+      </div>
+      <div class="kana-section"><h4>La liste intégrale JLPT N4 (160+ Kanjis Essentiels)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N4 : null)}</div>`;
+  }
+  else if(id === 'cours-08') {
+    titleHeader.innerText = "Cours 08 : Le Potentiel et le Volitif";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La forme Potentielle (Pouvoir faire)</h3>
+        <p>En japonais, "pouvoir faire" ne s'exprime pas avec un verbe auxiliaire comme en français, mais en modifiant le verbe lui-même. <strong>Attention : la particule を (o) devient souvent が (ga).</strong></p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'E' + る (ru)</strong></td><td>飲む (nomu) ➔ 飲める (nomeru - je peux boire)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>られる (rareru)</strong></td><td>食べる (taberu) ➔ 食べられる (taberareru - je peux manger)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>できる</strong> (dekiru)<br>くる ➔ <strong>こられる</strong> (korareru)</td><td>日本語が<strong>できる</strong> (Je peux parler japonais).</td></tr>
+        </table>
+
+        <h3>2. La forme Volitive (L'intention / Faisons !)</h3>
+        <p>C'est la forme familière de <em>~mashō</em>. Elle sert à proposer de faire quelque chose ("Allons-y !") ou à exprimer une forte intention (souvent suivie de と思っています - <em>to omotte imasu</em>).</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Changer la dernière voyelle 'U' en <strong>'O' + う (u)</strong></td><td>行く (iku) ➔ 行こう (ikō - Allons-y !)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Remplacer 'RU' par <strong>よう (yō)</strong></td><td>食べる (taberu) ➔ 食べよう (tabeyō - Mangeons !)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ <strong>しよう</strong> (shiyō)<br>くる ➔ <strong>こよう</strong> (koyō)</td><td>日本に行こうと思っています (J'ai l'intention d'aller au Japon).</td></tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-09') {
+    titleHeader.innerText = "Cours 09 : Les 4 Conditionnels (Si / Quand)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le cauchemar des conditionnels</h3>
+        <p>Le français utilise "Si" pour presque tout. Le japonais possède 4 formes distinctes selon la logique de la condition.</p>
+        
+        <table class="course-table">
+          <tr><th>Forme</th><th>Contexte d'utilisation</th><th>Exemple</th></tr>
+          <tr>
+            <td><strong>と (to)</strong></td>
+            <td><strong>La conséquence inévitable.</strong> Quand A se produit, B se produit toujours.</td>
+            <td>ボタンを押す<strong>と</strong>、水が出ます。<br><em>(Si on appuie, l'eau sort).</em></td>
+          </tr>
+          <tr>
+            <td><strong>ば (ba)</strong></td>
+            <td><strong>La condition logique.</strong> "À condition que...". Se concentre sur la nécessité de l'action.</td>
+            <td>安けれ<strong>ば</strong>、買います。<br><em>(Si c'est pas cher, j'achèterai).</em></td>
+          </tr>
+          <tr>
+            <td><strong>たら (tara)</strong></td>
+            <td><strong>La condition chronologique / Une fois que.</strong> C'est le plus courant à l'oral. B se fait une fois A terminé.</td>
+            <td>日本に行っ<strong>たら</strong>、寿司を食べます。<br><em>(Quand / Si je vais au Japon, je mangerai des sushis).</em></td>
+          </tr>
+          <tr>
+            <td><strong>なら (nara)</strong></td>
+            <td><strong>La condition contextuelle.</strong> Réagit à ce que l'autre vient de dire ("Dans ce cas...").</td>
+            <td>東京に行く<strong>なら</strong>、新幹線がいいです。<br><em>(Si tu vas à Tokyo, le Shinkansen est le mieux).</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-10') {
+    titleHeader.innerText = "Cours 10 : Suppositions et Apparences";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Exprimer ce que l'on perçoit</h3>
+        <p>En N4, on apprend à nuancer son discours en exprimant des impressions, des on-dit ou des apparences.</p>
+        
+        <table class="course-table">
+          <tr><th>Expression</th><th>Construction</th><th>Sens et Exemple</th></tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Visuel</em></td>
+            <td>Base du verbe / Racine Adj <strong>+ そう</strong></td>
+            <td><strong>"Ça a l'air / Il semble sur le point de..."</strong> (Basé sur ce qu'on voit à l'instant T).<br>雨が降り<strong>そうです</strong>。(Il a l'air de vouloir pleuvoir).</td>
+          </tr>
+          <tr>
+            <td><strong>〜そうです (sō desu)</strong><br><em>Ouï-dire</em></td>
+            <td>Verbe forme neutre <strong>+ そう</strong></td>
+            <td><strong>"J'ai entendu dire que..."</strong> (Basé sur une information externe).<br>明日、雨が降る<strong>そうです</strong>。(J'ai entendu dire qu'il pleuvrait demain).</td>
+          </tr>
+          <tr>
+            <td><strong>〜みたいです (mitai desu)</strong><br><em>Sensorial</em></td>
+            <td>Nom / Verbe neutre <strong>+ みたい</strong></td>
+            <td><strong>"On dirait / C'est comme..."</strong> (Basé sur tous les sens ou l'intuition).<br>彼は日本人<strong>みたいです</strong>。(On dirait un Japonais).</td>
+          </tr>
+          <tr>
+            <td><strong>〜らしいです (rashii desu)</strong><br><em>Typique</em></td>
+            <td>Nom <strong>+ らしい</strong></td>
+            <td><strong>"C'est typique de / Digne de..."</strong><br>今日は春<strong>らしい</strong>天気です。(Aujourd'hui, il fait un temps typiquement printanier).</td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-10-1') {
+    titleHeader.innerText = "Cours 10.1 : Donner, Recevoir et les Faveurs";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le transfert d'objets</h3>
+        <p>Contrairement au français, le japonais exige un point de vue précis selon la direction du don.</p>
+        <ul>
+          <li><strong>あげる (Ageru) :</strong> Je donne à quelqu'un (ou A donne à B). <em>Ex: 私は彼に本をあげる．</em></li>
+          <li><strong>くれる (Kureru) :</strong> Quelqu'un <strong>ME</strong> donne. L'action vient vers mon cercle intime. <em>Ex: 彼は私に本をくれる．</em></li>
+          <li><strong>もらう (Morau) :</strong> Recevoir (de la part de). <em>Ex: 私は彼に本をもらう．</em></li>
+        </ul>
+
+        <h3>2. Les faveurs (Verbe en TE + Don/Réception)</h3>
+        <p>C'est ici que réside toute la subtilité du N4. On attache ces trois verbes à la forme <strong>TE</strong> d'un autre verbe pour exprimer qu'une action est un service rendu ou reçu.</p>
+        <div class="example-box">
+          <p><strong>〜てあげる (Te ageru) :</strong> Faire une faveur à quelqu'un.<br><em>手伝ってあげる (Je vais t'aider - Attention, peut paraître prétentieux envers un supérieur).</em></p>
+          <br>
+          <p><strong>〜てくれる (Te kureru) :</strong> Quelqu'un me rend un service.<br><em>母が料理を作ってくれた (Ma mère m'a fait à manger - On insiste sur la gratitude).</em></p>
+          <br>
+          <p><strong>〜てもらう (Te morau) :</strong> Recevoir une faveur (souvent après l'avoir demandée).<br><em>先生に教えてもらった (J'ai reçu l'enseignement de mon professeur).</em></p>
+        </div>
+      </div>`;
+  }
+    
+  // --- NIVEAU JLPT N3 ---
+  // --- NIVEAU JLPT N3 ---
+  else if(id === 'cours-11') {
+    titleHeader.innerText = "Cours 11 : Kanjis du niveau N3";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Le pont vers la fluidité</h3>
+        <p>Le niveau N3 marque le début de la compréhension des textes de la vie quotidienne (journaux simples, e-mails professionnels). Les Kanjis y abordent les émotions, l'économie et la politique de base.</p>
+        <p>Cliquez sur chaque carte pour écouter la prononciation et mémoriser les lectures ON (chinoise) et KUN (japonaise).</p>
+      </div>
+      <div class="kana-section"><h4>Sélection intensive de Kanji N3</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N3 : null)}</div>`;
+  }
+  else if(id === 'cours-12') {
+    titleHeader.innerText = "Cours 12 : Passif, Causatif et Causatif-Passif";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. La forme Passive (れる / られる)</h3>
+        <p>Elle sert à exprimer qu'une action est subie par le sujet. En japonais, on l'utilise énormément pour le <strong>"passif de contrariété"</strong> : montrer qu'on a subi un désagrément.</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple (Forme Neutre / Polie)</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>れる</strong></td><td><ruby>書<rt>か</rt></ruby>く ➔ <ruby>書<rt>か</rt></ruby>かれる / <ruby>書<rt>か</rt></ruby>かれます (Être écrit)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>られる</strong></td><td><ruby>見<rt>み</rt></ruby>る ➔ <ruby>見<rt>み</rt></ruby>られる / <ruby>見<rt>み</rt></ruby>られます (Être regardé)</td></tr>
+          <tr><td>G3 (Irréguliers)</td><td>する ➔ される<br>くる ➔ こられる</td><td><ruby>雨<rt>あめ</rt></ruby>に<ruby>降<rt>ふ</rt></ruby>られる (Subir la pluie / Il a plu sur moi)</td></tr>
+        </table>
+        
+        <h3>2. La forme Causative (せる / させる)</h3>
+        <p>Elle exprime le fait de <strong>faire faire</strong> quelque chose à quelqu'un (le forcer), ou de <strong>laisser faire</strong> (autoriser).</p>
+        <table class="course-table">
+          <tr><th>Groupe</th><th>Transformation</th><th>Exemple</th></tr>
+          <tr><td>G1 (Godan)</td><td>Voyelle U ➔ A + <strong>せる</strong></td><td><ruby>話<rt>はな</rt></ruby>す ➔ <ruby>話<rt>はな</rt></ruby>させる / <ruby>話<rt>はな</rt></ruby>させます (Faire parler)</td></tr>
+          <tr><td>G2 (Ichidan)</td><td>Enlever RU + <strong>させる</strong></td><td><ruby>食<rt>た</rt></ruby>べる ➔ <ruby>食<rt>た</rt></ruby>べさせる / <ruby>食<rt>た</rt></ruby>べさせます (Faire manger)</td></tr>
+        </table>
+        <div class="example-box">
+          <strong>Exemple :</strong> <ruby>先生<rt>せんせい</rt></ruby>は<ruby>学生<rt>がくせい</rt></ruby>に<ruby>宿題<rt>しゅくだい</rt></ruby>を<strong>させました</strong>。<br>
+          <em>(Le professeur a fait faire les devoirs aux étudiants.)</em>
+        </div>
+
+        <h3>3. Le Causatif-Passif (させられる)</h3>
+        <p>Il combine les deux concepts précédents : <strong>"On m'a forcé à faire quelque chose et j'en suis mécontent"</strong>.</p>
+        <div class="example-box">
+          <p><strong>Règle :</strong> Verbe Causatif ➔ Enlever RU ➔ Ajouter RARERU.</p>
+          <p><strong>待つ</strong> (Attendre) ➔ <strong>待たせる</strong> (Faire attendre) ➔ <strong>待たせられる</strong> (Être forcé à attendre / Contracté en <strong>待たされる</strong> à l'oral).</p>
+          <p><em>Ex: <ruby>彼女<rt>かのじょ</rt></ruby>に1<ruby>時間<rt>じかん</rt></ruby>も<strong>待たされた</strong>。 (J'ai été forcé de poireauter une heure par ma copine.)</em></p>
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-13') {
+    titleHeader.innerText = "Cours 13 : Le Keigo (Le Langage Honorifique)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art de la politesse d'entreprise</h3>
+        <p>Au niveau N3, la forme standard en <em>~masu</em> ne suffit plus en entreprise. Le <strong>Keigo (敬語)</strong> permet d'ajuster son niveau de langue selon l'interlocuteur.</p>
+        
+        <table class="course-table">
+          <tr><th>Famille</th><th>Explication</th><th>Formes de "Manger / Boire"</th></tr>
+          <tr>
+            <td><strong>1. Sonkeigo (尊敬語)</strong><br><em>Respect</em></td>
+            <td>On surélève l'action de l'interlocuteur (un client, votre patron). Interdit de l'utiliser pour soi-même !</td>
+            <td><strong><ruby>召<rt>め</rt></ruby>し上がる (Meshiagaru)</strong><br><em>Ex: <ruby>社長<rt>しゃちょう</rt></ruby>が<ruby>召<rt>め</rt></ruby>し上がりました。</em></td>
+          </tr>
+          <tr>
+            <td><strong>2. Kenjōgo (謙譲語)</strong><br><em>Humilité</em></td>
+            <td>On abaisse sa propre action pour placer le client ou le patron au-dessus. S'utilise pour soi ou son équipe.</td>
+            <td><strong>いただく (Itadaku)</strong><br><em>Ex: <ruby>私<rt>わたし</rt></ruby>がいただきました。</em></td>
+          </tr>
+        </table>
+        
+        <div class="alert-box">
+          <strong>Les 3 couples de verbes irréguliers indispensables du N3 :</strong><br><br>
+          • <strong>Aller / Venir :</strong> いらっしゃる (Respect) / <ruby>参<rt>まい</rt></ruby>る (Humilité)<br>
+          • <strong>Dire :</strong> おっしゃる (Respect) / <ruby>申<rt>もう</rt></ruby>す (Humilité)<br>
+          • <strong>Être :</strong> ご<ruby>存知<rt>ぞんじ</rt></ruby>です (Respect) / おる (Humilité)
+        </div>
+      </div>`;
+  }
+  else if(id === 'cours-13-1') {
+    titleHeader.innerText = "Cours 13.1 : Grammaire du Temps et des Limites";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Préciser le contexte temporel</h3>
+        <p>La grammaire N3 apporte une grande finesse pour expliquer <em>quand</em> ou <em>pendant quel état</em> une action se produit.</p>
+        
+        <table class="course-table">
+          <tr><th>Formule</th><th>Sens exact</th><th>Exemple d'application</th></tr>
+          <tr>
+            <td><strong>〜うちに (uchi ni)</strong></td>
+            <td><strong>Pendant que / Avant que...</strong> (Sinon après, il sera trop tard).</td>
+            <td><ruby>明<rt>あか</rt></ruby>るい<strong>うちに</strong><ruby>帰<rt>かえ</rt></ruby>りましょう (Rentrons pendant qu'il fait jour).</td>
+          </tr>
+          <tr>
+            <td><strong>〜間に (aida ni)</strong></td>
+            <td><strong>Pendant que...</strong> (Une action courte survient au milieu d'un état long).</td>
+            <td><ruby>留守<rt>るす</rt></ruby>の<strong>間に</strong><ruby>泥棒<rt>どろぼう</rt></ruby>が<ruby>入<rt>はい</rt></ruby>った (Un voleur est entré pendant mon absence).</td>
+          </tr>
+          <tr>
+            <td><strong>〜たびに (tabi ni)</strong></td>
+            <td><strong>À chaque fois que...</strong> (Une routine automatique).</td>
+            <td>この<ruby>写真<rt>しゃしん</rt></ruby>を<ruby>見<rt>み</rt></ruby>る<strong>たびに</strong><ruby>思<rt>おも</rt></ruby>い<ruby>出<rt>だ</rt></ruby>す (À chaque fois que je vois cette photo, je me souviens).</td>
+          </tr>
+          <tr>
+            <td><strong>〜ついでに (tsuide ni)</strong></td>
+            <td><strong>En profitant de l'occasion pour...</strong></td>
+            <td><ruby>散歩<rt>さんぽ</rt></ruby>の<strong>ついでに</strong><ruby>手紙<rt>てがみ</rt></ruby>を出した (J'ai profité de ma promenade pour poster la lettre).</td>
+          </tr>
+        </table>
+      </div>`;
+  }
+  else if(id === 'cours-13-2') {
+    titleHeader.innerText = "Cours 13.2 : Décisions et Changements d'état";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Volonté personnelle vs Règles extérieures</h3>
+        <p>En japonais, l'expression du changement ou d'une décision varie drastiquement si l'action dépend de vous ou de facteurs extérieurs.</p>
+        
+        <table class="course-table">
+          <tr><th>Structure</th><th>Ce que cela implique</th><th>Exemple explicatif</th></tr>
+          <tr>
+            <td><strong>〜ことにする</strong></td>
+            <td><strong>Décider de...</strong> (C'est votre choix personnel).</td>
+            <td>タバコを<ruby>辞<rt>や</rt></ruby>める<strong>ことにした</strong> (J'ai décidé d'arrêter de fumer).</td>
+          </tr>
+          <tr>
+            <td><strong>〜ことになる</strong></td>
+            <td><strong>Il a été décidé que...</strong> (Par l'entreprise, les lois, le destin).</td>
+            <td><ruby>来月日本<rt>らいげつにほん</rt></ruby>へ<ruby>出張<rt>しゅっちょう</rt></ruby>する<strong>ことになった</strong> (Il a été décidé que j'irais en voyage d'affaires au Japon le mois prochain).</td>
+          </tr>
+          <tr>
+            <td><strong>〜ようにする</strong></td>
+            <td><strong>Faire en sorte de...</strong> (Faire un effort régulier).</td>
+            <td><ruby>毎日運動<rt>まいにちうんどう</rt></ruby>する<strong>ようにしている</strong> (Je fais en sorte de faire du sport tous les jours).</td>
+          </tr>
+          <tr>
+            <td><strong>〜ようになる</strong></td>
+            <td><strong>En venir à... / Devenir capable de...</strong></td>
+            <td><ruby>日本語<rt>にほんご</rt></ruby>が<ruby>話<rt>はな</rt></ruby>せる<strong>ようになりました</strong> (Je suis maintenant capable de parler japonais).</td>
+          </tr>
+        </table>
+      </div>`;
+  }
+
+  // --- NIVEAU JLPT N2 ---
+  else if(id === 'cours-14') {
+    titleHeader.innerText = "Cours 14 : Kanjis du niveau N2";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Comprendre la presse et les médias</h3>
+        <p>Le niveau JLPT N2 exige la connaissance d'environ 1000 Kanjis au total. C'est le palier indispensable pour travailler dans une entreprise japonaise ou lire des articles de société de manière fluide.</p>
+        <p>Les Kanjis de cette sélection abordent des concepts intellectuels, la gestion, la justice et l'économie.</p>
+      </div>
+      <div class="kana-section"><h4>La sélection JLPT N2 (100 Kanjis clés)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N2 : null)}</div>`;
+  }
+  else if(id === 'cours-15') {
+    titleHeader.innerText = "Cours 15 : Grammaire N2 (Rigidité et Nuances)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Le japonais formel (堅い表現 - Katai hyōgen)</h3>
+        <p>Le N2 introduit de nombreuses tournures rigides utilisées dans les documents officiels, les e-mails professionnels ou lors des discours protocolaires.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Sens exact</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜に<ruby>際<rt>さい</rt></ruby>して (ni saishite)</strong></td>
+            <td><strong>À l'occasion de... / Au moment de...</strong> (Style écrit très formel).</td>
+            <td>お<ruby>申込<rt>もうしこみ</rt></ruby>に<strong>際して</strong>は、<ruby>写真<rt>しゃしん</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。<br><em>(À l'occasion de votre inscription, une photo est requise.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜にわたって (ni watatte)</strong></td>
+            <td><strong>Sur l'ensemble de... / Tout au long de...</strong> (Étendue de temps ou d'espace).</td>
+            <td><ruby>会議<rt>かいぎ</rt></ruby>は3<ruby>日間<rt>にちかん</rt></ruby><strong>にわたって</strong><ruby>行<rt>おこな</rt></ruby>われた。<br><em>(La réunion s'est déroulée sur une durée de trois jours.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜つつある (tsutsu aru)</strong></td>
+            <td><strong>Être en cours de...</strong> (Un processus de changement continu).</td>
+            <td><ruby>日本<rt>にほん</rt></ruby>の<ruby>景気<rt>けいき</rt></ruby>は<ruby>回復<rt>かいふく</rt></ruby>し<strong>つつある</strong>。<br><em>(L'économie japonaise est en train de se redresser.)</em></td>
+          </tr>
+        </table>
+
+        <h3>2. L'impossibilité ou l'obligation nuancée</h3>
+        <p>En clientèle ou dans le cadre professionnel, refuser catégoriquement avec <em>~dekinai</em> est impoli. Le N2 apporte de la subtilité.</p>
+        <table class="course-table">
+          <tr><th>Expression N2</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜かねる (kaneru)</strong></td>
+            <td><strong>Ne pas pouvoir se résoudre à...</strong> (La morale, le protocole ou la position l'interdit). Refus poli idéal.</td>
+            <td>そのご<ruby>意見<rt>いけん</rt></ruby>には<ruby>賛成<rt>さんせい</rt></ruby><strong>しかねます</strong>。<br><em>(Je ne peux me résoudre à approuver cette opinion.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ざるを得ない (zaru o enai)</strong></td>
+            <td><strong>Être obligé de... / N'avoir d'autre choix que...</strong> (Malgré soi, dicté par la situation).</td>
+            <td><ruby>台風<rt>たいふう</rt></ruby>のため、<ruby>予定<rt>よてい</rt></ruby>を<ruby>変更<rt>へんこう</rt></ruby><strong>せざるを得ない</strong>。<br><em>(À cause du typhon, nous sommes obligés de modifier le programme.)</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+
+  // --- NIVEAU JLPT N1 ---
+  else if(id === 'cours-16') {
+    titleHeader.innerText = "Cours 16 : Kanjis du niveau N1";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'ultime étape : Littérature et Spécialisation</h3>
+        <p>Le niveau JLPT N1 couvre l'intégralité des ~2136 Kanjis d'usage courant (常用漢字 - Jōyō Kanji). Ce sont les idéogrammes que l'on retrouve dans la haute littérature, les textes de loi, les éditoriaux politiques et les publications académiques.</p>
+        <p>Ils expriment souvent des concepts philosophiques abstraits ou des mouvements d'une extrême précision.</p>
+      </div>
+      <div class="kana-section"><h4>Sélection d'élite (Kanji N1)</h4>${generateKanjiGrid(window.DB_KANJI ? window.DB_KANJI.N1 : null)}</div>`;
+  }
+  else if(id === 'cours-17') {
+    titleHeader.innerText = "Cours 17 : Grammaire Experte N1";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>1. Les tournures de la littérature japonaise</h3>
+        <p>La grammaire N1 est si poussée que même de nombreux Japonais natifs hésitent sur certaines nuances s'ils ne lisent pas régulièrement. Elle est archaïque, emphatique et hautement dramatique.</p>
+        
+        <h3>2. Succession immédiate et théâtrale</h3>
+        <p>Le N1 adore insister sur des actions qui se bousculent dans le temps de manière fulgurante.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜や<ruby>否<rt>いな</rt></ruby>や (ya ina ya)</strong></td>
+            <td><strong>À peine... que / Dès que...</strong> (Une succession immédiate et surprenante). S'attache au verbe neutre.</td>
+            <td><ruby>彼<rt>かれ</rt></ruby>は私の<ruby>顔<rt>かお</rt></ruby>を<ruby>見<rt>み</rt></ruby>る<strong>や否や</strong>、<ruby>逃<rt>に</rt></ruby>げ出した。<br><em>(Dès qu'il a vu mon visage, il s'est enfui.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜が<ruby>早<rt>はや</rt></ruby>いか (ga hayai ka)</strong></td>
+            <td><strong>À peine eut-il fait ceci... que cela arriva.</strong> (Action presque simultanée).</td>
+            <td>ベルが<ruby>鳴<rt>な</rt></ruby>る<strong>が早いか</strong>、<ruby>生徒<rt>せいと</rt></ruby>たちは<ruby>教室<rt>きょうしつ</rt></ruby>を<ruby>飛<rt>と</rt></ruby>び出した。<br><em>(À peine la cloche a-t-elle sonné que les élèves ont bondi hors de la classe.)</em></td>
+          </tr>
+        </table>
+
+        <h3>3. L'emphase et la cause absolue</h3>
+        <p>Pour mettre en lumière le caractère exceptionnel, paradoxal ou extrême d'une situation.</p>
+        <table class="course-table">
+          <tr><th>Expression N1</th><th>Nuance et Contexte</th><th>Exemple d'utilisation</th></tr>
+          <tr>
+            <td><strong>〜だに (dani)</strong></td>
+            <td><strong>Rien que de... / Même seulement...</strong> (S'utilise avec imaginer, penser, entendre).</td>
+            <td>そんなことが<ruby>起<rt>お</rt></ruby>きるなんて、<ruby>想像<rt>そうぞう</rt></ruby>する<strong>だに</strong>おそろしい。<br><em>(Rien que d'imaginer qu'une telle chose puisse arriver, c'est terrifiant.)</em></td>
+          </tr>
+          <tr>
+            <td><strong>〜ばこそ (ba koso)</strong></td>
+            <td><strong>C'est précisément parce que...</strong> (Met en valeur la cause unique et paradoxale). Forme conditionnelle + こそ.</td>
+            <td><ruby>愛<rt>あい</rt></ruby>していれば<strong>こそ</strong>、<ruby>厳<rt>きび</rt></ruby>しく<ruby>叱<rt>しか</rt></ruby>るのです。<br><em>(C'est précisément parce que je l'aime que je le gronde sévèrement.)</em></td>
+          </tr>
+        </table>
+      </div>`;
+  }
+
+  // --- ZONE D'ENTRAÎNEMENT & MENUS ASSOCIÉS ---
+  else if(id === 'exercices') {
+    titleHeader.innerText = "Zone d'Entraînement";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Choisissez votre exercice</h3>
+        <p>Sélectionnez un mode d'entraînement pour tester vos connaissances et gagner de l'XP.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+        <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('detective-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🕵️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Détective</span>
+            <span class="vocab-fr">L'épreuve des Radicaux</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('forgeron-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🔨</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Forgeron</span>
+            <span class="vocab-fr">Créateur de Mots Composés</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('piege-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🪤</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Piège</span>
+            <span class="vocab-fr">Test de Lecture (ON/KUN)</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
+            <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
+            <span class="vocab-fr">Algorithme de répétition espacée</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('fillblank-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📝</span>
+            <span class="vocab-jp" style="font-size: 18px;">Texte à trous</span>
+            <span class="vocab-fr">Testez vos Particules & Grammaire</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('sov-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏗️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Constructeur SOV</span>
+            <span class="vocab-fr">Maîtrisez l'ordre des mots</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('dictation-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎧</span>
+            <span class="vocab-jp" style="font-size: 18px;">Dictée Aveugle</span>
+            <span class="vocab-fr">Entraînez votre oreille</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('survival-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">⚡</span>
+            <span class="vocab-jp" style="font-size: 18px;">Mode Survie</span>
+            <span class="vocab-fr">Chrono-Challenge de vitesse</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('matchup-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🧩</span>
+            <span class="vocab-jp" style="font-size: 18px;">Jeu des Paires</span>
+            <span class="vocab-fr">Associez visuellement Kanjis et Sens</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('keyboard-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">✍️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Saisie Manuelle</span>
+            <span class="vocab-fr">Tapez vos réponses au clavier</span>
+          </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('reverse-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🔄</span>
+            <span class="vocab-jp" style="font-size: 18px;">Leçon Inversée</span>
+            <span class="vocab-fr">Du Français vers le Japonais</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'dictation-menu') {
+    titleHeader.innerText = "Dictée Aveugle";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Compréhension Orale</h3>
+        <p>L'application prononcera une phrase à voix haute. Tendez l'oreille et sélectionnez la bonne traduction.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startDictation('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Écoute Débutant</span></div>
+          <div class="vocab-card" onclick="startDictation('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Écoute Élémentaire</span></div>
+          <div class="vocab-card" onclick="startDictation('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Écoute Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startDictation('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Écoute Avancée</span></div>
+          <div class="vocab-card" onclick="startDictation('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Écoute Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'dictation-run') {
+    titleHeader.innerText = "Écoutez attentivement";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="dict-area" style="padding: 30px 20px;"></div>`;
+  }
+  else if(id === 'sov-menu') {
+    titleHeader.innerText = "Constructeur de Phrases";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Pensez à la Japonaise (Sujet-Objet-Verbe)</h3>
+        <p>Le verbe se place toujours à la fin. Reconstituez la traduction en tapant sur les blocs dans le bon ordre.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startSov('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Phrases de base</span></div>
+          <div class="vocab-card" onclick="startSov('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Phrases élémentaires</span></div>
+          <div class="vocab-card" onclick="startSov('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Phrases intermédiaires</span></div>
+          <div class="vocab-card" onclick="startSov('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Phrases avancées</span></div>
+          <div class="vocab-card" onclick="startSov('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Phrases d'élite</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'sov-run') {
+    titleHeader.innerText = "Construisez la phrase";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="sov-area" style="padding: 30px 20px;"></div>`;
+  }
+  else if(id === 'flashcards-menu') {
+    titleHeader.innerText = "Configuration du Paquet";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Que voulez-vous réviser aujourd'hui ?</h3>
+        <p>L'algorithme SRS va vous interroger. Si vous échouez, la carte reviendra rapidement. Si vous réussissez, elle sortira de la session.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startFlashcards('kana')"><span class="vocab-jp">あ / ア</span><span class="vocab-fr">Tous les Kanas</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Kanjis Débutant</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Kanjis Élémentaire</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Kanjis Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Kanjis Avancé</span></div>
+          <div class="vocab-card" onclick="startFlashcards('kanji1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Kanjis Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'flashcards-run') {
+    titleHeader.innerText = "Entraînement SRS en cours...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
+        <div id="flashcard-area" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+          <div class="fc-container" onclick="flipFlashcard()">
+            <div class="fc-card" id="fc-card-element">
+              <div class="fc-face fc-front"><span class="fc-front-text" id="fc-front-text"></span></div>
+              <div class="fc-face fc-back"><span class="fc-back-jp" id="fc-back-jp"></span><span class="fc-back-fr" id="fc-back-fr"></span></div>
+            </div>
+          </div>
+          <div class="flip-hint" id="flip-hint">Cliquez sur la carte pour la retourner</div>
+          <div class="srs-controls" id="srs-controls">
+            <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
+            <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
+            <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
+          </div>
+        </div>
+      </div>`;
+  }  
+  else if(id === 'fillblank-menu') {
+    titleHeader.innerText = "Choix du niveau (Grammaire)";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Testez vos réflexes grammaticaux</h3>
+        <p>Lisez la phrase, comprenez le contexte grâce à la traduction, et choisissez la particule ou la structure manquante.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startQuiz('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Particules de base</span></div>
+          <div class="vocab-card" onclick="startQuiz('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grammaire intermédiaire</span></div>
+          <div class="vocab-card" onclick="startQuiz('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Structures Intermédiaires</span></div>
+          <div class="vocab-card" onclick="startQuiz('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Grammaire Avancée</span></div>
+          <div class="vocab-card" onclick="startQuiz('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Structures Expertes</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'fillblank-run') {
+    titleHeader.innerText = "Complétez la phrase";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="quiz-area" style="padding: 40px 20px;"></div>`;
+  }
+  else if(id === 'survival-menu') {
+    titleHeader.innerText = "Mode Survie : Choix du Rang";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Avez-vous les réflexes d'un Samouraï ?</h3>
+        <p>Le temps file ! Répondez correctement pour regagner de précieuses secondes, mais attention, chaque erreur videra votre jauge de vie.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startSurvivalMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Vitesse Débutant</span></div>
+          <div class="vocab-card" onclick="startSurvivalMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Vitesse Élémentaire</span></div>
+          <div class="vocab-card" onclick="startSurvivalMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Vitesse Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startSurvivalMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Vitesse Avancée</span></div>
+          <div class="vocab-card" onclick="startSurvivalMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Vitesse Maître</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'survival-run') {
+    titleHeader.innerText = "CHALLENGE SURVIE EN COURS...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="survival-area" style="padding: 40px 20px; background: var(--sakura-pale);"></div>`;
+  }
+  else if(id === 'matchup-menu') {
+    titleHeader.innerText = "Jeu des Paires : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Nettoyez la grille de Kanjis</h3>
+        <p>Sélectionnez une carte en Japonais puis associez-la à sa bonne signification en Français pour faire disparaître le duo.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startMatchupMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Grille Débutant</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grille Élémentaire</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Grille Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Grille Avancée</span></div>
+          <div class="vocab-card" onclick="startMatchupMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Grille Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'matchup-run') {
+    titleHeader.innerText = "ASSOCIATION DES PAIRES...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
+        <p style="text-align: center; margin-bottom: 20px; font-weight: bold; color: var(--aka);">Associez les Kanjis à leurs définitions françaises :</p>
+        <div class="kana-grid" id="matchup-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px; margin: 0 auto; gap: 15px;"></div>
+      </div>`;
+  }
+  else if(id === 'keyboard-menu') {
+    titleHeader.innerText = "Saisie Manuelle : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'épreuve de production écrite</h3>
+        <p>Ici, pas de devinettes possibles ! Lisez la phrase à trous et utilisez le clavier virtuel pour taper vous-même la bonne particule.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startKeyboardMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Particules de base</span></div>
+          <div class="vocab-card" onclick="startKeyboardMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Grammaire intermédiaire</span></div>
+          <div class="vocab-card" onclick="startKeyboardMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Grammaire avancée</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'keyboard-run') {
+    titleHeader.innerText = "SAISIE AU CLAVIER...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
+  }
+  else if(id === 'reverse-menu') {
+    titleHeader.innerText = "Leçon Inversée : Configuration";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Production Active</h3>
+        <p>L'application vous donne un mot ou un sens en français. Retrouvez le Kanji ou le vocabulaire japonais correspondant pour forcer votre cerveau à produire de la langue.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startReverseMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Base (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Élémentaire (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Intermédiaire (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Avancé (Inversé)</span></div>
+          <div class="vocab-card" onclick="startReverseMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Expert (Inversé)</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'reverse-run') {
+    titleHeader.innerText = "TRADUCTION INVERSÉE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'detective-menu') {
+    titleHeader.innerText = "Le Détective : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art de l'observation</h3>
+        <p>Un Kanji inconnu apparaît. Observez sa structure et identifiez sa <strong>Clé principale (Radical)</strong>. Lisez bien les histoires en fin de question pour comprendre l'étymologie !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startDetectiveMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Radicaux Débutant</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Radicaux Élémentaire</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Radicaux Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Radicaux Avancé</span></div>
+          <div class="vocab-card" onclick="startDetectiveMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Radicaux Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'detective-run') {
+    titleHeader.innerText = "ANALYSE DU KANJI...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="detective-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'forgeron-menu') {
+    titleHeader.innerText = "Le Forgeron : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Forgez votre Vocabulaire (Jukugo)</h3>
+        <p>Les Kanjis s'assemblent pour créer de nouveaux sens. Lisez le mot en français, et cliquez sur les "minerais" (les Kanjis) dans le bon ordre pour forger la traduction japonaise !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startForgeronMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Mots Débutant</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Mots Élémentaire</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Mots Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Mots Avancé</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Mots Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'forgeron-run') {
+    titleHeader.innerText = "LA FORGE EST ALLUMÉE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="forgeron-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'piege-menu') {
+    titleHeader.innerText = "Le Piège : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Esquivez les pièges de prononciation</h3>
+        <p>Un mot japonais apparaît. Vous devez trouver sa bonne prononciation en Hiragana. Attention : les mauvaises réponses contiennent souvent l'autre lecture (ON ou KUN) du Kanji pour vous induire en erreur !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startPiegeMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Lectures Débutant</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Lectures Élémentaire</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Lectures Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Lectures Avancé</span></div>
+          <div class="vocab-card" onclick="startPiegeMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Lectures Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'piege-run') {
+    titleHeader.innerText = "DÉTECTION DE LA LECTURE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="piege-area" style="padding: 40px 20px;"></div>`;
+  }
+  else if(id === 'examens') {
+    titleHeader.innerText = "Simulateurs d'Examens JLPT";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Évaluez votre niveau en conditions réelles</h3>
+        <p>Ces examens blancs génèrent des questions aléatoires basées sur la base de données du niveau choisi. Un chronomètre défile, aucune triche n'est possible. Il faut 60% de bonnes réponses pour obtenir le diplôme !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr; gap: 15px;">
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N5')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N5</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Débutant (20 questions / 15 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N4')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N4</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Élémentaire (25 questions / 20 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N3')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N3</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Intermédiaire (30 questions / 25 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N2')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N2</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Avancé (35 questions / 30 min)</span>
+          </div>
+          <div class="vocab-card" style="padding: 20px; border-color: var(--aka); text-align: left;" onclick="startExam('N1')">
+            <span class="vocab-jp" style="font-size: 24px; display:inline-block; width: 60px;">N1</span>
+            <span class="vocab-fr" style="display:inline-block;">Test Expert (40 questions / 40 min)</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'exam-run') {
+    titleHeader.innerText = "ÉPREUVE EN COURS...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('examens')">Retour</button>
+      <div class="card" id="exam-area" style="padding: 40px 20px; background: var(--kinari);"></div>`;
+  }
+else if(id === 'progression') {
+    titleHeader.innerText = "Tableau de Progression & Feuille de Route";
+    const acc = userStats.answersTotal > 0 ? Math.round((userStats.answersCorrect / userStats.answersTotal) * 100) : 0;
+    
+    // Calcul du rang et de l'XP nécessaire pour le rang suivant
+    const rankInfo = getSamouraiRank(userStats.xp);
+    let nextRankXp = 150;
+    let nextRankName = "Bushi 🥋";
+    
+    if (rankInfo.level === 2) { nextRankXp = 500; nextRankName = "Samouraï d'Élite 🥷"; }
+    else if (rankInfo.level === 3) { nextRankXp = 900; nextRankName = "Taishō (Général) ⚔️"; }
+    else if (rankInfo.level === 4) { nextRankXp = 1500; nextRankName = "Shogun 🏯"; }
+    else if (rankInfo.level === 5) { nextRankXp = userStats.xp; nextRankName = "Maître Absolu ⛩️"; }
+
+    // Calcul du pourcentage de la jauge vers le prochain rang
+    const xpPercent = Math.min(100, Math.round((userStats.xp / nextRankXp) * 100));
+    
+    contentDiv.innerHTML = `
+      <div class="card" style="border-left: 5px solid var(--aka);">
+        <h3 style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 5px;">
+          <span>Voie du Guerrier : <strong>${rankInfo.title}</strong></span>
+          <span style="font-size:14px; background:var(--sakura-pale); color:var(--aka); padding:4px 10px; border-radius:20px;">${userStats.xp} XP</span>
+        </h3>
+        
+        <!-- Jauge d'évolution du titre de Samouraï -->
+        <div style="margin: 20px 0 10px;">
+          <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px;">
+            <span>✨ Progression vers le rang de <strong>${nextRankName}</strong></span>
+            <strong>${userStats.xp} / ${nextRankXp} XP</strong>
+          </div>
+          <div style="width:100%; height:12px; background:rgba(0,0,0,0.1); border-radius:6px; overflow:hidden;">
+            <div style="width:${xpPercent}%; height:100%; background:linear-gradient(90deg, var(--sakura) 0%, var(--aka) 100%); transition: width 0.5s ease;"></div>
+          </div>
+        </div>
+
+        <div class="vocab-grid" style="grid-template-columns: repeat(3, 1fr); margin-top:25px;">
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: #e8b84b; font-size: 28px;">${userStats.streak}</span>
+            <span class="vocab-fr">Jours consécutifs</span>
+          </div>
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: #1d9e75; font-size: 28px;">${acc}%</span>
+            <span class="vocab-fr">Précision Globale</span>
+          </div>
+          <div class="vocab-card">
+            <span class="vocab-jp" style="color: var(--aka); font-size: 28px;">${userStats.wordsMastered}</span>
+            <span class="vocab-fr">Cartes maîtrisées</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Chronologie d'Étude Conseillée</h3>
+        <p>Suivez cette feuille de route académique. <strong>Ne passez pas à l'étape suivante tant que la précédente n'est pas maîtrisée à 80%.</strong></p>
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="timeline-badge">1</div>
+            <div class="timeline-content">
+              <h4>Étape 1 : Les Fondations Absolues (Débutant)</h4>
+              <span class="timeline-duration">⏳ Durée : 1 à 2 semaines</span>
+              <ul>
+                <li><strong>Théorie :</strong> Étudier Cours 1 (Hiragana) et Cours 2 (Katakana).</li>
+                <li><strong>Pratique :</strong> Utiliser les <em>Flashcards SRS</em> tous les jours.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-badge">2</div>
+            <div class="timeline-content">
+              <h4>Étape 2 : Le Moteur de la Langue (JLPT N5)</h4>
+              <span class="timeline-duration">⏳ Durée : 1 à 2 mois</span>
+              <ul>
+                <li><strong>Théorie :</strong> Assimiler Cours 3 (SOV), Cours 4 (Particules) et Cours 5.</li>
+                <li><strong>Pratique :</strong> Alterner <em>Texte à trous</em> et <em>Constructeur SOV</em>. Valider l'Examen Blanc N5.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-badge">3</div>
+            <div class="timeline-content">
+              <h4>Étape 3 : L'Élémentaire (JLPT N4)</h4>
+              <span class="timeline-duration">⏳ Durée : 2 à 3 mois</span>
+              <ul>
+                <li><strong>Théorie :</strong> Cours 8 (Potentiel/Volitif), 9 (Conditionnels) et 10 (Donner/Recevoir).</li>
+                <li><strong>Pratique :</strong> Mode <em>Saisie Manuelle</em> et <em>Dictée Aveugle N4</em>.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-badge">4</div>
+            <div class="timeline-content">
+              <h4>Étape 4 : Le Seuil de Fluidité (JLPT N3)</h4>
+              <span class="timeline-duration">⏳ Durée : 3 à 6 mois</span>
+              <ul>
+                <li><strong>Théorie :</strong> Cours 12 (Passif/Causatif) et 13 (Le Keigo en entreprise).</li>
+                <li><strong>Pratique :</strong> <em>Leçon Inversée N3</em> et <em>Jeu des Paires</em> pour le vocabulaire.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-badge">5</div>
+            <div class="timeline-content">
+              <h4>Étape 5 : Le Niveau Affaires (JLPT N2)</h4>
+              <span class="timeline-duration">⏳ Durée : 6 à 9 mois</span>
+              <ul>
+                <li><strong>Théorie :</strong> Cours 14 (Kanji N2) et 15 (Grammaire rigide et formelle).</li>
+                <li><strong>Pratique :</strong> <em>Flashcards N2</em> quotidiennes et <em>Mode Survie</em> pour les réflexes.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline-step">
+            <div class="timeline-badge">6</div>
+            <div class="timeline-content">
+              <h4>Étape 6 : La Maîtrise Littéraire (JLPT N1)</h4>
+              <span class="timeline-duration">⏳ Durée : 9 à 12 mois minimum</span>
+              <ul>
+                <li><strong>Théorie :</strong> Cours 16 (Kanji N1) et 17 (Tournures expertes et archaïques).</li>
+                <li><strong>Pratique :</strong> Entraînement complet sur tous les modules en difficulté Maître.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'parametres') {
+    titleHeader.innerText = "Paramètres de l'Application";
+    const isSamourai = document.body.classList.contains('samourai-mode');
+    const isFuriganaHidden = document.body.classList.contains('hide-furigana');
+    const currentSpeed = parseFloat(localStorage.getItem('voiceSpeed')) || 1.0;
+
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Préférences d'affichage</h3>
+        <ul style="list-style: none; margin-left: 0;">
+          <li style="padding: 15px 0; border-bottom: 1px solid rgba(188,0,45,.1); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleSamourai()">
+            <span><strong>Mode Samouraï (Sombre)</strong><br><span style="font-size: 13px; color: #666;">Protège vos yeux lors des révisions nocturnes.</span></span>
+            <span style="color: ${isSamourai ? 'var(--aka)' : '#999'}; font-weight: bold;">[ ${isSamourai ? 'ON' : 'OFF'} ]</span>
+          </li>
+          <li style="padding: 15px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleFurigana()">
+            <span><strong>Masquer les Furiganas</strong><br><span style="font-size: 13px; color: #666;">Désactive la prononciation au-dessus des Kanjis (Lecture experte).</span></span>
+            <span style="color: ${isFuriganaHidden ? 'var(--aka)' : '#999'}; font-weight: bold;">[ ${isFuriganaHidden ? 'ON' : 'OFF'} ]</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Options Audio</h3>
+        <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Ajustez la vitesse de prononciation pour les dictées et le vocabulaire.</p>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <button class="quiz-opt-btn ${currentSpeed === 0.7 ? 'correct-ans' : ''}" style="flex:1; font-size:14px;" onclick="setVoiceSpeed(0.7)">Lent</button>
+          <button class="quiz-opt-btn ${currentSpeed === 1.0 ? 'correct-ans' : ''}" style="flex:1; font-size:14px;" onclick="setVoiceSpeed(1.0)">Normal</button>
+          <button class="quiz-opt-btn ${currentSpeed === 1.3 ? 'correct-ans' : ''}" style="flex:1; font-size:14px;" onclick="setVoiceSpeed(1.3)">Rapide</button>
+        </div>
+        <button class="btn-primary" style="width:100%; background:var(--sumi);" onclick="speak('日本語の道へようこそ', 'ja-JP')">Tester la voix</button>
+      </div>
+
+      <div class="card" style="border-color: #e74c3c;">
+        <h3 style="color: #e74c3c;">Zone de Danger</h3>
+        <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Réinitialisez votre XP et votre jauge de jours consécutifs. Utile pour repartir de zéro.</p>
+        <button class="btn-primary" style="background: #e74c3c; width: 100%;" onclick="resetProgress()">Effacer ma progression</button>
+      </div>`;
+  }
+}
+
+/* ─── MOTEUR SRS (FLASHCARDS) ─── */
+let activeDeck = [];
+let currentCard = null;
+
+function startFlashcards(deckType) {
+  let sourceData = [];
+  
+  if(deckType === 'kana') {
+    // 👈 On utilise window. pour récupérer les données depuis database.js
+    sourceData = [
+      ...window.HIRAGANA_BASE, 
+      ...window.HIRAGANA_DAKUTEN, 
+      ...window.HIRAGANA_YOON,
+      ...window.KATAKANA_BASE, 
+      ...window.KATAKANA_DAKUTEN, 
+      ...window.KATAKANA_YOON
+    ].filter(k => !k.e);
+  }
+  else if(typeof window.DB_KANJI !== 'undefined') {
+    if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
+    else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
+    else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
+    else if(deckType === 'kanji2') sourceData = window.DB_KANJI.N2;
+    else if(deckType === 'kanji1') sourceData = window.DB_KANJI.N1;
+  }
+  
+  activeDeck = sourceData.map(item => ({
+    jp: item.j,
+    reading: item.on ? `ON: ${item.on}<br>KUN: ${item.kun}` : item.r,
+    meaning: item.f || 'Syllabe',
+    rep: 0
+  }));
+  
+  for (let i = activeDeck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [activeDeck[i], activeDeck[j]] = [activeDeck[j], activeDeck[i]];
+  }
+  loadContent('flashcards-run');
+  nextFlashcard();
+}
+
+function nextFlashcard() {
+  const area = document.getElementById('flashcard-area');
+  if(activeDeck.length === 0) {
+    area.innerHTML = `
+      <div style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🎉</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Session Terminée !</h3>
+        <p>Excellent travail.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+  currentCard = activeDeck.shift();
+  document.getElementById('fc-front-text').innerText = currentCard.jp;
+  document.getElementById('fc-back-jp').innerHTML = currentCard.reading;
+  document.getElementById('fc-back-fr').innerText = currentCard.meaning;
+  document.getElementById('fc-card-element').classList.remove('is-flipped');
+  document.getElementById('srs-controls').style.display = 'none';
+  document.getElementById('flip-hint').style.display = 'block';
+}
+
+function flipFlashcard() {
+  const card = document.getElementById('fc-card-element');
+  if(card.classList.contains('is-flipped')) return;
+  card.classList.add('is-flipped');
+  document.getElementById('flip-hint').style.display = 'none';
+  document.getElementById('srs-controls').style.display = 'flex';
+  speak(currentCard.jp);
+}
+
+function answerCard(quality) {
+  if(quality === 0) {
+    currentCard.rep = 0;
+    const insertIndex = Math.min(activeDeck.length, 3);
+    activeDeck.splice(insertIndex, 0, currentCard);
+    updateStat(false); 
+  } 
+  else if(quality === 1) {
+    currentCard.rep++;
+    activeDeck.push(currentCard);
+    updateStat(true, false); 
+  }
+  else {
+    currentCard.rep++;
+    updateStat(true, true); 
+  }
+  nextFlashcard();
+}
+
+/* ─── MOTEUR QUIZ (TEXTE À TROUS) BILINGUE & PROCÉDURAL ─── */
+const QUIZ_DATA_FIXED = [
+  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』marque le Complément d'Objet Direct." },
+  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』indique le moyen ou l'instrument utilisé." },
+  { lvl: 'N4', q: "雨が降り ___ です。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Il a l'air de vouloir pleuvoir.", expl: "Racine du verbe + そう = Une apparence imminente." },
+  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "Forme TE + はいけません exprime une interdiction stricte." }
+];
+
+let activeQuiz = [];
+let currentQuizIndex = 0;
+
+function generateProceduralQuiz(level, count = 10) {
+  if(!window.DB_VOCAB) return [];
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects) return [];
+  
+  let generated = [];
+  const allParticles = ["は", "が", "を", "に", "で", "へ", "と", "も"];
+  
+  for(let i = 0; i < count; i++) {
+    let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+    let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+    let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+    let hideTopic = Math.random() > 0.5;
+    let sentence, answer, expl;
+    
+    if(hideTopic) {
+      sentence = `<ruby>${s.jp}<rt>${s.kana}</rt></ruby> ___ <ruby>${p.jp}<rt>${p.kana}</rt></ruby>に<ruby>${v.jp}<rt>${v.kana}</rt></ruby>。`;
+      answer = "は";
+      expl = "La particule『は』(wa) marque le thème principal de la phrase.";
+    } else {
+      sentence = `<ruby>${s.jp}<rt>${s.kana}</rt></ruby>は<ruby>${p.jp}<rt>${p.kana}</rt></ruby> ___ <ruby>${v.jp}<rt>${v.kana}</rt></ruby>。`;
+      answer = "に";
+      expl = "La particule『に』(ni) indique la destination d'un déplacement.";
+    }
+    
+    let opts = [answer];
+    while(opts.length < 4) {
+      let randP = allParticles[Math.floor(Math.random() * allParticles.length)];
+      if(!opts.includes(randP)) opts.push(randP);
+    }
+    opts.sort(() => Math.random() - 0.5);
+    
+    generated.push({
+      lvl: level, q: sentence, ans: answer, 
+      opts: opts, fr: `${s.fr} ${v.fr} ${p.fr}.`, expl: expl
+    });
+  }
+  return generated;
+}
+
+function startQuiz(level) {
+  const fixedData = QUIZ_DATA_FIXED.filter(q => q.lvl === level);
+  const proceduralData = generateProceduralQuiz(level, 10);
+  activeQuiz = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  
+  if(activeQuiz.length === 0) { 
+    alert("Données non disponibles !"); 
+    return; 
+  }
+  currentQuizIndex = 0;
+  loadContent('fillblank-run');
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  if(currentQuizIndex >= activeQuiz.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🏆</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Entraînement Terminé !</h3>
+        <p>Vos réflexes sur les particules sont excellents.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+  const q = activeQuiz[currentQuizIndex];
+  const displaySentence = q.q.replace("___", `<span class="quiz-blank" id="quiz-blank-spot">?</span>`);
+  let optionsHtml = '';
+  q.opts.forEach(opt => {
+    optionsHtml += `<button class="quiz-opt-btn" onclick="checkQuizAnswer('${opt}', this)">${opt}</button>`;
+  });
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="quiz-sentence">${displaySentence}</div>
+    <div class="quiz-translation">"${q.fr}"</div>
+    <div class="quiz-options" id="quiz-options-container">${optionsHtml}</div>
+    <div id="quiz-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="quiz-next-btn" onclick="nextQuizQuestion()">Question Suivante ➔</button>`;
+}
+
+function checkQuizAnswer(selected, btnElement) {
+  const q = activeQuiz[currentQuizIndex];
+  const correct = q.ans;
+  const explanation = q.expl;
+  const allBtns = document.getElementById('quiz-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(btn => btn.disabled = true);
+  const feedbackDiv = document.getElementById('quiz-feedback');
+  const blankSpot = document.getElementById('quiz-blank-spot');
+  
+  if(selected === correct) {
+    btnElement.classList.add('correct-ans');
+    blankSpot.innerText = correct;
+    blankSpot.style.color = '#1abc9c';
+    blankSpot.style.borderColor = '#1abc9c';
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong><br>${explanation}`;
+    updateStat(true); 
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
+    blankSpot.innerText = correct;
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Erreur. La bonne réponse était 「${correct}」.</strong><br>${explanation}`;
+    updateStat(false); 
+  }
+  document.getElementById('quiz-next-btn').style.display = 'block';
+}
+
+function nextQuizQuestion() {
+  currentQuizIndex++;
+  renderQuizQuestion();
+}
+
+/* ─── MOTEUR CONSTRUCTEUR SOV (PROCÉDURAL) ─── */
+let activeSovQuiz = [];
+let currentSovIndex = 0;
+let bankWords = [];
+let placedWords = [];
+
+function generateProceduralSOV(level, count = 5) {
+  if(!window.DB_VOCAB) return [];
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
+  
+  let generated = [];
+  for(let i=0; i<count; i++) {
+     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+     let p1 = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let p2 = vocab.places[(Math.floor(Math.random() * vocab.places.length) + 1) % vocab.places.length]; // Lieu différent
+     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     
+     let pattern = Math.floor(Math.random() * 3);
+     let jpOrder, frTranslation;
+
+     if (pattern === 0) { // Destination
+       jpOrder = [s.jp, "は", p1.jp, "に", v.jp];
+       frTranslation = s.fr + " " + v.fr + " à " + p1.fr + ".";
+     } else if (pattern === 1) { // Origine
+       jpOrder = [s.jp, "は", p1.jp, "から", v.jp];
+       frTranslation = s.fr + " " + v.fr + " depuis " + p1.fr + ".";
+     } else { // Origine à Destination
+       jpOrder = [p1.jp, "から", p2.jp, "まで", v.jp];
+       frTranslation = v.fr + " de " + p1.fr + " jusqu'à " + p2.fr + ".";
+     }
+
+     generated.push({ lvl: level, fr: frTranslation, order: jpOrder });
+  }
+  return generated;
+}
+
+function startSov(level) {
+  activeSovQuiz = generateProceduralSOV(level, 5);
+  if (activeSovQuiz.length === 0) {
+    alert("Base de données indisponible !");
+    return;
+  }
+  currentSovIndex = 0;
+  loadContent('sov-run');
+  renderSovQuestion();
+}
+
+function renderSovQuestion() {
+  if (currentSovIndex >= activeSovQuiz.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🏯</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Entraînement SOV Terminé !</h3>
+        <p>Vos réflexes s'améliorent.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+  const q = activeSovQuiz[currentSovIndex];
+  placedWords = [];
+  bankWords = [...q.order].map((word, idx) => ({ id: idx, text: word }));
+  bankWords.sort(() => Math.random() - 0.5);
+  updateSovUI();
+}
+
+function updateSovUI() {
+  const q = activeSovQuiz[currentSovIndex];
+  
+  let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
+  placedWords.forEach((wordObj, i) => {
+    // 👈 MAGIE DU FURIGANA : On cherche le mot dans la base pour récupérer son .kana
+    const vocabLevel = q.lvl;
+    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
+    
+    sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordDisplay}</div>`;
+  });
+
+  let bankHtml = '';
+  bankWords.forEach((wordObj, i) => {
+    // 👈 MAGIE DU FURIGANA : Même chose pour la banque de mots disponibles
+    const vocabLevel = q.lvl;
+    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
+    
+    bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
+  });
+
+  document.getElementById('sov-area').innerHTML = `
+    <div class="sov-header">Traduisez : "${q.fr}"</div>
+    <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
+    <div class="sov-bank-area" id="sov-bank">${bankHtml}</div>
+    <div id="quiz-feedback" class="quiz-feedback"></div>
+    <div class="sov-controls">
+      <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
+      <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
+    </div>
+  `;
+}
+
+function moveWordToSentence(bankIndex) {
+  const word = bankWords.splice(bankIndex, 1)[0];
+  placedWords.push(word);
+  speak(word.text);
+  updateSovUI();
+}
+
+function moveWordToBank(sentenceIndex) {
+  const word = placedWords.splice(sentenceIndex, 1)[0];
+  bankWords.push(word);
+  updateSovUI();
+}
+
+function checkSovAnswer() {
+  const q = activeSovQuiz[currentSovIndex];
+  const userOrder = placedWords.map(w => w.text).join("");
+  const correctOrder = q.order.join("");
+  const feedbackDiv = document.getElementById('quiz-feedback');
+  document.getElementById('sov-check-btn').style.display = 'none';
+  document.getElementById('sov-next-btn').style.display = 'block';
+  document.querySelectorAll('.sov-word').forEach(w => w.onclick = null);
+
+  if (userOrder === correctOrder) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>La structure SOV est respectée.`;
+    updateStat(true); 
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre était : <strong>${q.order.join(" ")}</strong>`;
+    updateStat(false); 
+  }
+}
+
+function nextSovQuestion() {
+  currentSovIndex++;
+  renderSovQuestion();
+}
+
+/* ─── MOTEUR DICTÉE AVEUGLE BILINGUE ─── */
+let activeDict = [];
+let currentDictIndex = 0;
+
+function generateProceduralDictation(level, count = 10) {
+  if(!window.DB_VOCAB) return [];
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
+  
+  let generated = [];
+  for(let i = 0; i < count; i++) {
+     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     
+     let pattern = Math.floor(Math.random() * 2);
+     let jp, fr;
+
+     if (pattern === 0) {
+       jp = `${s.jp}は${p.jp}に${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
+     } else {
+       jp = `${s.jp}は${p.jp}から${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} depuis [${p.fr}]`;
+     }
+     
+     let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
+     let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
+     let wrongV = vocab.verbs_motion.find(x => x.jp !== v.jp) || vocab.verbs_motion[0];
+     
+     generated.push({ 
+       jp: jp, fr: fr, 
+       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}から${v.jp}`, `${s.jp}は${wrongV.jp}`], 
+       wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
+     });
+  }
+  return generated;
+}
+
+function startDictation(level) {
+  // Sécurité : lit window.DB_DICTATION s'il existe, sinon prend un tableau vide
+  const fixedData = (window.DB_DICTATION && window.DB_DICTATION[level]) ? window.DB_DICTATION[level] : [];
+  const proceduralData = generateProceduralDictation(level, 10);
+  
+  activeDict = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  
+  if(activeDict.length === 0) { 
+    alert("Données non disponibles pour ce niveau !"); 
+    return; 
+  }
+  currentDictIndex = 0;
+  loadContent('dictation-run');
+  renderDictation();
+}
+
+function renderDictation() {
+  if(currentDictIndex >= activeDict.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px;">
+        <span style="font-size: 60px;">🎧</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Dictée Terminée !</h3>
+        <p>Excellent travail d'écoute !</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+  const q = activeDict[currentDictIndex];
+  const isReverse = Math.random() > 0.5;
+  const audioText = isReverse ? q.fr : q.jp;
+  const audioLang = isReverse ? 'fr-FR' : 'ja-JP';
+  const correctText = isReverse ? q.jp : q.fr;
+  const wrongAnswers = isReverse ? q.wrong_jp : q.wrong_fr;
+  
+  let options = [correctText, ...wrongAnswers].sort(() => Math.random() - 0.5);
+  let optionsHtml = '';
+  options.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeCorrect = correctText.replace(/'/g, "\\'");
+    const safeAudioText = audioText.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" onclick="checkDictAnswer('${safeOpt}', this, '${safeCorrect}', '${safeAudioText}')">${opt}</button>`;
+  });
+
+  const subtitle = isReverse ? 'Français ➔ Japonais' : 'Japonais ➔ Français';
+  document.getElementById('dict-area').innerHTML = `
+    <div class="dict-audio-box" onclick="speak('${audioText.replace(/'/g, "\\'")}', '${audioLang}')"><span class="dict-icon">🔊</span></div>
+    <div class="dict-hint">Écoutez la phrase et choisissez la bonne traduction.<br><strong>(${subtitle})</strong></div>
+    <div id="dict-reveal" class="dict-jp-reveal"></div>
+    <div class="quiz-options" id="dict-options-container">${optionsHtml}</div>
+    <button class="btn-primary quiz-next-btn" id="dict-next-btn" onclick="nextDictQuestion()">Continuer ➔</button>`;
+  
+  setTimeout(() => speak(audioText, audioLang), 500);
+}
+
+function checkDictAnswer(selected, btnElement, correct, audioText) {
+  const allBtns = document.getElementById('dict-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(btn => btn.disabled = true);
+  const revealDiv = document.getElementById('dict-reveal');
+  revealDiv.innerText = audioText;
+  revealDiv.style.display = 'block';
+
+  if(selected === correct) {
+    btnElement.classList.add('correct-ans');
+    updateStat(true); 
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(btn => { if(btn.innerText === correct) btn.classList.add('correct-ans'); });
+    updateStat(false);
+  }
+  document.getElementById('dict-next-btn').style.display = 'block';
+}
+
+function nextDictQuestion() {
+  currentDictIndex++;
+  renderDictation();
+}
+  
+/* ─── MOTEUR DE JEU : MODE SURVIE (CHRONO-CHALLENGE) ─── */
+let survivalTimer = null;
+let survivalTimeLeft = 60;
+let survivalScore = 0;
+let survivalCurrentQ = null;
+let survivalLevel = 'N5';
+
+function startSurvivalMode(level) {
+  survivalLevel = level;
+  survivalScore = 0;
+  survivalTimeLeft = 60;
+  
+  loadContent('survival-run');
+  nextSurvivalQuestion();
+
+  // Lancement du compte à rebours
+  clearInterval(survivalTimer);
+  survivalTimer = setInterval(() => {
+    survivalTimeLeft--;
+    
+    const clockEl = document.getElementById('survival-clock');
+    if (clockEl) {
+      clockEl.innerText = `⏱️ ${survivalTimeLeft}s`;
+      if (survivalTimeLeft <= 10) {
+        clockEl.style.background = '#fdedec';
+        clockEl.style.color = '#e74c3c';
+      } else {
+        clockEl.style.background = 'var(--aka-pale)';
+        clockEl.style.color = 'var(--aka)';
+      }
+    }
+
+    if (survivalTimeLeft <= 0) {
+      endSurvivalGame();
+    }
+  }, 1000);
+}
+
+function nextSurvivalQuestion() {
+  if (!window.DB_KANJI || !window.DB_VOCAB) return;
+
+  // On pioche aléatoirement soit un Kanji (50% de chance) soit un mot de vocabulaire (50% de chance)
+  const isKanji = Math.random() > 0.5;
+  let questionText = "";
+  let correctAnswer = "";
+  let options = [];
+
+  if (isKanji && DB_KANJI[survivalLevel]) {
+    const pool = DB_KANJI[survivalLevel];
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    questionText = `Que signifie le kanji 「 ${item.j} 」 ?`;
+    correctAnswer = item.f;
+    options = [item.f, "Un concept erroné", "Une mauvaise action", "Un faux sens"];
+  } else if (DB_VOCAB[survivalLevel]) {
+    const vocab = DB_VOCAB[survivalLevel];
+    const pool = [...vocab.subjects, ...vocab.places];
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    questionText = `Quelle est la traduction de 「 <ruby>${item.jp}<rt>${item.kana}</rt></ruby> 」 ?`;
+    correctAnswer = item.fr;
+    options = [item.fr, "Médecin de garde", "Gare centrale", "Rizière verte", "Professeur principal"];
+  }
+
+  // Nettoyage des options génériques pour éviter les doublons avec la bonne réponse
+  options = [...new Set(options)].slice(0, 4);
+  if (!options.includes(correctAnswer)) options[3] = correctAnswer;
+  
+  // Mélange des boutons
+  options.sort(() => Math.random() - 0.5);
+
+  survivalCurrentQ = { q: questionText, ans: correctAnswer };
+
+  const area = document.getElementById('survival-area');
+  if (!area) return;
+
+  let optionsHtml = "";
+  options.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:18px;" onclick="submitSurvivalAnswer('${safeOpt}', this)">${opt}</button>`;
+  });
+
+  area.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid rgba(0,0,0,0.05); padding-bottom:10px; margin-bottom:20px;">
+      <span style="font-weight:bold; color:var(--aka); font-size:18px;">🔥 Série : ${survivalScore}</span>
+      <span id="survival-clock" style="font-weight:bold; background:var(--aka-pale); color:var(--aka); padding:6px 16px; border-radius:20px; font-size:18px;">⏱️ 60s</span>
+    </div>
+    <div style="font-size:24px; text-align:center; margin-bottom:25px; line-height:1.6; font-family:var(--font-jp);">${questionText}</div>
+    <div id="survival-options-container" style="max-width:500px; margin:0 auto;">${optionsHtml}</div>
+  `;
+}
+
+function submitSurvivalAnswer(selected, btnElement) {
+  if (selected === survivalCurrentQ.ans) {
+    survivalScore++;
+    survivalTimeLeft += 3; // +3 secondes !
+    btnElement.style.background = "#e8f8f5";
+    btnElement.style.borderColor = "#1abc9c";
+    btnElement.style.color = "#16a085";
+    updateStat(true, false, survivalLevel);
+    setTimeout(nextSurvivalQuestion, 150);
+  } else {
+    survivalTimeLeft -= 5; // -5 secondes !
+    btnElement.style.background = "#fdedec";
+    btnElement.style.borderColor = "#e74c3c";
+    btnElement.style.color = "#c0392b";
+    updateStat(false, false, survivalLevel);
+    
+    // Feedback flash visuel sur le chrono
+    const clockEl = document.getElementById('survival-clock');
+    if (clockEl) {
+      clockEl.style.background = '#e74c3c';
+      clockEl.style.color = '#fff';
+    }
+    setTimeout(nextSurvivalQuestion, 200);
+  }
+}
+
+function endSurvivalGame() {
+  clearInterval(survivalTimer);
+  
+  // Calcul des bonus d'XP basés sur la performance de la série
+  const bonusXp = survivalScore * 5;
+  userStats.xp += bonusXp;
+  saveStats();
+
+  const contentDiv = document.getElementById('content');
+  if (!contentDiv) return;
+
+  contentDiv.innerHTML = `
+    <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+      <span style="font-size: 70px;">💀</span>
+      <h2 style="color: var(--aka); margin: 20px 0;">Temps Écoulé !</h2>
+      <div style="font-size:22px; margin-bottom:10px; color:var(--sumi);">Vous avez survécu à une série de :</div>
+      <div style="font-size:54px; font-weight:900; color:var(--sumi); margin-bottom:10px;">${survivalScore} <span style="font-size:24px; color:#777;">réponses</span></div>
+      <div style="font-size:18px; font-weight:bold; color:#1abc9c; margin-bottom:30px;">🎁 Gain Bonus : +${bonusXp} XP de combat !</div>
+      <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+    </div>
+  `;
+}
+  
+/* ─── MOTEUR DE JEU : LE JEU DES PAIRES (MATCH-UP) ─── */
+let matchupSelectedCard = null;
+let matchupPairsCount = 0;
+let matchupLevel = 'N5';
+
+function startMatchupMode(level) {
+  matchupLevel = level;
+  matchupSelectedCard = null;
+  
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On pioche 4 Kanjis uniques au hasard pour faire 8 cartes au total (4 paires)
+  let pool = [...window.DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, 4);
+  matchupPairsCount = pool.length;
+
+  let cards = [];
+  pool.forEach(item => {
+    // Carte Kanji
+    cards.push({ id: `jp-${item.j}`, type: 'jp', value: item.j, matchId: item.f });
+    // Carte Français
+    cards.push({ id: `fr-${item.j}`, type: 'fr', value: item.f, matchId: item.j });
+  });
+
+  // Mélange complet de la grille
+  cards.sort(() => Math.random() - 0.5);
+
+  loadContent('matchup-run');
+  
+  const gridEl = document.getElementById('matchup-grid');
+  if (!gridEl) return;
+
+  let gridHtml = "";
+  cards.forEach(card => {
+    gridHtml += `
+      <div class="kana-cell" id="${card.id}" style="padding: 20px 10px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; user-select: none;" onclick="selectMatchupCard('${card.id}', '${card.type}', '${card.value}', '${card.matchId}')">
+        <span style="${card.type === 'jp' ? "font-family: var(--font-jp); font-size: 26px;" : "font-size: 13px; color: var(--aka);"}" id="text-${card.id}">${card.value}</span>
+      </div>`;
+  });
+  gridEl.innerHTML = gridHtml;
+}
+
+function selectMatchupCard(id, type, value, matchId) {
+  const cardEl = document.getElementById(id);
+  if (!cardEl || cardEl.style.visibility === 'hidden' || cardEl.classList.contains('correct-ans')) return;
+
+  // Si on clique sur la carte déjà sélectionnée, on désélectionne
+  if (matchupSelectedCard && matchupSelectedCard.id === id) {
+    cardEl.style.background = "";
+    cardEl.style.borderColor = "";
+    matchupSelectedCard = null;
+    return;
+  }
+
+  // Allumage visuel de la carte cliquée
+  cardEl.style.background = "var(--sakura-pale)";
+  cardEl.style.borderColor = "var(--aka)";
+
+  // Si c'est la première carte cliquée de la paire
+  if (!matchupSelectedCard) {
+    matchupSelectedCard = { id, type, value, matchId };
+    return;
+  }
+
+  // Si c'est la deuxième carte cliquée, on vérifie si ça matche
+  // On s'assure qu'on ne clique pas sur le même type (ex: deux Kanjis d'affilée)
+  if (matchupSelectedCard.type !== type && matchupSelectedCard.matchId === value) {
+    // C'EST UN MATCH !
+    const firstCardEl = document.getElementById(matchupSelectedCard.id);
+    
+    // Animation de validation verte
+    cardEl.style.background = "#e8f8f5"; cardEl.style.borderColor = "#1abc9c";
+    firstCardEl.style.background = "#e8f8f5"; firstCardEl.style.borderColor = "#1abc9c";
+    
+    matchupPairsCount--;
+    matchupSelectedCard = null;
+    updateStat(true, false, matchupLevel);
+
+    // On fait disparaître les paires en douceur
+    setTimeout(() => {
+      cardEl.style.visibility = "hidden";
+      firstCardEl.style.visibility = "hidden";
+      
+      // Si plus de cartes à l'écran, victoire !
+      if (matchupPairsCount === 0) {
+        endMatchupGame();
+      }
+    }, 400);
+
+  } else {
+    // ERREUR ! Pas de correspondance
+    const firstCardEl = document.getElementById(matchupSelectedCard.id);
+    cardEl.style.background = "#fdedec"; cardEl.style.borderColor = "#e74c3c";
+    firstCardEl.style.background = "#fdedec"; firstCardEl.style.borderColor = "#e74c3c";
+
+    updateStat(false, false, matchupLevel);
+    matchupSelectedCard = null;
+
+    // Réinitialisation visuelle après un court flash rouge
+    setTimeout(() => {
+      cardEl.style.background = ""; cardEl.style.borderColor = "";
+      firstCardEl.style.background = ""; firstCardEl.style.borderColor = "";
+    }, 400);
+  }
+}
+
+function endMatchupGame() {
+  userStats.xp += 30; // +30 XP fixés pour avoir vidé la grille
+  saveStats();
+
+  const contentDiv = document.getElementById('content');
+  if (!contentDiv) return;
+
+  contentDiv.innerHTML = `
+    <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+      <span style="font-size: 70px;">🧩</span>
+      <h2 style="color: #1abc9c; margin: 20px 0;">Grille Nettoyée !</h2>
+      <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Félicitations, toutes les associations de Kanjis sont correctes.</p>
+      <div style="font-size:18px; font-weight:bold; color:#1abc9c; margin-bottom:30px;">🎁 Gain Récompense : +30 XP d'association !</div>
+      <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+    </div>
+  `;
+}
+  
+/* ─── MOTEUR DE JEU : CLAVIER HIRAGANA (SAISIE MANUELLE) ─── */
+let kbQuestions = [];
+let kbCurrentIndex = 0;
+let kbUserInput = "";
+
+function startKeyboardMode(level) {
+  kbQuestions = generateProceduralQuiz(level, 5); // On réutilise l'algorithme des particules
+  if(kbQuestions.length === 0) { alert("Données non disponibles !"); return; }
+  kbCurrentIndex = 0;
+  loadContent('keyboard-run');
+  renderKeyboardQuestion();
+}
+
+function renderKeyboardQuestion() {
+  if(kbCurrentIndex >= kbQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+        <span style="font-size: 60px;">✍️</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Saisie Terminée !</h3>
+        <p>Vous ne pouvez plus tricher par élimination, bravo !</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+  kbUserInput = "";
+  updateKeyboardUI();
+}
+
+function updateKeyboardUI() {
+  const q = kbQuestions[kbCurrentIndex];
+  // On remplace le trou par ce que l'utilisateur tape
+  const displaySentence = q.q.replace("___", `<span class="quiz-blank" style="color:var(--aka); border-bottom:3px solid var(--aka); min-width:50px; display:inline-block; text-align:center;">${kbUserInput}</span>`);
+  
+  // Génération du mini-clavier (les particules principales + pièges)
+  const keys = ["は", "が", "を", "に", "で", "へ", "と", "も", "や", "から", "まで", "ね", "よ"];
+  let kbHtml = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px; max-width: 400px; margin-left: auto; margin-right: auto;">';
+  keys.forEach(k => {
+    kbHtml += `<button class="quiz-opt-btn" style="min-width:50px; padding:10px;" onclick="typeKeyboard('${k}')">${k}</button>`;
+  });
+  // Bouton Effacer
+  kbHtml += `<button class="quiz-opt-btn" style="min-width:50px; padding:10px; background:#fdedec; color:#e74c3c; border-color:#e74c3c;" onclick="deleteKeyboard()">⌫</button>`;
+  kbHtml += '</div>';
+
+  document.getElementById('keyboard-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--sumi2);">Tapez la particule manquante :</div>
+    <div class="quiz-sentence">${displaySentence}</div>
+    <div class="quiz-translation">"${q.fr}"</div>
+    ${kbHtml}
+    <div id="kb-feedback" class="quiz-feedback"></div>
+    <div style="display:flex; justify-content:center; gap:10px; margin-top:20px;">
+      <button class="btn-primary" id="kb-check-btn" onclick="checkKeyboardAnswer()">Valider</button>
+      <button class="btn-primary" id="kb-next-btn" style="display:none; background:var(--sumi);" onclick="nextKeyboardQuestion()">Suivant ➔</button>
+    </div>
+  `;
+}
+
+function typeKeyboard(kana) {
+  kbUserInput += kana;
+  updateKeyboardUI();
+}
+
+function deleteKeyboard() {
+  kbUserInput = kbUserInput.slice(0, -1);
+  updateKeyboardUI();
+}
+
+function checkKeyboardAnswer() {
+  const q = kbQuestions[kbCurrentIndex];
+  const feedbackDiv = document.getElementById('kb-feedback');
+  document.getElementById('kb-check-btn').style.display = 'none';
+  document.getElementById('kb-next-btn').style.display = 'block';
+
+  // Désactiver les touches du clavier
+  const buttons = document.getElementById('keyboard-area').querySelectorAll('.quiz-opt-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  if(kbUserInput === q.ans) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>${q.expl}`;
+    updateStat(true);
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>Il fallait taper : <strong>${q.ans}</strong><br>${q.expl}`;
+    updateStat(false);
+  }
+}
+
+function nextKeyboardQuestion() {
+  kbCurrentIndex++;
+  renderKeyboardQuestion();
+}
+
+/* ─── MOTEUR DE JEU : LEÇON INVERSÉE (FRANÇAIS ➔ JAPONAIS) ─── */
+let revQuestions = [];
+let revCurrentIndex = 0;
+
+function startReverseMode(level) {
+  revQuestions = [];
+  
+  // Génération de questions Kanjis
+  if (typeof DB_KANJI !== 'undefined' && DB_KANJI[level]) {
+    const kanjis = [...DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, 5);
+    kanjis.forEach(k => {
+      let options = [k.j];
+      while (options.length < 4) {
+        let rand = DB_KANJI[level][Math.floor(Math.random() * DB_KANJI[level].length)].j;
+        if (!options.includes(rand)) options.push(rand);
+      }
+      options.sort(() => Math.random() - 0.5);
+      revQuestions.push({ q: k.f, ans: k.j, opts: options, type: 'Kanji' });
+    });
+  }
+
+  // Génération de questions Vocabulaire
+  if (typeof DB_VOCAB !== 'undefined' && DB_VOCAB[level] && DB_VOCAB[level].subjects) {
+    const vocab = DB_VOCAB[level];
+    const pool = [...vocab.subjects, ...vocab.places];
+    const words = pool.sort(() => Math.random() - 0.5).slice(0, 5);
+    words.forEach(w => {
+      let correctHtml = `<ruby>${w.jp}<rt>${w.kana}</rt></ruby>`;
+      let options = [correctHtml];
+      while (options.length < 4) {
+        let randW = pool[Math.floor(Math.random() * pool.length)];
+        let randHtml = `<ruby>${randW.jp}<rt>${randW.kana}</rt></ruby>`;
+        if (!options.includes(randHtml)) options.push(randHtml);
+      }
+      options.sort(() => Math.random() - 0.5);
+      revQuestions.push({ q: w.fr, ans: correctHtml, opts: options, type: 'Vocabulaire' });
+    });
+  }
+
+  revQuestions.sort(() => Math.random() - 0.5);
+
+  if (revQuestions.length === 0) { alert("Données indisponibles !"); return; }
+  
+  revCurrentIndex = 0;
+  loadContent('reverse-run');
+  renderReverseQuestion();
+}
+
+function renderReverseQuestion() {
+  if (revCurrentIndex >= revQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+        <span style="font-size: 60px;">🔄</span>
+        <h3 style="color: var(--aka); margin: 20px 0;">Leçon Terminée !</h3>
+        <p>Passer du français au japonais est un excellent exercice mental, bravo !</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+      </div>`;
+    return;
+  }
+
+  const q = revQuestions[revCurrentIndex];
+  let optionsHtml = '';
+  q.opts.forEach(opt => {
+    // Échappement des guillemets pour éviter les conflits HTML
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.ans.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:22px; padding: 15px;" onclick="checkReverseAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('reverse-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Trouvez la traduction (${q.type})</div>
+    <div style="font-size:26px; text-align:center; margin-bottom:30px; color:var(--sumi); font-weight:bold;">"${q.q}"</div>
+    <div id="reverse-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="rev-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="rev-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextReverseQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkReverseAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('reverse-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('rev-feedback');
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne réponse !</strong>`;
+    updateStat(true);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML.includes(correct)) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong>`;
+    updateStat(false);
+  }
+  document.getElementById('rev-next-btn').style.display = 'block';
+}
+
+function nextReverseQuestion() {
+  revCurrentIndex++;
+  renderReverseQuestion();
+}  
+
+/* ─── MOTEUR D'EXAMENS JLPT UNIVERSEL ─── */
+let examTimer = null;
+let examTimeLeft = 0;
+let examQuestions = [];
+let examCurrentIndex = 0;
+let examScore = 0;
+let examLevel = 'N5';
+
+function startExam(level) {
+  examLevel = level;
+  examScore = 0;
+  examCurrentIndex = 0;
+
+  // Configuration dynamique (Temps en secondes et Nombre de questions)
+  const configs = {
+    'N5': { time: 15 * 60, limit: 20 },
+    'N4': { time: 20 * 60, limit: 25 },
+    'N3': { time: 25 * 60, limit: 30 },
+    'N2': { time: 30 * 60, limit: 35 },
+    'N1': { time: 40 * 60, limit: 40 }
+  };
+  
+  if(!configs[level]) return;
+  examTimeLeft = configs[level].time;
+  let totalQ = configs[level].limit;
+  examQuestions = [];
+
+  // 1. Piocher la moitié des questions dans les KANJIS
+  if (typeof DB_KANJI !== 'undefined' && DB_KANJI[level]) {
+    let pool = [...DB_KANJI[level]].sort(() => Math.random() - 0.5).slice(0, Math.floor(totalQ / 2));
+    pool.forEach(k => {
+      let opts = [k.f];
+      while(opts.length < 4) {
+        let rand = DB_KANJI[level][Math.floor(Math.random() * DB_KANJI[level].length)].f;
+        if(!opts.includes(rand)) opts.push(rand);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      examQuestions.push({ q: `Sens du Kanji : 「 ${k.j} 」`, opts: opts, ans: k.f });
+    });
+  }
+
+  // 2. Piocher l'autre moitié dans le VOCABULAIRE
+  if (typeof DB_VOCAB !== 'undefined' && DB_VOCAB[level]) {
+    let pool = [];
+    if(DB_VOCAB[level].subjects) pool = pool.concat(DB_VOCAB[level].subjects);
+    if(DB_VOCAB[level].places) pool = pool.concat(DB_VOCAB[level].places);
+    
+    let vocabs = pool.sort(() => Math.random() - 0.5).slice(0, Math.ceil(totalQ / 2));
+    vocabs.forEach(v => {
+      let opts = [v.fr];
+      while(opts.length < 4) {
+        let rand = pool[Math.floor(Math.random() * pool.length)].fr;
+        if(!opts.includes(rand)) opts.push(rand);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      examQuestions.push({ q: `Traduction : 「 <ruby>${v.jp}<rt>${v.kana}</rt></ruby> 」`, opts: opts, ans: v.fr });
+    });
+  }
+
+  examQuestions.sort(() => Math.random() - 0.5); // Mélange final
+  loadContent('exam-run');
+  
+  // Gestion du chronomètre
+  clearInterval(examTimer);
+  examTimer = setInterval(() => {
+    examTimeLeft--;
+    const clockEl = document.getElementById('exam-clock');
+    if (clockEl) {
+      let m = Math.floor(examTimeLeft / 60).toString().padStart(2, '0');
+      let s = (examTimeLeft % 60).toString().padStart(2, '0');
+      clockEl.innerText = `⏱️ ${m}:${s}`;
+      if (examTimeLeft <= 60) { // Dernière minute en rouge
+        clockEl.style.color = '#fff';
+        clockEl.style.background = '#e74c3c';
+      }
+    }
+    if (examTimeLeft <= 0) finishExam(true);
+  }, 1000);
+
+  renderExamQuestion();
+}
+
+function renderExamQuestion() {
+  if (examCurrentIndex >= examQuestions.length) {
+    finishExam(false);
+    return;
+  }
+  const q = examQuestions[examCurrentIndex];
+  let optionsHtml = '';
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.ans.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:18px;" onclick="checkExamAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  let m = Math.floor(examTimeLeft / 60).toString().padStart(2, '0');
+  let s = (examTimeLeft % 60).toString().padStart(2, '0');
+
+  document.getElementById('exam-area').innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid var(--sakura-pale); padding-bottom: 10px;">
+      <span style="font-weight:bold; color:var(--sumi); font-size:18px;">Question ${examCurrentIndex + 1} / ${examQuestions.length}</span>
+      <span id="exam-clock" style="font-weight:bold; background:var(--sakura-pale); color:var(--aka); padding:6px 16px; border-radius:20px; font-size:18px;">⏱️ ${m}:${s}</span>
+    </div>
+    <div style="font-size:24px; text-align:center; margin-bottom:30px; font-weight:bold; color:var(--sumi); line-height: 1.4;">${q.q}</div>
+    <div style="max-width:500px; margin:0 auto;">${optionsHtml}</div>
+    <button class="btn-primary" id="exam-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextExamQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkExamAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('exam-area').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    examScore++;
+    AudioEngine.correct(); // 👈 Le petit "Ding" de bonne réponse est ici !
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    AudioEngine.wrong(); // 👈 Le "Tud" d'erreur est ici !
+  }
+  document.getElementById('exam-next-btn').style.display = 'block';
+}
+
+function nextExamQuestion() {
+  examCurrentIndex++;
+  renderExamQuestion();
+}
+
+function finishExam(timeout = false) {
+  clearInterval(examTimer);
+  const contentDiv = document.getElementById('content');
+  if (!contentDiv) return;
+
+  const percentage = Math.round((examScore / examQuestions.length) * 100);
+  const passed = percentage >= 60; // Seuil de validation officiel
+  
+  // 👈 DÉCLENCHEMENT DE LA FANFARE OU DU BUZZER DE FIN !
+  if (passed) {
+    AudioEngine.fanfare(); 
+    userStats.xp += (examQuestions.length * 10);
+    saveStats();
+  } else {
+    AudioEngine.wrong();
+  }
+
+  contentDiv.innerHTML = `
+    <div class="card" style="text-align:center; padding: 40px; background: var(--sakura-pale);">
+      <span style="font-size: 70px;">${timeout ? '⏰' : (passed ? '🎓' : '❌')}</span>
+      <h2 style="color: var(--aka); margin: 20px 0;">${timeout ? 'Temps Écoulé !' : 'Examen Terminé !'}</h2>
+      <div style="font-size:22px; margin-bottom:10px;">Score : <strong>${examScore} / ${examQuestions.length}</strong> (${percentage}%)</div>
+      <div style="font-size:18px; font-weight:bold; color: ${passed ? '#1abc9c' : '#e74c3c'}; margin-bottom:30px;">
+        ${passed ? 'Félicitations, vous avez validé ce niveau ! (+ XP)' : 'Échec. Révisez vos leçons et réessayez !'}
+      </div>
+      <button class="btn-primary" onclick="loadContent('examens')">Retour aux Examens</button>
+    </div>
+  `;
+}
+/* ─── MOTEUR DE JEU : LE DÉTECTIVE (RADICAUX) ─── */
+let detQuestions = [];
+let detCurrentIndex = 0;
+
+function startDetectiveMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On récupère tous les kanjis du niveau qui ont un radical
+  let pool = [...window.DB_KANJI[level]].filter(k => k.rad);
+  if (pool.length === 0) return;
+
+  // On sélectionne 10 Kanjis aléatoires pour la partie
+  pool.sort(() => Math.random() - 0.5);
+  let selectedKanjis = pool.slice(0, 10);
+
+  detQuestions = selectedKanjis.map(k => {
+    let correctRad = k.rad;
+    let options = [correctRad];
+
+    // On cherche 3 faux radicaux aléatoires et uniques
+    let wrongPool = [...new Set(pool.filter(x => x.rad !== correctRad).map(x => x.rad))];
+    wrongPool.sort(() => Math.random() - 0.5);
+    options.push(...wrongPool.slice(0, 3));
+
+    // Mélange final des 4 boutons
+    options.sort(() => Math.random() - 0.5);
+
+    return { kanji: k.j, meaning: k.f, correct: correctRad, opts: options, story: k.story };
+  });
+
+  detCurrentIndex = 0;
+  loadContent('detective-run');
+  renderDetectiveQuestion();
+}
+
+function renderDetectiveQuestion() {
+  if (detCurrentIndex >= detQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🕵️</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Enquête Terminée !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">L'architecture des Kanjis n'a plus de secrets pour vous.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = detQuestions[detCurrentIndex];
+  let optionsHtml = '';
+  
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.correct.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:18px; padding:14px;" onclick="checkDetectiveAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('detective-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Question ${detCurrentIndex + 1} / 10</div>
+    <div style="font-size: 80px; font-family: var(--font-jp); text-align: center; color: var(--sumi); line-height: 1.2;">${q.kanji}</div>
+    <div style="text-align:center; color:#666; font-size:18px; margin-bottom:30px; font-style:italic;">"${q.meaning}"</div>
+    <p style="text-align:center; font-weight:bold; margin-bottom:20px;">Quel est le radical (la clé) de ce Kanji ?</p>
+    <div id="det-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="det-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="det-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextDetectiveQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkDetectiveAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('det-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('det-feedback');
+  const q = detQuestions[detCurrentIndex];
+
+  // Le petit bijou d'apprentissage : L'histoire s'affiche toujours !
+  const storyHtml = `<div style="margin-top:10px; padding-top:10px; border-top:1px dashed rgba(0,0,0,0.1); font-size:14px; color:#444;"><strong>💡 Le saviez-vous ?</strong><br>${q.story}</div>`;
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Excellente déduction !</strong>${storyHtml}`;
+    updateStat(true);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong> Le radical était 「${correct}」.${storyHtml}`;
+    updateStat(false);
+  }
+  document.getElementById('det-next-btn').style.display = 'block';
+}
+
+function nextDetectiveQuestion() {
+  detCurrentIndex++;
+  renderDetectiveQuestion();
+}
+
+/* ─── MOTEUR DE JEU : LE FORGERON (JUKUGO) ─── */
+let forgeQuestions = [];
+let forgeCurrentIndex = 0;
+let forgeUserAnswer = [];
+
+function startForgeronMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) return alert("Données indisponibles !");
+  
+  // 1. On aspire tous les mots composés du niveau
+  let allWords = [];
+  let allKanjis = window.DB_KANJI[level].map(k => k.j);
+  
+  window.DB_KANJI[level].forEach(k => {
+    if(k.words) {
+      k.words.forEach(w => {
+        // On ne garde que les mots de 2 caractères ou plus
+        if(w.jp.length > 1 && [...w.jp].some(char => allKanjis.includes(char))) {
+          allWords.push(w);
+        }
+      });
+    }
+  });
+
+  // Déduplication
+  allWords = allWords.filter((v,i,a)=>a.findIndex(t=>(t.jp === v.jp))===i);
+  if(allWords.length === 0) return alert("Pas assez de mots composés dans la base !");
+  
+  // 2. On choisit 5 mots aléatoires
+  allWords.sort(() => Math.random() - 0.5);
+  forgeQuestions = allWords.slice(0, 5).map(w => {
+    let chars = [...w.jp];
+    let distractors = [];
+    // On ajoute 3 pièges aléatoires du même niveau
+    while(distractors.length < 3) {
+      let randK = allKanjis[Math.floor(Math.random() * allKanjis.length)];
+      if(!chars.includes(randK) && !distractors.includes(randK)) distractors.push(randK);
+    }
+    return { jp: w.jp, fr: w.fr, kana: w.kana, opts: [...chars, ...distractors].sort(() => Math.random() - 0.5) };
+  });
+
+  forgeCurrentIndex = 0;
+  loadContent('forgeron-run');
+  renderForgeronQuestion();
+}
+
+function renderForgeronQuestion() {
+  if (forgeCurrentIndex >= forgeQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🔨</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Armurerie Remplie !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Vous maîtrisez la construction des mots japonais.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+  forgeUserAnswer = [];
+  updateForgeronUI();
+}
+
+function updateForgeronUI() {
+  const q = forgeQuestions[forgeCurrentIndex];
+  
+  // Zone d'assemblage (L'Enclume)
+  let enclumeHtml = forgeUserAnswer.length === 0 ? `<div class="sov-placeholder">Cliquez sur les minerais pour forger le mot...</div>` : '';
+  forgeUserAnswer.forEach((char, i) => {
+    enclumeHtml += `<div class="sov-word" style="font-size:32px; background:var(--sakura-pale); border-color:var(--aka);" onclick="removeForgeChar(${i})">${char}</div>`;
+  });
+
+  // Zone des options (Les Minerais)
+  let mineraisHtml = '';
+  q.opts.forEach((char, i) => {
+    let isUsed = forgeUserAnswer.includes(char) ? 'visibility:hidden;' : '';
+    mineraisHtml += `<div class="sov-word" style="font-size:32px; ${isUsed}" onclick="addForgeChar('${char}')">${char}</div>`;
+  });
+
+  document.getElementById('forgeron-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Mot ${forgeCurrentIndex + 1} / 5</div>
+    <div style="font-size:22px; text-align:center; margin-bottom:20px; color:var(--sumi); font-weight:bold;">"${q.fr}"</div>
+    
+    <div class="sov-sentence-area" style="min-height:100px; justify-content:center; background: rgba(0,0,0,0.03); border-bottom-color: var(--sumi);">${enclumeHtml}</div>
+    <div class="sov-bank-area">${mineraisHtml}</div>
+    
+    <div id="forge-feedback" class="quiz-feedback"></div>
+    <div class="sov-controls">
+      <button class="btn-primary" id="forge-check-btn" onclick="checkForgeronAnswer()" ${forgeUserAnswer.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Frapper l'enclume</button>
+      <button class="btn-primary" id="forge-next-btn" style="display:none; background:var(--sumi);" onclick="nextForgeronQuestion()">Mot Suivant ➔</button>
+    </div>
+  `;
+}
+
+function addForgeChar(char) {
+  forgeUserAnswer.push(char);
+  speak(char);
+  updateForgeronUI();
+}
+
+function removeForgeChar(index) {
+  forgeUserAnswer.splice(index, 1);
+  updateForgeronUI();
+}
+
+function checkForgeronAnswer() {
+  const q = forgeQuestions[forgeCurrentIndex];
+  const userWord = forgeUserAnswer.join('');
+  const feedbackDiv = document.getElementById('forge-feedback');
+  
+  document.getElementById('forge-check-btn').style.display = 'none';
+  document.getElementById('forge-next-btn').style.display = 'block';
+
+  if (userWord === q.jp) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Magnifique lame !</strong><br>Prononciation : <strong>${q.kana}</strong>`;
+    updateStat(true);
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Lame brisée.</strong><br>Il fallait forger : <strong>${q.jp}</strong> (${q.kana})`;
+    updateStat(false);
+  }
+}
+
+function nextForgeronQuestion() {
+  forgeCurrentIndex++;
+  renderForgeronQuestion();
+}
+
+/* ─── MOTEUR DE JEU : LE PIÈGE (TEST ON/KUN) ─── */
+let piegeQuestions = [];
+let piegeCurrentIndex = 0;
+
+function startPiegeMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) return alert("Données indisponibles !");
+  
+  let allWords = [];
+  // On extrait tous les mots et on garde une référence à leur Kanji parent pour créer des pièges
+  window.DB_KANJI[level].forEach(k => {
+    if(k.words) {
+      k.words.forEach(w => {
+        allWords.push({ ...w, parentKanji: k });
+      });
+    }
+  });
+
+  if(allWords.length === 0) return alert("Aucun vocabulaire pour ce niveau.");
+  
+  // On sélectionne 10 mots au hasard
+  allWords.sort(() => Math.random() - 0.5);
+  let selectedWords = allWords.slice(0, 10);
+
+  piegeQuestions = selectedWords.map(w => {
+    let correctKana = w.kana;
+    let options = [correctKana];
+    
+    // PIÈGE 1 : On ajoute les autres lectures (mots) du MÊME Kanji
+    w.parentKanji.words.forEach(otherW => {
+      if (otherW.kana !== correctKana && !options.includes(otherW.kana)) {
+        options.push(otherW.kana);
+      }
+    });
+
+    // On remplit le reste avec des lectures aléatoires d'autres mots
+    while(options.length < 4) {
+      let randKana = allWords[Math.floor(Math.random() * allWords.length)].kana;
+      if(!options.includes(randKana)) options.push(randKana);
+    }
+    
+    // On garde exactement 4 options et on les mélange
+    options = options.slice(0, 4).sort(() => Math.random() - 0.5);
+    
+    return { word: w.jp, meaning: w.fr, correct: correctKana, opts: options };
+  });
+
+  piegeCurrentIndex = 0;
+  loadContent('piege-run');
+  renderPiegeQuestion();
+}
+
+function renderPiegeQuestion() {
+  if (piegeCurrentIndex >= piegeQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🪤</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Champ de mines traversé !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Vous savez désormais différencier les lectures ON et KUN selon le contexte.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = piegeQuestions[piegeCurrentIndex];
+  let optionsHtml = '';
+  
+  q.opts.forEach(opt => {
+    const safeOpt = opt.replace(/'/g, "\\'");
+    const safeAns = q.correct.replace(/'/g, "\\'");
+    optionsHtml += `<button class="quiz-opt-btn" style="width:100%; margin-bottom:10px; font-size:22px; padding:15px; font-weight:normal;" onclick="checkPiegeAnswer('${safeOpt}', this, '${safeAns}')">${opt}</button>`;
+  });
+
+  document.getElementById('piege-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Mot ${piegeCurrentIndex + 1} / 10</div>
+    <div style="font-size: 50px; font-family: var(--font-jp); font-weight:bold; text-align: center; color: var(--sumi); margin-bottom: 5px;">${q.word}</div>
+    <div style="text-align:center; color:#666; font-size:18px; margin-bottom:30px; font-style:italic;">"${q.meaning}"</div>
+    <div id="piege-options-container" style="max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="piege-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="piege-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextPiegeQuestion()">Suivant ➔</button>
+  `;
+}
+
+function checkPiegeAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('piege-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('piege-feedback');
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Bonne lecture !</strong>`;
+    updateStat(true);
+    // On fait parler la voix japonaise pour ancrer la prononciation !
+    speak(document.querySelector('.font-jp') ? document.querySelector('.font-jp').innerText : correct);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Piégé !</strong> La bonne prononciation était <strong>${correct}</strong>.`;
+    updateStat(false);
+  }
+  document.getElementById('piege-next-btn').style.display = 'block';
+}
+
+function nextPiegeQuestion() {
+  piegeCurrentIndex++;
+  renderPiegeQuestion();
+}
+  
+/* ─── INITIALIZATION ───────────────────────────────────────── */
+(function(){
+  const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
+  const bg = document.getElementById('bg-kanji');
+  if(bg){
+    for(let i=0; i<150; i++){ 
+      const s = document.createElement('span');
+      s.textContent = KANJIS[i % KANJIS.length];
+      s.style.fontSize = (Math.random() * 180 + 60) + 'px'; 
+      s.style.left = (Math.random() * 100) + 'vw';
+      s.style.top = (Math.random() * 100) + 'vh';
+      bg.appendChild(s);
+    }
+  }
+
+  if(localStorage.getItem('samouraiMode') === 'true') {
+    document.body.classList.add('samourai-mode');
+  }
+
+  if(localStorage.getItem('hideFurigana') === 'true') {
+    document.body.classList.add('hide-furigana');
+  }
+  
+  const today = new Date().toDateString();
+  if (userStats.lastLogin !== today) {
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (userStats.lastLogin === yesterday.toDateString()) {
+      userStats.streak++;
+    } else {
+      userStats.streak = 1;
+    }
+    userStats.lastLogin = today;
+    saveStats();
+  }
+  
+  setTimeout(() => loadContent('cours-01'), 100);
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(registration => {
+          console.log('ServiceWorker enregistré avec succès !', registration.scope);
+        })
+        .catch(error => {
+          console.log("Échec de l'enregistrement du ServiceWorker :", error);
+        });
+    });
+  }
+})();
