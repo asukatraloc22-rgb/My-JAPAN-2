@@ -246,6 +246,11 @@ body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
 .btn-primary:active, .quiz-opt-btn:active:not(:disabled), .vocab-card:active {
   transform: scale(0.94);
 }
+
+/* --- BOUTON RETOUR CALLIGRAPHIÉ --- */
+.btn-return { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: none; color: var(--aka); font-family: var(--font-title); font-size: 18px; font-weight: bold; cursor: pointer; padding: 0; margin-bottom: 25px; transition: transform 0.2s; }
+.btn-return::before { content: '戻る'; font-family: var(--font-jp); font-size: 26px; font-weight: 900; }
+.btn-return:hover { transform: translateX(-5px); color: var(--sumi); }  
   
 @media(max-width:768px){
   .sidebar{ transform:translateX(-100%); transition:transform .3s cubic-bezier(0.4, 0, 0.2, 1); width: 280px; }
@@ -253,6 +258,13 @@ body.samourai-mode .course-table tr:nth-child(even) td { background: #181818; }
   .main-content{ margin-left:0 !important; }
   .hamburger{ display:flex; }
   .toggle-btn { display: none; }
+  
+  /* 👈 FIX SYMÉTRIE MOBILE */
+  .main-header { padding: 15px 15px 15px 60px; } /* Laisse la place au menu burger */
+  .main-header .page-title { font-size: 18px; text-align: center; }
+  .main-body { padding: 20px 15px; }
+  .vocab-grid { grid-template-columns: 1fr !important; } /* Force 1 seule colonne sur mobile */
+  .fc-container { height: 350px; } /* Adapte les flashcards */
 }
 </style>
 </head>
@@ -444,6 +456,8 @@ const AudioEngine = {
   ctx: null,
   init() {
     if(!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // 👈 LE FIX EST LÀ : On force le réveil du contexte audio bloqué par le navigateur
+    if(this.ctx.state === 'suspended') this.ctx.resume(); 
   },
   playTone(freq, type, duration) {
     try {
@@ -1290,6 +1304,7 @@ function loadContent(id) {
   else if(id === 'dictation-run') {
     titleHeader.innerText = "Écoutez attentivement";
     contentDiv.innerHTML = `<div class="card" id="dict-area" style="padding: 30px 20px;"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
   else if(id === 'sov-menu') {
     titleHeader.innerText = "Constructeur de Phrases";
@@ -1309,6 +1324,7 @@ function loadContent(id) {
   else if(id === 'sov-run') {
     titleHeader.innerText = "Construisez la phrase";
     contentDiv.innerHTML = `<div class="card" id="sov-area" style="padding: 30px 20px;"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
   else if(id === 'flashcards-menu') {
     titleHeader.innerText = "Configuration du Paquet";
@@ -1342,6 +1358,7 @@ function loadContent(id) {
             <button class="srs-btn fail" onclick="answerCard(0)">À revoir<br><span style="font-size:11px; font-weight:normal;">(Raté)</span></button>
             <button class="srs-btn hard" onclick="answerCard(1)">Difficile<br><span style="font-size:11px; font-weight:normal;">(Hésitation)</span></button>
             <button class="srs-btn easy" onclick="answerCard(2)">Facile<br><span style="font-size:11px; font-weight:normal;">(Mémorisé)</span></button>
+            <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
           </div>
         </div>
       </div>`;
@@ -1364,6 +1381,7 @@ function loadContent(id) {
   else if(id === 'fillblank-run') {
     titleHeader.innerText = "Complétez la phrase";
     contentDiv.innerHTML = `<div class="card" id="quiz-area" style="padding: 40px 20px;"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
     else if(id === 'survival-menu') {
     titleHeader.innerText = "Mode Survie : Choix du Rang";
@@ -1383,6 +1401,7 @@ function loadContent(id) {
   else if(id === 'survival-run') {
     titleHeader.innerText = "CHALLENGE SURVIE EN COURS...";
     contentDiv.innerHTML = `<div class="card" id="survival-area" style="padding: 40px 20px; background: var(--sakura-pale);"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
     else if(id === 'matchup-menu') {
     titleHeader.innerText = "Jeu des Paires : Configuration";
@@ -1404,6 +1423,7 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <div class="card" style="background: var(--sakura-pale); padding: 30px 20px;">
         <p style="text-align: center; margin-bottom: 20px; font-weight: bold; color: var(--aka);">Associez les Kanjis à leurs définitions françaises :</p>
+        <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
         <div class="kana-grid" id="matchup-grid" style="grid-template-columns: repeat(2, 1fr); max-width: 500px; margin: 0 auto; gap: 15px;"></div>
       </div>`;
   }
@@ -1423,6 +1443,7 @@ function loadContent(id) {
   else if(id === 'keyboard-run') {
     titleHeader.innerText = "SAISIE AU CLAVIER...";
     contentDiv.innerHTML = `<div class="card" id="keyboard-area" style="padding: 40px 20px;"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
     else if(id === 'reverse-menu') {
     titleHeader.innerText = "Leçon Inversée : Configuration";
@@ -1442,6 +1463,7 @@ function loadContent(id) {
   else if(id === 'reverse-run') {
     titleHeader.innerText = "TRADUCTION INVERSÉE...";
     contentDiv.innerHTML = `<div class="card" id="reverse-area" style="padding: 40px 20px;"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -1476,6 +1498,7 @@ function loadContent(id) {
   else if(id === 'exam-run') {
     titleHeader.innerText = "ÉPREUVE EN COURS...";
     contentDiv.innerHTML = `<div class="card" id="exam-area" style="padding: 40px 20px; background: var(--kinari);"></div>`;
+    <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
   }
 else if(id === 'progression') {
     titleHeader.innerText = "Tableau de Progression & Feuille de Route";
@@ -1858,10 +1881,24 @@ function generateProceduralSOV(level, count = 5) {
   let generated = [];
   for(let i=0; i<count; i++) {
      let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
-     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let p1 = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let p2 = vocab.places[(Math.floor(Math.random() * vocab.places.length) + 1) % vocab.places.length]; // Lieu différent
      let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
-     let jpOrder = [s.jp, "は", p.jp, "に", v.jp];
-     let frTranslation = s.fr + " " + v.fr + " à " + p.fr + ".";
+     
+     let pattern = Math.floor(Math.random() * 3);
+     let jpOrder, frTranslation;
+
+     if (pattern === 0) { // Destination
+       jpOrder = [s.jp, "は", p1.jp, "に", v.jp];
+       frTranslation = s.fr + " " + v.fr + " à " + p1.fr + ".";
+     } else if (pattern === 1) { // Origine
+       jpOrder = [s.jp, "は", p1.jp, "から", v.jp];
+       frTranslation = s.fr + " " + v.fr + " depuis " + p1.fr + ".";
+     } else { // Origine à Destination
+       jpOrder = [p1.jp, "から", p2.jp, "まで", v.jp];
+       frTranslation = v.fr + " de " + p1.fr + " jusqu'à " + p2.fr + ".";
+     }
+
      generated.push({ lvl: level, fr: frTranslation, order: jpOrder });
   }
   return generated;
@@ -1994,6 +2031,39 @@ function generateProceduralDictation(level, count = 10) {
      generated.push({ 
        jp: jp, fr: fr, 
        wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}に${v.jp}`, `${s.jp}は${wrongV.jp}`], 
+       wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
+     });
+  }
+  return generated;
+}function generateProceduralDictation(level, count = 10) {
+  if(!window.DB_VOCAB) return [];
+  const vocab = window.DB_VOCAB[level];
+  if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
+  
+  let generated = [];
+  for(let i = 0; i < count; i++) {
+     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+     let p = vocab.places[Math.floor(Math.random() * vocab.places.length)];
+     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     
+     let pattern = Math.floor(Math.random() * 2);
+     let jp, fr;
+
+     if (pattern === 0) {
+       jp = `${s.jp}は${p.jp}に${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} [${p.fr}]`;
+     } else {
+       jp = `${s.jp}は${p.jp}から${v.jp}`;
+       fr = `[${s.fr}] ${v.fr} depuis [${p.fr}]`;
+     }
+     
+     let wrongS = vocab.subjects.find(x => x.jp !== s.jp) || vocab.subjects[0];
+     let wrongP = vocab.places.find(x => x.jp !== p.jp) || vocab.places[0];
+     let wrongV = vocab.verbs_motion.find(x => x.jp !== v.jp) || vocab.verbs_motion[0];
+     
+     generated.push({ 
+       jp: jp, fr: fr, 
+       wrong_jp: [`${wrongS.jp}は${p.jp}に${v.jp}`, `${s.jp}は${wrongP.jp}から${v.jp}`, `${s.jp}は${wrongV.jp}`], 
        wrong_fr: [`[${wrongS.fr}] ${v.fr} [${p.fr}]`, `[${s.fr}] ${v.fr} [${wrongP.fr}]`, `[${s.fr}] ${wrongV.fr} [${p.fr}]`] 
      });
   }
