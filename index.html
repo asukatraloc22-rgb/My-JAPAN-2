@@ -1292,6 +1292,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Le Détective</span>
             <span class="vocab-fr">L'épreuve des Radicaux</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('forgeron-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🔨</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Forgeron</span>
+            <span class="vocab-fr">Créateur de Mots Composés</span>
+          </div>
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('flashcards-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎴</span>
             <span class="vocab-jp" style="font-size: 18px;">Flashcards SRS</span>
@@ -1540,6 +1545,27 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="detective-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'forgeron-menu') {
+    titleHeader.innerText = "Le Forgeron : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Forgez votre Vocabulaire (Jukugo)</h3>
+        <p>Les Kanjis s'assemblent pour créer de nouveaux sens. Lisez le mot en français, et cliquez sur les "minerais" (les Kanjis) dans le bon ordre pour forger la traduction japonaise !</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startForgeronMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Mots Débutant</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Mots Élémentaire</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Mots Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Mots Avancé</span></div>
+          <div class="vocab-card" onclick="startForgeronMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Mots Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'forgeron-run') {
+    titleHeader.innerText = "LA FORGE EST ALLUMÉE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="forgeron-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -2925,6 +2951,132 @@ function checkDetectiveAnswer(selected, btnElement, correct) {
 function nextDetectiveQuestion() {
   detCurrentIndex++;
   renderDetectiveQuestion();
+}
+
+/* ─── MOTEUR DE JEU : LE FORGERON (JUKUGO) ─── */
+let forgeQuestions = [];
+let forgeCurrentIndex = 0;
+let forgeUserAnswer = [];
+
+function startForgeronMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) return alert("Données indisponibles !");
+  
+  // 1. On aspire tous les mots composés du niveau
+  let allWords = [];
+  let allKanjis = window.DB_KANJI[level].map(k => k.j);
+  
+  window.DB_KANJI[level].forEach(k => {
+    if(k.words) {
+      k.words.forEach(w => {
+        // On ne garde que les mots de 2 caractères ou plus
+        if(w.jp.length > 1 && [...w.jp].some(char => allKanjis.includes(char))) {
+          allWords.push(w);
+        }
+      });
+    }
+  });
+
+  // Déduplication
+  allWords = allWords.filter((v,i,a)=>a.findIndex(t=>(t.jp === v.jp))===i);
+  if(allWords.length === 0) return alert("Pas assez de mots composés dans la base !");
+  
+  // 2. On choisit 5 mots aléatoires
+  allWords.sort(() => Math.random() - 0.5);
+  forgeQuestions = allWords.slice(0, 5).map(w => {
+    let chars = [...w.jp];
+    let distractors = [];
+    // On ajoute 3 pièges aléatoires du même niveau
+    while(distractors.length < 3) {
+      let randK = allKanjis[Math.floor(Math.random() * allKanjis.length)];
+      if(!chars.includes(randK) && !distractors.includes(randK)) distractors.push(randK);
+    }
+    return { jp: w.jp, fr: w.fr, kana: w.kana, opts: [...chars, ...distractors].sort(() => Math.random() - 0.5) };
+  });
+
+  forgeCurrentIndex = 0;
+  loadContent('forgeron-run');
+  renderForgeronQuestion();
+}
+
+function renderForgeronQuestion() {
+  if (forgeCurrentIndex >= forgeQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🔨</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Armurerie Remplie !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Vous maîtrisez la construction des mots japonais.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+  forgeUserAnswer = [];
+  updateForgeronUI();
+}
+
+function updateForgeronUI() {
+  const q = forgeQuestions[forgeCurrentIndex];
+  
+  // Zone d'assemblage (L'Enclume)
+  let enclumeHtml = forgeUserAnswer.length === 0 ? `<div class="sov-placeholder">Cliquez sur les minerais pour forger le mot...</div>` : '';
+  forgeUserAnswer.forEach((char, i) => {
+    enclumeHtml += `<div class="sov-word" style="font-size:32px; background:var(--sakura-pale); border-color:var(--aka);" onclick="removeForgeChar(${i})">${char}</div>`;
+  });
+
+  // Zone des options (Les Minerais)
+  let mineraisHtml = '';
+  q.opts.forEach((char, i) => {
+    let isUsed = forgeUserAnswer.includes(char) ? 'visibility:hidden;' : '';
+    mineraisHtml += `<div class="sov-word" style="font-size:32px; ${isUsed}" onclick="addForgeChar('${char}')">${char}</div>`;
+  });
+
+  document.getElementById('forgeron-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Mot ${forgeCurrentIndex + 1} / 5</div>
+    <div style="font-size:22px; text-align:center; margin-bottom:20px; color:var(--sumi); font-weight:bold;">"${q.fr}"</div>
+    
+    <div class="sov-sentence-area" style="min-height:100px; justify-content:center; background: rgba(0,0,0,0.03); border-bottom-color: var(--sumi);">${enclumeHtml}</div>
+    <div class="sov-bank-area">${mineraisHtml}</div>
+    
+    <div id="forge-feedback" class="quiz-feedback"></div>
+    <div class="sov-controls">
+      <button class="btn-primary" id="forge-check-btn" onclick="checkForgeronAnswer()" ${forgeUserAnswer.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Frapper l'enclume</button>
+      <button class="btn-primary" id="forge-next-btn" style="display:none; background:var(--sumi);" onclick="nextForgeronQuestion()">Mot Suivant ➔</button>
+    </div>
+  `;
+}
+
+function addForgeChar(char) {
+  forgeUserAnswer.push(char);
+  speak(char);
+  updateForgeronUI();
+}
+
+function removeForgeChar(index) {
+  forgeUserAnswer.splice(index, 1);
+  updateForgeronUI();
+}
+
+function checkForgeronAnswer() {
+  const q = forgeQuestions[forgeCurrentIndex];
+  const userWord = forgeUserAnswer.join('');
+  const feedbackDiv = document.getElementById('forge-feedback');
+  
+  document.getElementById('forge-check-btn').style.display = 'none';
+  document.getElementById('forge-next-btn').style.display = 'block';
+
+  if (userWord === q.jp) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Magnifique lame !</strong><br>Prononciation : <strong>${q.kana}</strong>`;
+    updateStat(true);
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Lame brisée.</strong><br>Il fallait forger : <strong>${q.jp}</strong> (${q.kana})`;
+    updateStat(false);
+  }
+}
+
+function nextForgeronQuestion() {
+  forgeCurrentIndex++;
+  renderForgeronQuestion();
 }
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
