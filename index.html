@@ -1721,14 +1721,24 @@ let currentCard = null;
 
 function startFlashcards(deckType) {
   let sourceData = [];
-  if(deckType === 'kana') sourceData = [...HIRAGANA_BASE, ...KATAKANA_BASE].filter(k => !k.e);
-  // À mettre dans startFlashcards(deckType) :
-  else if(typeof DB_KANJI !== 'undefined') {
-    if(deckType === 'kanji5') sourceData = DB_KANJI.N5;
-    else if(deckType === 'kanji4') sourceData = DB_KANJI.N4;
-    else if(deckType === 'kanji3') sourceData = DB_KANJI.N3;
-    else if(deckType === 'kanji2') sourceData = DB_KANJI.N2;
-    else if(deckType === 'kanji1') sourceData = DB_KANJI.N1;
+  
+  if(deckType === 'kana') {
+    // 👈 On utilise window. pour récupérer les données depuis database.js
+    sourceData = [
+      ...window.HIRAGANA_BASE, 
+      ...window.HIRAGANA_DAKUTEN, 
+      ...window.HIRAGANA_YOON,
+      ...window.KATAKANA_BASE, 
+      ...window.KATAKANA_DAKUTEN, 
+      ...window.KATAKANA_YOON
+    ].filter(k => !k.e);
+  }
+  else if(typeof window.DB_KANJI !== 'undefined') {
+    if(deckType === 'kanji5') sourceData = window.DB_KANJI.N5;
+    else if(deckType === 'kanji4') sourceData = window.DB_KANJI.N4;
+    else if(deckType === 'kanji3') sourceData = window.DB_KANJI.N3;
+    else if(deckType === 'kanji2') sourceData = window.DB_KANJI.N2;
+    else if(deckType === 'kanji1') sourceData = window.DB_KANJI.N1;
   }
   
   activeDeck = sourceData.map(item => ({
