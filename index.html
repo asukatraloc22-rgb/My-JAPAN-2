@@ -580,7 +580,20 @@ function createPetal() {
 setInterval(createPetal, 300);
 
 /* ─── RENDERING DE TABLEAUX ET MODALES ───────────────────────── */
-function generateKanjiGrid(dataArray) {
+function generateKanaGrid(dataArray) {
+  let html = `<div class="kana-grid">`;
+  dataArray.forEach(c => {
+    if(c.e) html += `<div class="kana-cell empty"></div>`;
+    else html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`;
+  }); return html + `</div>`;
+}
+
+function generateYoonGrid(dataArray) {
+  let html = `<div class="yoon-grid">`;
+  dataArray.forEach(c => { html += `<div class="kana-cell" onclick="speak('${c.j}')"><span class="kana-jp">${c.j}</span><span class="kana-rom">${c.r}</span></div>`; });
+  return html + `</div>`;
+}
+  function generateKanjiGrid(dataArray) {
   let html = `<div class="kanji-grid">`;
   if(!dataArray) return `<p>Données non chargées.</p>`;
   dataArray.forEach(k => {
