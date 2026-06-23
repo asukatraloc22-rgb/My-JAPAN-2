@@ -211,7 +211,7 @@ N5: [
     { j: '切', on: 'セツ, サイ', kun: 'き(る), き(れる)', f: 'Couper', rad: '刀 (Sabre)', story: 'Le nombre sept (七) tranché net par un sabre (刀).', words: [{ jp: '切る', kana: 'きる', fr: 'Couper' }, { jp: '大切', kana: 'たいせつ', fr: 'Important' }] },
     { j: '洗', on: 'セン', kun: 'あら(う)', f: 'Laver', rad: '氵 (Eau)', story: 'L\'eau (氵) qui devance (先) la saleté pour laver.', words: [{ jp: '洗う', kana: 'あらう', fr: 'Laver' }, { jp: 'お手洗い', kana: 'おてあらい', fr: 'Toilettes' }] },
     { j: '急', on: 'キュウ', kun: 'いそ(ぐ)', f: 'Se dépêcher / Urgent', rad: '心 (Cœur)', story: 'Un cœur (心) qui palpite face à une situation (ヨ coincé) : c\'est l\'urgence.', words: [{ jp: '急ぐ', kana: 'いそぐ', fr: 'Se dépêcher' }, { jp: '急行', kana: 'きゅうこう', fr: 'Train express' }] },
-    { j: '考', on: 'コウ', kun: 'かんが(える)', f: 'Réfléchir / Penser', rad: '老 (Vieux)', story: 'Un vieillard (老) penché sur sa canne qui réfléchit profondément.', words: [{ jp: '考える', kana: 'かんがえる', fr: 'Réfléchir' }, { jp: '思考', kana: 'しこう', fr: 'Pensée / Réflexion' }] }
+    { j: '考', on: 'コウ', kun: 'かんが(える)', f: 'Réfléchir / Penser', rad: '老 (Vieux)', story: 'Un vieillard (老) penché sur sa canne qui réfléchit profondément.', words: [{ jp: '考える', kana: 'かんがえる', fr: 'Réfléchir' }, { jp: '思考', kana: 'しこう', fr: 'Pensée / Réflexion' }] },
      
     // --- CONCEPTS ABSTRAITS ET ADJECTIFS ---
     { j: '多', on: 'タ', kun: 'おお(い)', f: 'Beaucoup', rad: '夕 (Soir)', story: 'Une lune du soir (夕) posée sur une autre (夕) : les soirées s\'accumulent en grand nombre.', words: [{ jp: '多い', kana: 'おおい', fr: 'Beaucoup de / Nombreux' }, { jp: '多分', kana: 'たぶん', fr: 'Peut-être' }] },
@@ -631,6 +631,87 @@ const DB_DICTATION = {
   ]
 };
 
+
+// 4. BASE DE DONNÉES DES KANAS (Hiragana & Katakana)
+const HIRAGANA_BASE = [
+  {j:'あ',r:'a'},{j:'い',r:'i'},{j:'う',r:'u'},{j:'え',r:'e'},{j:'お',r:'o'},
+  {j:'か',r:'ka'},{j:'き',r:'ki'},{j:'く',r:'ku'},{j:'け',r:'ke'},{j:'こ',r:'ko'},
+  {j:'さ',r:'sa'},{j:'し',r:'shi'},{j:'す',r:'su'},{j:'せ',r:'se'},{j:'そ',r:'so'},
+  {j:'た',r:'ta'},{j:'ち',r:'chi'},{j:'つ',r:'tsu'},{j:'て',r:'te'},{j:'と',r:'to'},
+  {j:'な',r:'na'},{j:'に',r:'ni'},{j:'ぬ',r:'nu'},{j:'ね',r:'ne'},{j:'の',r:'no'},
+  {j:'は',r:'ha'},{j:'ひ',r:'hi'},{j:'ふ',r:'fu'},{j:'へ',r:'he'},{j:'ほ',r:'ho'},
+  {j:'ま',r:'ma'},{j:'み',r:'mi'},{j:'む',r:'mu'},{j:'め',r:'me'},{j:'も',r:'mo'},
+  {j:'や',r:'ya'},{e:true},{j:'ゆ',r:'yu'},{e:true},{j:'よ',r:'yo'},
+  {j:'ら',r:'ra'},{j:'り',r:'ri'},{j:'る',r:'ru'},{j:'れ',r:'re'},{j:'ろ',r:'ro'},
+  {j:'わ',r:'wa'},{e:true},{e:true},{e:true},{j:'を',r:'wo'},
+  {j:'ん',r:'n'},{e:true},{e:true},{e:true},{e:true}
+];
+
+const HIRAGANA_DAKUTEN = [
+  {j:'が',r:'ga'},{j:'ぎ',r:'gi'},{j:'ぐ',r:'gu'},{j:'げ',r:'ge'},{j:'ご',r:'go'},
+  {j:'ざ',r:'za'},{j:'じ',r:'ji'},{j:'ず',r:'zu'},{j:'ぜ',r:'ze'},{j:'ぞ',r:'zo'},
+  {j:'だ',r:'da'},{j:'ぢ',r:'ji'},{j:'づ',r:'zu'},{j:'で',r:'de'},{j:'ど',r:'do'},
+  {j:'ば',r:'ba'},{j:'び',r:'bi'},{j:'ぶ',r:'bu'},{j:'べ',r:'be'},{j:'ぼ',r:'bo'},
+  {j:'ぱ',r:'pa'},{j:'ぴ',r:'pi'},{j:'ぷ',r:'pu'},{j:'ぺ',r:'pe'},{j:'ぽ',r:'po'}
+];
+
+const HIRAGANA_YOON = [
+  {j:'きゃ',r:'kya'}, {j:'きゅ',r:'kyu'}, {j:'きょ',r:'kyo'},
+  {j:'しゃ',r:'sha'}, {j:'しゅ',r:'shu'}, {j:'しょ',r:'sho'},
+  {j:'ちゃ',r:'cha'}, {j:'ちゅ',r:'chu'}, {j:'ちょ',r:'cho'},
+  {j:'にゃ',r:'nya'}, {j:'にゅ',r:'nyu'}, {j:'にょ',r:'nyo'},
+  {j:'ひゃ',r:'hya'}, {j:'ひゅ',r:'hyu'}, {j:'ひょ',r:'hyo'},
+  {j:'みゃ',r:'mya'}, {j:'みゅ',r:'myu'}, {j:'みょ',r:'myo'},
+  {j:'りゃ',r:'rya'}, {j:'りゅ',r:'ryu'}, {j:'りょ',r:'ryo'},
+  {j:'ぎゃ',r:'gya'}, {j:'ぎゅ',r:'gyu'}, {j:'ぎょ',r:'gyo'},
+  {j:'じゃ',r:'ja'}, {j:'じゅ',r:'ju'}, {j:'じょ',r:'jo'},
+  {j:'びゃ',r:'bya'}, {j:'びゅ',r:'byu'}, {j:'びょ',r:'byo'},
+  {j:'ぴゃ',r:'pya'}, {j:'ぴゅ',r:'pyu'}, {j:'ぴょ',r:'pyo'}
+];
+
+const KATAKANA_BASE = [
+  {j:'ア',r:'a'},{j:'イ',r:'i'},{j:'ウ',r:'u'},{j:'エ',r:'e'},{j:'オ',r:'o'},
+  {j:'カ',r:'ka'},{j:'キ',r:'ki'},{j:'ク',r:'ku'},{j:'ケ',r:'ke'},{j:'コ',r:'ko'},
+  {j:'サ',r:'sa'},{j:'シ',r:'shi'},{j:'ス',r:'su'},{j:'セ',r:'se'},{j:'ソ',r:'so'},
+  {j:'タ',r:'ta'},{j:'チ',r:'chi'},{j:'ツ',r:'tsu'},{j:'テ',r:'te'},{j:'ト',r:'to'},
+  {j:'ナ',r:'na'},{j:'ニ',r:'ni'},{j:'ヌ',r:'nu'},{j:'ネ',r:'ne'},{j:'ノ',r:'no'},
+  {j:'ハ',r:'ha'},{j:'ヒ',r:'hi'},{j:'フ',r:'fu'},{j:'ヘ',r:'he'},{j:'ホ',r:'ho'},
+  {j:'マ',r:'ma'},{j:'ミ',r:'mi'},{j:'ム',r:'mu'},{j:'メ',r:'me'},{j:'モ',r:'mo'},
+  {j:'ヤ',r:'ya'},{e:true},{j:'ユ',r:'yu'},{e:true},{j:'ヨ',r:'yo'},
+  {j:'ラ',r:'ra'},{j:'リ',r:'ri'},{j:'ル',r:'ru'},{j:'レ',r:'re'},{j:'ロ',r:'ro'},
+  {j:'ワ',r:'wa'},{e:true},{e:true},{e:true},{j:'ヲ',r:'wo'},
+  {j:'ン',r:'n'},{e:true},{e:true},{e:true},{e:true}
+];
+
+const KATAKANA_DAKUTEN = [
+  {j:'ガ',r:'ga'},{j:'ギ',r:'gi'},{j:'グ',r:'gu'},{j:'ゲ',r:'ge'},{j:'ゴ',r:'go'},
+  {j:'ザ',r:'za'},{j:'ジ',r:'ji'},{j:'ズ',r:'zu'},{j:'ゼ',r:'ze'},{j:'ゾ',r:'zo'},
+  {j:'ダ',r:'da'},{j:'ヂ',r:'ji'},{j:'ヅ',r:'zu'},{j:'デ',r:'de'},{j:'ド',r:'do'},
+  {j:'バ',r:'ba'},{j:'ビ',r:'bi'},{j:'ブ',r:'bu'},{j:'ベ',r:'be'},{j:'ボ',r:'bo'},
+  {j:'パ',r:'pa'},{j:'ピ',r:'pi'},{j:'プ',r:'pu'},{j:'ペ',r:'pe'},{j:'ポ',r:'po'}
+];
+
+const KATAKANA_YOON = [
+  {j:'キャ',r:'kya'}, {j:'キュ',r:'kyu'}, {j:'キョ',r:'kyo'},
+  {j:'シャ',r:'sha'}, {j:'シュ',r:'shu'}, {j:'ショ',r:'sho'},
+  {j:'チャ',r:'cha'}, {j:'チュ',r:'chu'}, {j:'チョ',r:'cho'},
+  {j:'ニャ',r:'nya'}, {j:'ニュ',r:'nyu'}, {j:'ニョ',r:'nyo'},
+  {j:'ヒャ',r:'hya'}, {j:'ヒュ',r:'hyu'}, {j:'ヒョ',r:'hyo'},
+  {j:'ミャ',r:'mya'}, {j:'ミュ',r:'myu'}, {j:'ミョ',r:'myo'},
+  {j:'リャ',r:'rya'}, {j:'リュ',r:'ryu'}, {j:'リョ',r:'ryo'},
+  {j:'ギャ',r:'gya'}, {j:'ギュ',r:'gyu'}, {j:'ギョ',r:'gyo'},
+  {j:'ジャ',r:'ja'}, {j:'ジュ',r:'ju'}, {j:'ジョ',r:'jo'},
+  {j:'ビャ',r:'bya'}, {j:'ビュ',r:'byu'}, {j:'ビョ',r:'byo'},
+  {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
+];
+
+// Exportation globale
+window.HIRAGANA_BASE = HIRAGANA_BASE;
+window.HIRAGANA_DAKUTEN = HIRAGANA_DAKUTEN;
+window.HIRAGANA_YOON = HIRAGANA_YOON;
+window.KATAKANA_BASE = KATAKANA_BASE;
+window.KATAKANA_DAKUTEN = KATAKANA_DAKUTEN;
+window.KATAKANA_YOON = KATAKANA_YOON;
 // Exporte les variables pour les rendre accessibles par index.html
 window.DB_KANJI = DB_KANJI;
 window.DB_VOCAB = DB_VOCAB;
