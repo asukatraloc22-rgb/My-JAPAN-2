@@ -1477,13 +1477,6 @@ function answerCard(quality) {
 }
 
 /* ─── MOTEUR QUIZ (TEXTE À TROUS) BILINGUE & PROCÉDURAL ─── */
-const QUIZ_DATA_FIXED = [
-  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』marque le Complément d'Objet Direct." },
-  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』indique le moyen ou l'instrument utilisé." },
-  { lvl: 'N4', q: "雨が降り ___ です。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Il a l'air de vouloir pleuvoir.", expl: "Racine du verbe + そう = Une apparence imminente." },
-  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "Forme TE + はいけません exprime une interdiction stricte." }
-];
-
 let activeQuiz = [];
 let currentQuizIndex = 0;
 
@@ -1528,12 +1521,17 @@ function generateProceduralQuiz(level, count = 10) {
 }
 
 function startQuiz(level) {
-  const fixedData = QUIZ_DATA_FIXED.filter(q => q.lvl === level);
-  const proceduralData = generateProceduralQuiz(level, 10);
-  activeQuiz = [...fixedData, ...proceduralData].sort(() => Math.random() - 0.5);
+  // 👈 On connecte le jeu à la nouvelle base de données DB_GRAMMAR !
+  const grammarData = (window.DB_GRAMMAR || []).filter(q => q.lvl === level);
+  
+  // On garde le générateur procédural pour avoir des dizaines de questions infinies sur les particules
+  const proceduralData = generateProceduralQuiz(level, 10); 
+  
+  // On mélange la vraie grammaire (DB_GRAMMAR) avec les phrases générées aléatoirement
+  activeQuiz = [...grammarData, ...proceduralData].sort(() => Math.random() - 0.5);
   
   if(activeQuiz.length === 0) { 
-    alert("Données non disponibles !"); 
+    alert("Données non disponibles pour ce niveau !"); 
     return; 
   }
   currentQuizIndex = 0;
