@@ -123,13 +123,18 @@
 
   <!-- CONTENU PRINCIPAL -->
   <main class="main-content">
-<header class="main-header">
+    <header class="main-header">
       <div class="page-title" id="page-title">Chargement...</div>
       <div class="search-container">
         <input type="text" id="global-search" placeholder="Chercher un kanji, mot, fr..." autocomplete="off">
         <div id="search-results" class="search-results"></div>
       </div>
     </header>
+    
+    <div class="main-body" id="content"></div>
+    
+  </main>
+</div>
 
 <!-- MODAL KANJI CACHÉE -->
 <div class="modal-overlay" id="kanji-modal-overlay" onclick="closeKanjiModal(event)">
