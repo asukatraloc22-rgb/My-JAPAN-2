@@ -437,7 +437,8 @@ const DB_VOCAB = {
       { jp: "母", kana: "はは", romaji: "haha", fr: "Ma mère" },
       { jp: "父", kana: "ちち", romaji: "chichi", fr: "Mon père" },
       { jp: "子供", kana: "こども", romaji: "kodomo", fr: "L'enfant" },
-      { jp: "医者", kana: "いしゃ", romaji: "isha", fr: "Le médecin" }
+      { jp: "医者", kana: "いしゃ", romaji: "isha", fr: "Le médecin" },
+      { jp: "店員", kana: "てんいん", romaji: "ten'in", fr: "L'employé de magasin" }
     ],
     places: [
       { jp: "学校", kana: "がっこう", romaji: "gakkō", fr: "l'école" },
@@ -451,7 +452,24 @@ const DB_VOCAB = {
       { jp: "家", kana: "いえ", romaji: "ie", fr: "la maison" },
       { jp: "銀行", kana: "ぎんこう", romaji: "ginkō", fr: "la banque" },
       { jp: "公園", kana: "こうえん", romaji: "kōen", fr: "le parc" },
-      { jp: "海", kana: "うみ", romaji: "umi", fr: "la mer" }
+      { jp: "海", kana: "うみ", romaji: "umi", fr: "la mer" },
+      { jp: "スーパー", kana: "すーぱー", romaji: "sūpā", fr: "le supermarché" },
+      { jp: "レストラン", kana: "れすとらん", romaji: "resutoran", fr: "le restaurant" },
+      { jp: "トイレ", kana: "といれ", romaji: "toire", fr: "les toilettes" }
+    ],
+    objects: [
+      { jp: "水", kana: "みず", romaji: "mizu", fr: "l'eau" },
+      { jp: "お茶", kana: "おちゃ", romaji: "ocha", fr: "le thé" },
+      { jp: "ご飯", kana: "ごはん", romaji: "gohan", fr: "le riz / le repas" },
+      { jp: "パン", kana: "ぱん", romaji: "pan", fr: "le pain" },
+      { jp: "肉", kana: "にく", romaji: "niku", fr: "la viande" },
+      { jp: "魚", kana: "さかな", romaji: "sakana", fr: "le poisson" },
+      { jp: "本", kana: "ほん", romaji: "hon", fr: "le livre" },
+      { jp: "お金", kana: "おかね", romaji: "okane", fr: "l'argent" },
+      { jp: "車", kana: "くるま", romaji: "kuruma", fr: "la voiture" },
+      { jp: "電話", kana: "でんわ", romaji: "denwa", fr: "le téléphone" },
+      { jp: "鞄", kana: "かばん", romaji: "kaban", fr: "le sac" },
+      { jp: "靴", kana: "くつ", romaji: "kutsu", fr: "les chaussures" }
     ],
     verbs_motion: [
       { jp: "行きます", kana: "いきます", romaji: "ikimasu", fr: "vais / va (à)" },
@@ -460,6 +478,39 @@ const DB_VOCAB = {
       { jp: "出かけます", kana: "でかけます", romaji: "dekakemasu", fr: "sors / sort (à)" },
       { jp: "歩きます", kana: "あるきます", romaji: "arukimasu", fr: "marche (vers)" },
       { jp: "走ります", kana: "はしります", romaji: "hashirimasu", fr: "cours / court (vers)" }
+    ],
+    verbs_action: [
+      { jp: "食べます", kana: "たべます", romaji: "tabemasu", fr: "mange" },
+      { jp: "飲みます", kana: "のみます", romaji: "nomimasu", fr: "boit" },
+      { jp: "見ます", kana: "みます", romaji: "mimasu", fr: "regarde / voit" },
+      { jp: "聞きます", kana: "ききます", romaji: "kikimasu", fr: "écoute" },
+      { jp: "読みます", kana: "よみます", romaji: "yomimasu", fr: "lit" },
+      { jp: "書きます", kana: "かきます", romaji: "kakimasu", fr: "écrit" },
+      { jp: "買います", kana: "かいます", romaji: "kaimasu", fr: "achète" },
+      { jp: "話します", kana: "はなします", romaji: "hanashimasu", fr: "parle" },
+      { jp: "作ります", kana: "つくります", romaji: "tsukurimasu", fr: "fabrique / prépare" }
+    ],
+    adjectives: [
+      { jp: "大きい", kana: "おおきい", romaji: "ookii", fr: "grand" },
+      { jp: "小さい", kana: "ちいさい", romaji: "chiisai", fr: "petit" },
+      { jp: "新しい", kana: "あたらしい", romaji: "atarashii", fr: "nouveau" },
+      { jp: "古い", kana: "ふるい", romaji: "furui", fr: "vieux" },
+      { jp: "高い", kana: "たかい", romaji: "takai", fr: "cher / haut" },
+      { jp: "安い", kana: "やすい", romaji: "yasui", fr: "bon marché" },
+      { jp: "美味しい", kana: "おいしい", romaji: "oishii", fr: "délicieux" },
+      { jp: "忙しい", kana: "いそがしい", romaji: "isogashii", fr: "occupé" },
+      { jp: "静か", kana: "しずか", romaji: "shizuka", fr: "calme (na)" },
+      { jp: "綺麗", kana: "きれい", romaji: "kirei", fr: "beau / propre (na)" }
+    ],
+    expressions: [
+      { jp: "おはようございます", kana: "おはようございます", romaji: "ohayou gozaimasu", fr: "Bonjour (matin)" },
+      { jp: "こんにちは", kana: "こんにちは", romaji: "konnichiwa", fr: "Bonjour (journée)" },
+      { jp: "こんばんは", kana: "こんばんは", romaji: "konbanwa", fr: "Bonsoir" },
+      { jp: "ありがとうございます", kana: "ありがとうございます", romaji: "arigatou gozaimasu", fr: "Merci beaucoup" },
+      { jp: "すみません", kana: "すみません", romaji: "sumimasen", fr: "Excusez-moi / Pardon" },
+      { jp: "お願いします", kana: "おねがいします", romaji: "onegai shimasu", fr: "S'il vous plaît" },
+      { jp: "いただきます", kana: "いただきます", romaji: "itadakimasu", fr: "Bon appétit (avant repas)" },
+      { jp: "ごちそうさまでした", kana: "ごちそうさまでした", romaji: "gochisousama deshita", fr: "Merci pour ce repas" }
     ]
   },
   N4: {
@@ -472,7 +523,8 @@ const DB_VOCAB = {
       { jp: "留学生", kana: "りゅうがくせい", romaji: "ryūgakusei", fr: "L'étudiant étranger" },
       { jp: "家族", kana: "かぞく", romaji: "kazoku", fr: "La famille" },
       { jp: "泥棒", kana: "どろぼう", romaji: "dorobō", fr: "Le voleur" },
-      { jp: "お客さん", kana: "おきゃくさん", romaji: "okyakusan", fr: "Le client / l'invité" }
+      { jp: "お客さん", kana: "おきゃくさん", romaji: "okyakusan", fr: "Le client / l'invité" },
+      { jp: "赤ちゃん", kana: "あかちゃん", romaji: "akachan", fr: "Le bébé" }
     ],
     places: [
       { jp: "空港", kana: "くうこう", romaji: "kūkō", fr: "l'aéroport" },
@@ -482,7 +534,16 @@ const DB_VOCAB = {
       { jp: "会場", kana: "かいじょう", romaji: "kaijō", fr: "le lieu de l'événement" },
       { jp: "工場", kana: "こうじょう", romaji: "kōjō", fr: "l'usine" },
       { jp: "美術館", kana: "びじゅつかん", romaji: "bijutsukan", fr: "le musée d'art" },
-      { jp: "旅館", kana: "りょかん", romaji: "ryokan", fr: "l'auberge traditionnelle" }
+      { jp: "旅館", kana: "りょかん", romaji: "ryokan", fr: "l'auberge traditionnelle" },
+      { jp: "市役所", kana: "しやくしょ", romaji: "shiyakusho", fr: "la mairie" }
+    ],
+    objects: [
+      { jp: "携帯", kana: "けいたい", romaji: "keitai", fr: "le téléphone portable" },
+      { jp: "パソコン", kana: "ぱそこん", romaji: "pasokon", fr: "l'ordinateur" },
+      { jp: "冷蔵庫", kana: "れいぞうこ", romaji: "reizouko", fr: "le réfrigérateur" },
+      { jp: "荷物", kana: "にもつ", romaji: "nimotsu", fr: "les bagages" },
+      { jp: "お土産", kana: "おみやげ", romaji: "omiyage", fr: "le souvenir (cadeau)" },
+      { jp: "鍵", kana: "かぎ", romaji: "kagi", fr: "la clé" }
     ],
     verbs_motion: [
       { jp: "向かいます", kana: "むかいます", romaji: "mukaimasu", fr: "se dirige (vers)" },
@@ -492,36 +553,74 @@ const DB_VOCAB = {
       { jp: "急ぎます", kana: "いそぎます", romaji: "isogimasu", fr: "se dépêche (d'aller à)" },
       { jp: "引っ越します", kana: "ひっこします", romaji: "hikkoshimasu", fr: "déménage (à)" },
       { jp: "通います", kana: "かよいます", romaji: "kayoimasu", fr: "fait le trajet régulièrement (vers)" }
+    ],
+    verbs_action: [
+      { jp: "片付けます", kana: "かたづけます", romaji: "katadzukemasu", fr: "range / met en ordre" },
+      { jp: "探します", kana: "さがします", romaji: "sagashimasu", fr: "cherche" },
+      { jp: "調べます", kana: "しらべます", romaji: "shirabemasu", fr: "examine / consulte" },
+      { jp: "手伝います", kana: "てつだいます", romaji: "tetsudaimasu", fr: "aide" },
+      { jp: "予約します", kana: "よやくします", romaji: "yoyakushimasu", fr: "réserve" },
+      { jp: "払います", kana: "はらいます", romaji: "haraimasu", fr: "paie" }
+    ],
+    adjectives: [
+      { jp: "危ない", kana: "あぶない", romaji: "abunai", fr: "dangereux" },
+      { jp: "安全", kana: "あんぜん", romaji: "anzen", fr: "sûr / en sécurité (na)" },
+      { jp: "複雑", kana: "ふくざつ", romaji: "fukuzatsu", fr: "complexe (na)" },
+      { jp: "簡単", kana: "かんたん", romaji: "kantan", fr: "facile / simple (na)" },
+      { jp: "嬉しい", kana: "うれしい", romaji: "ureshii", fr: "heureux / content" },
+      { jp: "悲しい", kana: "かなしい", romaji: "kanashii", fr: "triste" },
+      { jp: "寂しい", kana: "さびしい", romaji: "sabishii", fr: "solitaire / se sentir seul" }
     ]
   },
   N3: {
     subjects: [
       { jp: "政治家", kana: "せいじか", romaji: "seijika", fr: "Le politicien" },
-      { jp: "司会者", kana: "しかいしゃ", romaji: "shikaisha", fr: "L'animateur / Le présentateur" },
+      { jp: "司会者", kana: "しかいしゃ", romaji: "shikaisha", fr: "L'animateur" },
       { jp: "裁判官", kana: "さいばんかん", romaji: "saibankan", fr: "Le juge" },
-      { jp: "労働者", kana: "ろうどうしゃ", romaji: "rōdōsha", fr: "Le travailleur / L'ouvrier" },
+      { jp: "労働者", kana: "ろうどうしゃ", romaji: "rōdōsha", fr: "Le travailleur" },
       { jp: "経営者", kana: "けいえいしゃ", romaji: "keieisha", fr: "Le gérant" },
-      { jp: "専門家", kana: "せんもんか", romaji: "senmonka", fr: "L'expert / Le spécialiste" },
-      { jp: "選手", kana: "せんしゅ", romaji: "senshu", fr: "Le joueur / L'athlète" },
+      { jp: "専門家", kana: "せんもんか", romaji: "senmonka", fr: "L'expert" },
+      { jp: "選手", kana: "せんしゅ", romaji: "senshu", fr: "L'athlète" },
       { jp: "担当者", kana: "たんとうしゃ", romaji: "tantōsha", fr: "La personne en charge" }
     ],
     places: [
       { jp: "市役所", kana: "しやくしょ", romaji: "shiyaksho", fr: "la mairie" },
       { jp: "薬局", kana: "やっきょく", romaji: "yakkyoku", fr: "la pharmacie" },
       { jp: "裁判所", kana: "さいばんしょ", romaji: "saibansho", fr: "le tribunal" },
-      { jp: "支店", kana: "してん", romaji: "shiten", fr: "la succursale / filiale" },
+      { jp: "支店", kana: "してん", romaji: "shiten", fr: "la succursale" },
       { jp: "会議室", kana: "かいぎしつ", romaji: "kaigishitsu", fr: "la salle de réunion" },
       { jp: "営業所", kana: "えいぎょうしょ", romaji: "eigyōsho", fr: "l'agence commerciale" },
-      { jp: "現場", kana: "げんば", romaji: "genba", fr: "le lieu de l'action / le chantier" },
-      { jp: "故郷", kana: "こきょう", romaji: "kokyō", fr: "le pays natal / village d'origine" }
+      { jp: "現場", kana: "げんば", romaji: "genba", fr: "le chantier / la scène" },
+      { jp: "故郷", kana: "こきょう", romaji: "kokyō", fr: "le pays natal" }
+    ],
+    objects: [
+      { jp: "書類", kana: "しょるい", romaji: "shorui", fr: "les documents" },
+      { jp: "資料", kana: "しりょう", romaji: "shiryou", fr: "les données / matériaux" },
+      { jp: "契約書", kana: "けいやくしょ", romaji: "keiyakusho", fr: "le contrat (papier)" },
+      { jp: "商品", kana: "ひんしつ", romaji: "shouhin", fr: "la marchandise" },
+      { jp: "機械", kana: "きかい", romaji: "kikai", fr: "la machine" }
     ],
     verbs_motion: [
       { jp: "戻ります", kana: "もどります", romaji: "modorimasu", fr: "retourne / revient (à)" },
-      { jp: "移転します", kana: "いてんします", romaji: "itenshimasu", fr: "déménage / est transféré (à)" },
+      { jp: "移転します", kana: "いてんします", romaji: "itenshimasu", fr: "déménage (entreprise) (à)" },
       { jp: "出席します", kana: "しゅっせきします", romaji: "shusseki shimasu", fr: "assiste (à)" },
-      { jp: "退職します", kana: "たいしょくします", romaji: "taishoku shimasu", fr: "se retire / part (de)" },
+      { jp: "退職します", kana: "たいしょくします", romaji: "taishoku shimasu", fr: "se retire / démissionne (de)" },
       { jp: "留学します", kana: "りゅうがくします", romaji: "ryūgakushimasu", fr: "part étudier (à)" },
       { jp: "逃げます", kana: "にげます", romaji: "nigemasu", fr: "s'enfuit (de/vers)" }
+    ],
+    verbs_action: [
+      { jp: "確認します", kana: "かくにんします", romaji: "kakunin shimasu", fr: "confirme / vérifie" },
+      { jp: "提案します", kana: "ていあんします", romaji: "teian shimasu", fr: "propose" },
+      { jp: "報告します", kana: "ほうこくします", romaji: "houkoku shimasu", fr: "signale / rapporte" },
+      { jp: "比較します", kana: "ひかくします", romaji: "hikaku shimasu", fr: "compare" },
+      { jp: "我慢します", kana: "がまんします", romaji: "gaman shimasu", fr: "supporte / endure" }
+    ],
+    adjectives: [
+      { jp: "正確", kana: "せいかく", romaji: "seikaku", fr: "précis / exact (na)" },
+      { jp: "面倒", kana: "めんどう", romaji: "mendou", fr: "ennuyeux / laborieux (na)" },
+      { jp: "詳細", kana: "しょうさい", romaji: "shousai", fr: "détaillé (na)" },
+      { jp: "厳しい", kana: "きびしい", romaji: "kibishii", fr: "sévère / strict" },
+      { jp: "詳しい", kana: "くわしい", romaji: "kuwashii", fr: "détaillé / connaisseur" }
     ]
   },
   N2: {
@@ -532,7 +631,7 @@ const DB_VOCAB = {
       { jp: "主催者", kana: "しゅさいしゃ", romaji: "shusaisha", fr: "L'organisateur" },
       { jp: "被害者", kana: "ひがいしゃ", romaji: "higaisha", fr: "La victime" },
       { jp: "専門医", kana: "せんもんい", romaji: "senmon'i", fr: "Le médecin spécialiste" },
-      { jp: "官僚", kana: "かんりょう", romaji: "kanryō", fr: "Le bureaucrate / Haut fonctionnaire" },
+      { jp: "官僚", kana: "かんりょう", romaji: "kanryō", fr: "Le bureaucrate" },
       { jp: "教授", kana: "きょうじゅ", romaji: "kyōju", fr: "Le professeur d'université" }
     ],
     places: [
@@ -560,7 +659,7 @@ const DB_VOCAB = {
       { jp: "大統領", kana: "だいとうりょう", romaji: "daitōryō", fr: "Le président (d'un pays)" },
       { jp: "派遣団", kana: "はけんだん", romaji: "hakendan", fr: "La délégation" },
       { jp: "先駆者", kana: "せんくしゃ", romaji: "senkusha", fr: "Le précurseur" },
-      { jp: "覇者", kana: "はしゃ", romaji: "hasha", fr: "Le conquérant / Le champion suprême" },
+      { jp: "覇者", kana: "はしゃ", romaji: "hasha", fr: "Le conquérant / Le champion" },
       { jp: "皇帝", kana: "こうてい", romaji: "kōtei", fr: "L'Empereur" },
       { jp: "刺客", kana: "しかく", romaji: "shikaku", fr: "L'assassin" }
     ],
