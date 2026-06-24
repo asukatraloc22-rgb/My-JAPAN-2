@@ -2132,7 +2132,13 @@ let kbCurrentIndex = 0;
 let kbUserInput = "";
 
 function startKeyboardMode(level) {
-  kbQuestions = generateProceduralQuiz(level, 5); // On réutilise l'algorithme des particules
+  // On mixe la Grammaire Experte (DB_GRAMMAR) avec les Particules de base (Générateur Procédural)
+  const grammarData = (window.DB_GRAMMAR || []).filter(q => q.lvl === level);
+  const proceduralData = generateProceduralQuiz(level, 5); 
+  
+  // On mélange le tout et on garde 5 questions pour la session
+  kbQuestions = [...grammarData, ...proceduralData].sort(() => Math.random() - 0.5).slice(0, 5);
+  
   if(kbQuestions.length === 0) { alert("Données non disponibles !"); return; }
   kbCurrentIndex = 0;
   loadContent('keyboard-run');
@@ -2156,11 +2162,24 @@ function renderKeyboardQuestion() {
 
 function updateKeyboardUI() {
   const q = kbQuestions[kbCurrentIndex];
-  // On remplace le trou par ce que l'utilisateur tape
+  // On remplace le trou par ce que l'utilisateur tape en direct
   const displaySentence = q.q.replace("___", `<span class="quiz-blank" style="color:var(--aka); border-bottom:3px solid var(--aka); min-width:50px; display:inline-block; text-align:center;">${kbUserInput}</span>`);
   
-  // Génération du mini-clavier (les particules principales + pièges)
-  const keys = ["は", "が", "を", "に", "で", "へ", "と", "も", "や", "から", "まで", "ね", "よ"];
+  // 👈 NOUVEAU : Le clavier s'adapte magiquement à la réponse attendue !
+  let uniqueAnsChars = Array.from(new Set(q.ans)); // Toutes les lettres uniques de la réponse
+  let keys = [...uniqueAnsChars];
+  
+  // On ajoute 6 touches "pièges" aléatoires pour corser le jeu
+  const distractors = ["は", "が", "を", "に", "で", "て", "た", "な", "ば", "と", "も", "し", "る", "れ", "ん", "い", "う", "え", "お", "き", "く"];
+  while(keys.length < uniqueAnsChars.length + 6) {
+    let randChar = distractors[Math.floor(Math.random() * distractors.length)];
+    if(!keys.includes(randChar)) keys.push(randChar);
+  }
+  
+  // On mélange les touches du clavier de façon aléatoire
+  keys.sort(() => Math.random() - 0.5);
+
+  // Construction de l'interface du clavier
   let kbHtml = '<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px; max-width: 400px; margin-left: auto; margin-right: auto;">';
   keys.forEach(k => {
     kbHtml += `<button class="quiz-opt-btn" style="min-width:50px; padding:10px;" onclick="typeKeyboard('${k}')">${k}</button>`;
@@ -2170,7 +2189,7 @@ function updateKeyboardUI() {
   kbHtml += '</div>';
 
   document.getElementById('keyboard-area').innerHTML = `
-    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--sumi2);">Tapez la particule manquante :</div>
+    <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:var(--sumi2);">Tapez la réponse au clavier :</div>
     <div class="quiz-sentence">${displaySentence}</div>
     <div class="quiz-translation">"${q.fr}"</div>
     ${kbHtml}
