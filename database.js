@@ -683,50 +683,53 @@ const DB_VOCAB = {
   }
 };
 
-// 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE
+// 3. BASE DE DONNÉES DE LA DICTÉE BILINGUE (Inclus Tameguchi & Kotowaza)
 const DB_DICTATION = {
   N5: [
+    // --- Japonais Standard ---
     { jp: "おはようございます", fr: "Bonjour (le matin)", wrong_fr: ["Bonsoir", "Merci beaucoup", "Au revoir"], wrong_jp: ["こんばんは", "ありがとうございます", "さようなら"] },
     { jp: "りんごを食べます", fr: "Je mange une pomme", wrong_fr: ["Je bois de l'eau", "J'achète une pomme", "Il mange du pain"], wrong_jp: ["水を飲みます", "りんごを買います", "パンを食べます"] },
     { jp: "どこに行きますか", fr: "Où allez-vous ?", wrong_fr: ["D'où venez-vous ?", "Que faites-vous ?", "Quand partez-vous ?"], wrong_jp: ["どこから来ましたか", "何をしますか", "いつ出発しますか"] },
-    { jp: "わたしは学生です", fr: "Je suis étudiant", wrong_fr: ["Je suis professeur", "Il est étudiant", "C'est mon école"], wrong_jp: ["わたしは先生です", "彼は学生です", "これは私の学校です"] },
-    { jp: "机の上に本があります", fr: "Il y a un livre sur le bureau", wrong_fr: ["Il y a un stylo sous le bureau", "Le livre est dans le sac", "J'achète un livre de bureau"], wrong_jp: ["机の下にペンがあります", "本はかばんの中にあります", "机の本を買います"] },
-    { jp: "毎日、日本語を勉強します", fr: "J'étudie le japonais tous les jours", wrong_fr: ["Je parle japonais parfois", "J'ai étudié le japonais hier", "J'aime étudier le japonais"], wrong_jp: ["時々日本語を話します", "昨日日本語を勉強しました", "日本語の勉強が好きです"] },
-    { jp: "今、何時ですか", fr: "Quelle heure est-il maintenant ?", wrong_fr: ["Quel jour sommes-nous ?", "Où es-tu maintenant ?", "Combien ça coûte ?"], wrong_jp: ["今日は何曜日ですか", "今どこにいますか", "これはいくらですか"] },
-    { jp: "週末は映画を見ます", fr: "Le week-end, je regarde un film", wrong_fr: ["J'ai vu un film hier", "Je vais au cinéma le week-end", "J'aime les films"], wrong_jp: ["昨日映画を見ました", "週末に映画館に行きます", "映画が好きです"] }
+    // --- Japonais Familier (Tameguchi) ---
+    { jp: "お腹すいた！", fr: "J'ai faim !", wrong_fr: ["J'ai soif !", "J'ai sommeil !", "C'est délicieux !"], wrong_jp: ["喉が渇いた！", "眠い！", "美味しい！"] },
+    { jp: "行く？", fr: "Tu y vas ?", wrong_fr: ["Tu manges ?", "Tu viens ?", "Tu rentres ?"], wrong_jp: ["食べる？", "来る？", "帰る？"] },
+    { jp: "すごい！", fr: "Incroyable / Super !", wrong_fr: ["C'est nul !", "C'est grand !", "C'est chaud !"], wrong_jp: ["だめ！", "大きい！", "熱い！"] }
   ],
   N4: [
+    // --- Japonais Standard ---
     { jp: "雨が降りそうです", fr: "On dirait qu'il va pleuvoir", wrong_fr: ["Il a plu hier", "Il pleut beaucoup", "J'ai entendu qu'il allait pleuvoir"], wrong_jp: ["昨日雨が降りました", "雨がたくさん降っています", "雨が降るそうです"] },
-    { jp: "先生に漢字を教えてもらいました", fr: "J'ai reçu l'enseignement des kanjis de mon professeur", wrong_fr: ["J'ai enseigné les kanjis au professeur", "Le professeur veut m'enseigner les kanjis", "Je dois enseigner les kanjis"], wrong_jp: ["先生に漢字を教えてあげました", "先生は漢字を教えたがっています", "漢字を教えなければなりません"] },
     { jp: "安ければ、買います", fr: "Si c'est pas cher, j'achèterai", wrong_fr: ["Quand je l'ai acheté, c'était pas cher", "Je veux l'acheter même si c'est cher", "Si j'achète, ce sera pas cher"], wrong_jp: ["買った時、安かったです", "高くても買いたいです", "買えば、安くなります"] },
-    { jp: "パスポートを忘れないようにしてください", fr: "Faites en sorte de ne pas oublier votre passeport", wrong_fr: ["N'oubliez jamais votre passeport", "J'ai fait en sorte de ne pas l'oublier", "Vous avez oublié votre passeport"], wrong_jp: ["パスポートを絶対に忘れないで", "パスポートを忘れないようにしました", "パスポートを忘れましたね"] },
-    { jp: "富士山に登ったことがありますか", fr: "Avez-vous déjà escaladé le mont Fuji ?", wrong_fr: ["Voulez-vous escalader le mont Fuji ?", "Je vais escalader le mont Fuji", "Pouvez-vous escalader le mont Fuji ?"], wrong_jp: ["富士山に登りたいですか", "富士山に登るつもりです", "富士山に登ることができますか"] },
-    { jp: "この漢字の読み方が分かりますか", fr: "Comprenez-vous la façon de lire ce kanji ?", wrong_fr: ["Pouvez-vous écrire ce kanji ?", "Connaissez-vous le sens de ce kanji ?", "Voulez-vous lire ce kanji ?"], wrong_jp: ["この漢字が書けますか", "この漢字の意味を知っていますか", "この漢字を読みたいですか"] },
-    { jp: "熱があるので、早く寝たほうがいいです", fr: "Comme tu as de la fièvre, il vaudrait mieux te coucher tôt", wrong_fr: ["Tu dois te coucher tôt à cause de la fièvre", "J'ai de la fièvre donc je vais dormir", "Si tu te couches, la fièvre baissera"], wrong_jp: ["熱があるから、早く寝なければならない", "熱があるので、早く寝ます", "寝れば、熱が下がります"] }
+    // --- Japonais Familier (Anime Style) ---
+    { jp: "何やってんの？", fr: "Tu fais quoi là ?", wrong_fr: ["Où vas-tu ?", "Qui es-tu ?", "Pourquoi tu pleures ?"], wrong_jp: ["どこ行くの？", "誰なの？", "なんで泣いてるの？"] },
+    { jp: "マジで？", fr: "Sérieux ? / Vraiment ?", wrong_fr: ["C'est une blague ?", "C'est faux ?", "Bien sûr !"], wrong_jp: ["冗談でしょ？", "嘘でしょ？", "もちろん！"] },
+    { jp: "やばい！", fr: "C'est dingue / Chaud !", wrong_fr: ["C'est facile !", "C'est bon !", "C'est fini !"], wrong_jp: ["簡単！", "美味しい！", "終わった！"] }
   ],
   N3: [
-    { jp: "社長がいらっしゃいました", fr: "Le directeur est arrivé (respectueux)", wrong_fr: ["Le directeur a mangé", "Je suis le directeur", "Le directeur va partir"], wrong_jp: ["社長が召し上がりました", "私は社長です", "社長が出発します"] },
+    // --- Japonais Standard ---
     { jp: "温かいうちに食べてください", fr: "Mangez pendant que c'est chaud", wrong_fr: ["Mangez quand ce sera froid", "Ne mangez pas ceci", "C'est chaud et bon"], wrong_jp: ["冷たい内に食べてください", "これを食べないでください", "温かくて美味しいです"] },
-    { jp: "子供の頃、よく母に野菜を食べさせられた", fr: "Quand j'étais enfant, ma mère me forçait souvent à manger des légumes", wrong_fr: ["Enfant, ma mère me laissait manger des légumes", "Ma mère préparait souvent des légumes", "J'ai forcé mon enfant à manger des légumes"], wrong_jp: ["子供の頃、母が野菜を食べさせてくれた", "母はよく野菜を作ってくれた", "子供に野菜を食べさせた"] },
     { jp: "このプロジェクトは失敗するはずがない", fr: "Il est impossible que ce projet échoue", wrong_fr: ["Ce projet va probablement échouer", "Ce projet n'a pas le droit d'échouer", "Je ne sais pas si ce projet va échouer"], wrong_jp: ["このプロジェクトは失敗するかもしれない", "このプロジェクトは失敗してはいけない", "このプロジェクトが失敗するか分からない"] },
-    { jp: "説明書を読んだにもかかわらず、使い方が分からない", fr: "Bien que j'aie lu le manuel, je ne comprends pas comment l'utiliser", wrong_fr: ["Je n'ai pas lu le manuel donc je ne comprends pas", "En lisant le manuel, j'ai compris comment l'utiliser", "On ne peut pas comprendre sans lire le manuel"], wrong_jp: ["説明書を読まなかったので、使い方が分からない", "説明書を読んで、使い方が分かった", "説明書を読まないと使い方が分からない"] },
-    { jp: "明日の会議は、午後2時から行われることになっている", fr: "Il a été décidé que la réunion de demain aura lieu à partir de 14h", wrong_fr: ["J'ai décidé que la réunion de demain serait à 14h", "La réunion de demain devrait se terminer à 14h", "Pouvez-vous venir à la réunion de 14h ?"], wrong_jp: ["明日の会議は、午後2時から行うことにした", "明日の会議は、午後2時に終わるはずだ", "午後2時の会議に来られますか"] }
+    // --- Japonais Familier & Émotionnel ---
+    { jp: "絶対許さない！", fr: "Je ne te pardonnerai jamais !", wrong_fr: ["Je n'oublierai jamais !", "Je ne perdrai pas !", "Je ne comprends pas !"], wrong_jp: ["絶対忘れない！", "絶対負けない！", "全然分からない！"] },
+    { jp: "しょうがないな", fr: "On n'y peut rien / Tant pis", wrong_fr: ["C'est de ta faute", "C'est impossible", "Je ne sais pas"], wrong_jp: ["君のせいだ", "ありえないな", "知らないな"] },
+    { jp: "気にしないで", fr: "Ne t'en fais pas / T'inquiète", wrong_fr: ["Fais attention", "Ne l'oublie pas", "Ne me touche pas"], wrong_jp: ["気をつけて", "忘れないで", "触らないで"] }
   ],
   N2: [
+    // --- Japonais Standard ---
     { jp: "予定を変更せざるを得ない", fr: "Nous sommes obligés de modifier le programme", wrong_fr: ["Nous voulons changer de programme", "Il est impossible de changer le planning", "Le programme est annulé"], wrong_jp: ["予定を変更したいです", "予定を変更するのは不可能です", "予定は中止になりました"] },
     { jp: "その意見には賛成しかねます", fr: "Je ne peux me résoudre à approuver cette opinion", wrong_fr: ["J'approuve totalement cette idée", "Je vais y réfléchir", "Cette opinion est stupide"], wrong_jp: ["その意見に完全に賛成します", "それについて考えてみます", "その意見は馬鹿げています"] },
-    { jp: "経済は徐々に回復しつつある", fr: "L'économie est en train de se redresser progressivement", wrong_fr: ["L'économie a complètement récupéré", "L'économie va bientôt s'effondrer", "Il faut redresser l'économie"], wrong_jp: ["経済は完全に回復した", "経済はまもなく崩壊する", "経済を回復させなければならない"] },
-    { jp: "契約の締結に際して、重要な書類が必要です", fr: "À l'occasion de la conclusion du contrat, des documents importants sont requis", wrong_fr: ["Le contrat a été annulé par manque de documents", "Veuillez signer le contrat sur ces documents", "Nous n'avons pas besoin de documents pour ce contrat"], wrong_jp: ["書類不足により契約は破棄されました", "この書類に契約のサインをしてください", "この契約に重要な書類は不要です"] },
-    { jp: "彼の言動は、政治家としてあるまじきものだ", fr: "Son comportement et ses propos sont indignes d'un politicien", wrong_fr: ["Ses propos feront de lui un bon politicien", "Il devrait se comporter comme un vrai politicien", "Les politiciens parlent souvent comme ça"], wrong_jp: ["彼の言動は、彼を良い政治家にするだろう", "彼は政治家らしく振る舞うべきだ", "政治家はよくそのように話す"] },
-    { jp: "台風の影響により、イベントは中止を余儀なくされた", fr: "En raison du typhon, l'événement a été forcé d'être annulé", wrong_fr: ["L'événement a eu lieu malgré le typhon", "On se demande si on doit annuler l'événement à cause du typhon", "Le typhon a été causé par l'événement"], wrong_jp: ["台風にもかかわらず、イベントは開催された", "台風のせいでイベントを中止すべきか悩んでいる", "イベントのせいで台風が起きた"] }
+    // --- Proverbes (Kotowaza) & Expressions ---
+    { jp: "猿も木から落ちる", fr: "L'erreur est humaine (Même les singes tombent)", wrong_fr: ["Le chien aboie, la caravane passe", "Tel père, tel fils", "Il n'y a pas de fumée sans feu"], wrong_jp: ["犬が吠えてもキャラバンは進む", "蛙の子は蛙", "火のない所に煙は立たぬ"] },
+    { jp: "一期一会", fr: "Une rencontre, une opportunité (Chaque instant est unique)", wrong_fr: ["Une pierre, deux coups", "Après la pluie, le beau temps", "Le silence est d'or"], wrong_jp: ["一石二鳥", "雨降って地固まる", "沈黙は金"] },
+    { jp: "面倒くさいな", fr: "C'est galère / C'est pénible", wrong_fr: ["C'est intéressant", "C'est compliqué", "C'est effrayant"], wrong_jp: ["面白いな", "複雑だな", "怖いな"] }
   ],
   N1: [
+    // --- Japonais Standard ---
     { jp: "彼は私の顔を見るや否や逃げ出した", fr: "Dès qu'il a vu mon visage, il s'est enfui", wrong_fr: ["Il a souri en voyant mon visage", "Il m'a regardé puis est venu me parler", "À peine est-il parti que je l'ai vu"], wrong_jp: ["彼は私の顔を見て微笑んだ", "彼は私を見て話しかけてきた", "彼が出発するや否や私は彼を見た"] },
     { jp: "愛していればこそ厳しく叱るのです", fr: "C'est précisément parce que je l'aime que je le gronde", wrong_fr: ["Je le gronde car je ne l'aime pas", "Bien que je l'aime, je suis méchant", "Je le gronde doucement"], wrong_jp: ["彼を愛していないから叱るのです", "彼を愛しているけれど、私は意地悪です", "彼を優しく叱るのです"] },
-    { jp: "そんな恐ろしい事件が起きるなど、想像するだに恐ろしい", fr: "Rien que d'imaginer qu'un incident aussi terrible puisse se produire me terrifie", wrong_fr: ["Cet incident terrifiant s'est produit comme je l'avais imaginé", "Je n'aurais jamais pu imaginer qu'un tel incident se produise", "Il ne faut pas avoir peur de cet incident"], wrong_jp: ["その恐ろしい事件は想像通りに起きた", "そんな事件が起きるとは想像すらできなかった", "その事件を恐れる必要はない"] },
-    { jp: "彼は政治家たるもの、常に国民の模範であるべきだ", fr: "En tant que politicien, il se doit d'être toujours un modèle pour les citoyens", wrong_fr: ["Les politiciens pensent souvent être des modèles", "Il veut devenir un politicien modèle pour les citoyens", "Même s'il est politicien, il n'est pas un modèle"], wrong_jp: ["政治家はよく自分たちを模範だと思っている", "彼は国民の模範となる政治家になりたい", "彼は政治家であるにもかかわらず模範ではない"] },
-    { jp: "その問題については、今さら議論するまでもない", fr: "Il n'y a même pas besoin de débattre de ce problème à ce stade", wrong_fr: ["Il est grand temps de débattre de ce problème", "Nous ne pouvons pas débattre de ce problème", "Le débat sur ce problème vient de commencer"], wrong_jp: ["今こそその問題について議論すべきだ", "その問題について議論することは不可能だ", "その問題についての議論が始まったばかりだ"] },
-    { jp: "彼女の才能は、もはや天才と呼ぶに足る", fr: "Son talent mérite amplement qu'on la qualifie de génie", wrong_fr: ["Elle n'a pas assez de talent pour être appelée un génie", "Un vrai génie aurait plus de talent qu'elle", "Elle est un génie mais manque de talent"], wrong_jp: ["彼女は天才と呼ぶには才能が足りない", "本当の天才なら彼女以上の才能があるだろう", "彼女は天才だが才能に欠けている"] }
+    // --- Proverbes Épiques & Dramatiques ---
+    { jp: "出る杭は打たれる", fr: "Le clou qui dépasse appelle le marteau (Conformisme)", wrong_fr: ["On récolte ce que l'on sème", "Le temps, c'est de l'argent", "La nuit porte conseil"], wrong_jp: ["自業自得", "時は金なり", "明日は明日の風が吹く"] },
+    { jp: "自業自得", fr: "On récolte ce que l'on sème (Karma)", wrong_fr: ["L'amour est aveugle", "Il vaut mieux prévenir que guérir", "L'union fait la force"], wrong_jp: ["恋は盲目", "転ばぬ先の杖", "三人寄れば文殊の知恵"] },
+    { jp: "ふざけるな！", fr: "Ne te fous pas de moi !", wrong_fr: ["Ne pars pas !", "Ne me regarde pas !", "Ne pleure pas !"], wrong_jp: ["行かないで！", "見ないで！", "泣かないで！"] }
   ]
 };
 
