@@ -1368,7 +1368,7 @@ else if(id === 'progression') {
         <button class="btn-primary" style="background: #e74c3c; width: 100%;" onclick="resetProgress()">Effacer ma progression</button>
       </div>`;
   }
-}
+
 
 /* ─── MOTEUR SRS (FLASHCARDS) ─── */
 let activeDeck = [];
