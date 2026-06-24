@@ -2791,7 +2791,7 @@ function checkPiegeAnswer(selected, btnElement, correct) {
     feedbackDiv.innerHTML = `<strong>✅ Bonne lecture !</strong>`;
     updateStat(true);
     // On fait parler la voix japonaise pour ancrer la prononciation !
-    speak(document.querySelector('.font-jp') ? document.querySelector('.font-jp').innerText : correct);
+    speak(correct);
   } else {
     btnElement.classList.add('wrong-ans');
     allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
