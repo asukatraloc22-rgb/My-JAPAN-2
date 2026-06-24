@@ -12,12 +12,54 @@
 html{scroll-behavior:smooth;}
 body{background:var(--shiro);color:var(--sumi);font-family:var(--font-body);min-height:100vh;overflow-x:hidden;}
 
-/* ARRIÈRE-PLAN ET ANIMATIONS */
-.bg-kanji{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;user-select:none;}
-.bg-kanji span{position:absolute;font-family:var(--font-jp);font-weight:900;color:var(--aka);opacity:0.08;line-height:1;}
-.petals{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
-.petal {position:absolute;top:-20px;border-radius:0 100% 0 100%;background:linear-gradient(135deg,#fff0f5,#ffb7c5);opacity:0.9;animation:fall linear forwards;filter:drop-shadow(0 2px 4px rgba(255,182,193,.6));}
-@keyframes fall{0%{transform:translateY(0) rotate(0deg) translateX(0);} 100%{transform:translateY(105vh) rotate(720deg) translateX(150px); opacity:0;}}
+/* --- ARRIÈRE-PLAN ET ANIMATIONS (NOUVEAU DESIGN ZEN) --- */
+/* Un très léger dégradé de fond pour adoucir le regard */
+body {
+  background: linear-gradient(135deg, var(--shiro) 0%, var(--sakura-pale) 100%);
+  color: var(--sumi);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-kanji { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; user-select: none; }
+
+/* Kanjis flottants : opacité très faible (3%) et animation douce */
+.bg-kanji span {
+  position: absolute;
+  font-family: var(--font-jp);
+  font-weight: 900;
+  color: var(--aka);
+  opacity: 0.03; 
+  line-height: 1;
+  animation: floatKanji linear infinite;
+}
+
+/* Animation de flottaison des Kanjis */
+@keyframes floatKanji {
+  0% { transform: translateY(110vh) rotate(-10deg) scale(0.8); opacity: 0; }
+  10% { opacity: 0.04; }
+  90% { opacity: 0.04; }
+  100% { transform: translateY(-20vh) rotate(20deg) scale(1.1); opacity: 0; }
+}
+
+/* Les pétales sont passés au z-index 1, pour tomber DERRIÈRE le contenu (z-index 10) */
+.petals { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+
+.petal {
+  position: absolute;
+  top: -20px;
+  border-radius: 0 100% 0 100%;
+  background: linear-gradient(135deg, #fff0f5, #ffb7c5);
+  opacity: 0.7; /* Légèrement plus transparents */
+  animation: fall linear forwards;
+  filter: drop-shadow(0 2px 4px rgba(255,182,193,.4));
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg) translateX(0); } 
+  100% { transform: translateY(105vh) rotate(720deg) translateX(100px); opacity: 0; }
+}
 
 /* LAYOUT PRINCIPAL */
 .app-shell { display: flex; min-height: 100vh; width: 100%; }
