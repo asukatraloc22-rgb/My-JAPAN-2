@@ -924,6 +924,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Leçon Inversée</span>
             <span class="vocab-fr">Du Français vers le Japonais</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('voice-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🎙️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Studio Vocal</span>
+            <span class="vocab-fr">Parlez en Japonais</span>
+          </div>
         </div>
       </div>`;
   }
@@ -1189,6 +1194,27 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="counters-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'voice-menu') {
+    titleHeader.innerText = "Studio Vocal : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Entraînez votre prononciation !</h3>
+        <p>L'application affichera une phrase en français. Appuyez sur le micro et prononcez la traduction en japonais. Votre navigateur évaluera votre accent et votre exactitude (Nécessite Chrome ou Edge).</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startVoiceMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Oral Débutant</span></div>
+          <div class="vocab-card" onclick="startVoiceMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Oral Élémentaire</span></div>
+          <div class="vocab-card" onclick="startVoiceMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Oral Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startVoiceMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Oral Avancé</span></div>
+          <div class="vocab-card" onclick="startVoiceMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Oral Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'voice-run') {
+    titleHeader.innerText = "MICROPHONE OUVERT...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="if(window.recognition) window.recognition.stop(); loadContent('exercices')">Retour</button>
+      <div class="card" id="voice-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -2947,6 +2973,154 @@ function checkCountersAnswer(selected, btnElement, correct) {
 function nextCountersQuestion() {
   countCurrentIndex++;
   renderCountersQuestion();
+}
+
+/* ─── MOTEUR DE JEU : STUDIO VOCAL (RECONNAISSANCE VOCALE) ─── */
+let voiceQuestions = [];
+let voiceCurrentIndex = 0;
+window.recognition = null;
+
+function startVoiceMode(level) {
+  // Vérification de la compatibilité du navigateur
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!window.SpeechRecognition) {
+    alert("Désolé, votre navigateur ne supporte pas la reconnaissance vocale. Veuillez utiliser Google Chrome ou Microsoft Edge.");
+    return;
+  }
+
+  if (!window.DB_DICTATION || !window.DB_DICTATION[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On pioche 5 phrases de dictée (qui contiennent les phrases JP et FR)
+  let pool = [...window.DB_DICTATION[level]].sort(() => Math.random() - 0.5);
+  voiceQuestions = pool.slice(0, 5);
+  
+  if(voiceQuestions.length === 0) return;
+  
+  voiceCurrentIndex = 0;
+  loadContent('voice-run');
+  renderVoiceQuestion();
+}
+
+function renderVoiceQuestion() {
+  if (voiceCurrentIndex >= voiceQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🎙️</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Enregistrement Terminé !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Votre accent japonais et votre spontanéité s'améliorent à vue d'œil.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = voiceQuestions[voiceCurrentIndex];
+
+  document.getElementById('voice-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Phrase ${voiceCurrentIndex + 1} / 5</div>
+    <div style="text-align:center; color:var(--sumi2); font-size:16px; margin-bottom:10px;">Traduisez cette phrase à l'oral :</div>
+    <div style="font-size: 24px; font-weight:bold; text-align: center; color: var(--sumi); margin-bottom: 30px;">"${q.fr}"</div>
+    
+    <div class="mic-btn" id="mic-btn" onclick="startRecording()">🎤</div>
+    <div style="text-align:center; color:#888; font-size:13px; margin-bottom:20px;" id="mic-hint">Cliquez sur le micro pour parler en japonais</div>
+    
+    <div id="voice-result" class="voice-result">...</div>
+    <div id="voice-feedback" class="quiz-feedback"></div>
+    
+    <div style="display:flex; justify-content:center; gap:10px;">
+        <button class="btn-primary" id="voice-skip-btn" style="background:#888;" onclick="skipVoiceQuestion()">Je ne sais pas</button>
+        <button class="btn-primary" id="voice-next-btn" style="display:none; background:var(--sumi);" onclick="nextVoiceQuestion()">Suivant ➔</button>
+    </div>
+  `;
+}
+
+function startRecording() {
+  const micBtn = document.getElementById('mic-btn');
+  const resultDiv = document.getElementById('voice-result');
+  const hintDiv = document.getElementById('mic-hint');
+  const q = voiceQuestions[voiceCurrentIndex];
+
+  if (micBtn.classList.contains('recording')) return; // Évite les doubles clics
+
+  // Configuration de l'API Vocale
+  window.recognition = new window.SpeechRecognition();
+  window.recognition.lang = 'ja-JP'; // On force la reconnaissance en Japonais !
+  window.recognition.interimResults = false;
+  window.recognition.maxAlternatives = 1;
+
+  window.recognition.onstart = function() {
+    micBtn.classList.add('recording');
+    hintDiv.innerHTML = "<strong style='color:var(--aka)'>L'application vous écoute... Parlez !</strong>";
+    resultDiv.innerText = "...";
+  };
+
+  window.recognition.onresult = function(event) {
+    // On récupère ce que l'IA a compris, et on enlève les espaces
+    const transcript = event.results[0][0].transcript.replace(/\s/g, ''); 
+    checkVoiceAnswer(transcript, q.jp);
+  };
+
+  window.recognition.onerror = function(event) {
+    micBtn.classList.remove('recording');
+    hintDiv.innerText = "Erreur du micro. Cliquez pour réessayer.";
+    if(event.error === 'not-allowed') {
+        alert("Vous devez autoriser l'accès au microphone dans votre navigateur en haut à gauche de la barre d'adresse !");
+    }
+  };
+
+  window.recognition.onend = function() {
+    micBtn.classList.remove('recording');
+    hintDiv.innerText = "Enregistrement terminé.";
+  };
+
+  window.recognition.start(); // Allume le micro
+}
+
+function checkVoiceAnswer(transcript, expected) {
+  const resultDiv = document.getElementById('voice-result');
+  const feedbackDiv = document.getElementById('voice-feedback');
+  
+  document.getElementById('voice-skip-btn').style.display = 'none';
+  document.getElementById('voice-next-btn').style.display = 'block';
+
+  // Nettoyage basique (on enlève la ponctuation japonaise courante pour faire la comparaison)
+  const cleanTranscript = transcript.replace(/[。、！？\s]/g, '');
+  const cleanExpected = expected.replace(/[。、！？\s]/g, '');
+
+  // L'API peut parfois transcrire en Kanjis, parfois en Kanas. On fait une comparaison large.
+  if (cleanTranscript.includes(cleanExpected) || cleanExpected.includes(cleanTranscript)) {
+    resultDiv.innerHTML = `<span class="voice-match">« ${transcript} »</span>`;
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Prononciation Parfaite !</strong><br>L'application a parfaitement compris : ${expected}`;
+    updateStat(true);
+  } else {
+    resultDiv.innerHTML = `<span class="voice-fail">« ${transcript} »</span>`;
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Mauvaise traduction ou accent imprécis.</strong><br>La phrase attendue était : <strong>${expected}</strong><br><button onclick="speak('${expected.replace(/'/g, "\\'")}')" style="margin-top:15px; padding:8px 12px; border-radius:5px; border:none; cursor:pointer; background:white; color:var(--aka); font-weight:bold;">Écouter le modèle</button>`;
+    updateStat(false);
+  }
+}
+
+function skipVoiceQuestion() {
+  if(window.recognition) window.recognition.stop();
+  const q = voiceQuestions[voiceCurrentIndex];
+  const resultDiv = document.getElementById('voice-result');
+  const feedbackDiv = document.getElementById('voice-feedback');
+  
+  document.getElementById('voice-skip-btn').style.display = 'none';
+  document.getElementById('voice-next-btn').style.display = 'block';
+  
+  resultDiv.innerHTML = `-`;
+  feedbackDiv.className = 'quiz-feedback wrong';
+  feedbackDiv.innerHTML = `<strong>Passé.</strong><br>La phrase attendue était : <strong>${q.jp}</strong>`;
+  updateStat(false);
+}
+
+function nextVoiceQuestion() {
+  voiceCurrentIndex++;
+  renderVoiceQuestion();
 }
 
 /* ─── INITIALIZATION ───────────────────────────────────────── */
