@@ -1247,30 +1247,6 @@ function loadContent(id) {
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="canvas-area" style="padding: 40px 20px;"></div>`;
   }
-    else if(id === 'reading-menu') {
-    titleHeader.innerText = "Bibliothèque : Textes par niveau";
-    let listHtml = '';
-    if (window.DB_READING) {
-      window.DB_READING.forEach(r => {
-        listHtml += `<div class="vocab-card" style="text-align:left; padding:20px;" onclick="startReadingMode('${r.id}')">
-          <span class="vocab-jp" style="font-size:16px;">${r.lvl}</span>
-          <strong style="font-size:20px; display:block; margin-top:5px;">${r.title}</strong>
-        </div>`;
-      });
-    }
-    contentDiv.innerHTML = `
-      <div class="card">
-        <h3>Lecture Intensive</h3>
-        <p>Lisez des textes en japonais. Si vous bloquez sur un mot souligné, cliquez dessus pour afficher le dictionnaire instantané.</p>
-        <div class="vocab-grid" style="grid-template-columns: 1fr;">${listHtml}</div>
-      </div>`;
-  }
-  else if(id === 'reading-run') {
-    titleHeader.innerText = "LECTURE EN COURS...";
-    contentDiv.innerHTML = `
-      <button class="btn-return" onclick="loadContent('reading-menu')">Retour</button>
-      <div class="card" id="reading-area" style="padding: 20px;"></div>`;
-  }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
     contentDiv.innerHTML = `
@@ -1476,6 +1452,30 @@ else if(id === 'progression') {
           </label>
         </div>
       </div>`;
+  }
+  else if(id === 'reading-menu') {
+    titleHeader.innerText = "Bibliothèque : Textes par niveau";
+    let listHtml = '';
+    if (window.DB_READING) {
+      window.DB_READING.forEach(r => {
+        listHtml += `<div class="vocab-card" style="text-align:left; padding:20px;" onclick="startReadingMode('${r.id}')">
+          <span class="vocab-jp" style="font-size:16px;">${r.lvl}</span>
+          <strong style="font-size:20px; display:block; margin-top:5px;">${r.title}</strong>
+        </div>`;
+      });
+    }
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Lecture Intensive</h3>
+        <p>Lisez des textes en japonais. Si vous bloquez sur un mot souligné, cliquez dessus pour afficher le dictionnaire instantané.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr;">${listHtml}</div>
+      </div>`;
+  }
+  else if(id === 'reading-run') {
+    titleHeader.innerText = "LECTURE EN COURS...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('reading-menu')">Retour</button>
+      <div class="card" id="reading-area" style="padding: 20px;"></div>`;
   }
 }
 
