@@ -363,4 +363,29 @@ body.samourai-mode .modal-story { background: #332701; border-color: #ffc107; co
 body.samourai-mode .modal-read-badge { background: #2c2c2c; }
 body.samourai-mode .modal-k-char { text-shadow: none; }
   
+/* --- BARRE DE RECHERCHE GLOBALE --- */
+.main-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+.search-container { position: relative; flex: 1; min-width: 250px; max-width: 350px; margin-left: auto; }
+#global-search { width: 100%; padding: 10px 18px; border-radius: 20px; border: 2px solid rgba(188,0,45,0.15); font-family: var(--font-body); font-size: 14px; outline: none; transition: all 0.2s; background: rgba(255,255,255,0.9); }
+#global-search:focus { border-color: var(--aka); box-shadow: 0 0 0 4px var(--sakura-pale); background: white; }
 
+.search-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); max-height: 400px; overflow-y: auto; z-index: 1000; display: none; border: 1px solid rgba(188,0,45,0.1); }
+.search-results.active { display: block; animation: popIn 0.2s ease-out; }
+.search-result-item { padding: 12px 15px; border-bottom: 1px solid rgba(0,0,0,0.05); cursor: pointer; display: flex; align-items: center; gap: 12px; transition: background 0.2s; }
+.search-result-item:last-child { border-bottom: none; }
+.search-result-item:hover { background: var(--sakura-pale); }
+
+.sr-icon { font-size: 26px; font-family: var(--font-jp); color: var(--aka); width: 40px; text-align: center; }
+.sr-content { display: flex; flex-direction: column; flex: 1; }
+.sr-title { font-weight: bold; color: var(--sumi); font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+.sr-desc { font-size: 13px; color: #666; margin-top: 2px; }
+.sr-badge { font-size: 10px; background: var(--kinari); padding: 3px 6px; border-radius: 6px; color: var(--aka); border: 1px solid var(--sakura); font-weight: bold; }
+
+/* Adaptation au Mode Samouraï */
+body.samourai-mode #global-search { background: var(--kinari); color: white; border-color: rgba(255,255,255,0.1); }
+body.samourai-mode .search-results { background: var(--washi); border-color: rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+body.samourai-mode .search-result-item { border-bottom-color: rgba(255,255,255,0.05); }
+body.samourai-mode .search-result-item:hover { background: #3a2a2a; }
+body.samourai-mode .sr-title { color: #fff; }
+body.samourai-mode .sr-desc { color: #aaa; }
+body.samourai-mode .sr-badge { background: #111; color: var(--sakura); border-color: #555; }
