@@ -804,6 +804,44 @@ const KATAKANA_YOON = [
   {j:'ピャ',r:'pya'}, {j:'ピュ',r:'pyu'}, {j:'ピョ',r:'pyo'}
 ];
 
+// 5. BASE DE DONNÉES DE GRAMMAIRE (Texte à trous JLPT)
+const DB_GRAMMAR = [
+  // --- NIVEAU N5 (Particules et Bases) ---
+  { lvl: 'N5', q: "わたし ___ 学生です。", opts: ["が", "で", "を", "は"], ans: "は", fr: "Je suis étudiant.", expl: "La particule『は』(wa) marque le thème de la phrase (Ce dont on parle)." },
+  { lvl: 'N5', q: "りんご ___ 食べます。", opts: ["が", "で", "を", "に"], ans: "を", fr: "Je mange une pomme.", expl: "La particule『を』(o) marque le Complément d'Objet Direct de l'action de manger." },
+  { lvl: 'N5', q: "鉛筆 ___ 書きます。", opts: ["に", "で", "と", "を"], ans: "で", fr: "J'écris avec un crayon.", expl: "La particule『で』indique le moyen ou l'instrument utilisé pour accomplir l'action." },
+  { lvl: 'N5', q: "日曜日 ___ 東京に行きます。", opts: ["は", "が", "に", "を"], ans: "に", fr: "Je vais à Tokyo dimanche.", expl: "La particule『に』marque un point précis dans le temps (ici, dimanche)." },
+  { lvl: 'N5', q: "机の上 ___ 本があります。", opts: ["に", "で", "を", "へ"], ans: "に", fr: "Il y a un livre sur le bureau.", expl: "La particule『に』indique le lieu d'existence avec les verbes あります et います." },
+
+  // --- NIVEAU N4 (Conditionnels, Faveurs et Apparences) ---
+  { lvl: 'N4', q: "雨が降っ ___ 、行きません。", opts: ["と", "ば", "たら", "なら"], ans: "たら", fr: "S'il pleut, je n'irai pas.", expl: "『〜たら』(tara) exprime une condition chronologique (Si / Une fois que) très utilisée à l'oral." },
+  { lvl: 'N4', q: "先生に漢字を教えて ___ 。", opts: ["あげました", "くれました", "もらいました", "きました"], ans: "もらいました", fr: "J'ai reçu l'enseignement des kanjis du professeur.", expl: "『〜てもらう』signifie recevoir une faveur de quelqu'un (marqué par に)." },
+  { lvl: 'N4', q: "このケーキは美味し ___ ですね。", opts: ["そう", "みたい", "らしい", "よう"], ans: "そう", fr: "Ce gâteau a l'air délicieux.", expl: "Racine de l'adjectif (美味しい sans le い) + そう = Une apparence visuelle immédiate." },
+  { lvl: 'N4', q: "図書館で話しては ___ 。", opts: ["いけません", "なりません", "だめです", "ないです"], ans: "いけません", fr: "Il ne faut pas parler à la bibliothèque.", expl: "La structure 『〜てはいけません』exprime une interdiction formelle." },
+  { lvl: 'N4', q: "漢字が書ける ___ なりました。", opts: ["こと", "ため", "よう", "そう"], ans: "ように", fr: "Je suis devenu capable d'écrire les kanjis.", fr: "Je suis devenu capable d'écrire les kanjis.", expl: "『〜ようになる』exprime un changement d'état ou l'acquisition d'une capacité." },
+
+  // --- NIVEAU N3 (Passif/Causatif, Keigo et Limites) ---
+  { lvl: 'N3', q: "子供の頃、母に野菜を食べ ___ 。", opts: ["させた", "させられた", "された", "してくれた"], ans: "させられた", fr: "Enfant, ma mère me forçait à manger des légumes.", expl: "Causatif-Passif (させられる) : Être forcé par quelqu'un à faire une action que l'on ne veut pas faire." },
+  { lvl: 'N3', q: "社長が ___ 。", opts: ["きました", "まいりました", "いらっしゃいました", "お伺いしました"], ans: "いらっしゃいました", fr: "Le directeur est arrivé.", expl: "『いらっしゃる』est le Sonkeigo (langage de respect) pour le verbe 来る (venir) concernant un supérieur." },
+  { lvl: 'N3', q: "日本に住んでいる ___ 、富士山に登りたい。", opts: ["間に", "うちに", "たびに", "ついでに"], ans: "うちに", fr: "Pendant que j'habite au Japon, je veux escalader le mont Fuji.", expl: "『〜うちに』signifie 'Pendant que c'est encore le cas' (avant que l'occasion ne disparaisse)." },
+  { lvl: 'N3', q: "明日の会議は、午後2時から行われる ___ になっている。", opts: ["よう", "もの", "わけ", "こと"], ans: "こと", fr: "Il a été décidé que la réunion de demain aura lieu à 14h.", expl: "『〜ことになる』indique une décision prise par une règle ou un groupe, pas par soi-même." },
+  { lvl: 'N3', q: "このプロジェクトは失敗する ___ がない。", opts: ["はず", "わけ", "もの", "こと"], ans: "はず", fr: "Il est impossible que ce projet échoue.", expl: "『〜はずがない』exprime une impossibilité logique forte basée sur des faits." },
+
+  // --- NIVEAU N2 (Langage formel et obligations) ---
+  { lvl: 'N2', q: "お申し込みに ___ 、写真が必要です。", opts: ["際して", "あたって", "わたって", "沿って"], ans: "際して", fr: "À l'occasion de votre inscription, une photo est requise.", expl: "『〜に際して』(ni saishite) est une tournure très formelle signifiant 'Au moment de / À l'occasion de'." },
+  { lvl: 'N2', q: "そのご意見には賛成し ___ 。", opts: ["かねます", "得ません", "ざるを得ない", "がたいです"], ans: "かねます", fr: "Je ne peux me résoudre à approuver cette opinion.", expl: "『〜かねる』s'attache à la racine d'un verbe pour exprimer une impossibilité polie (souvent psychologique ou protocolaire)." },
+  { lvl: 'N2', q: "台風のため、イベントを中止せ ___ 。", opts: ["ざるを得ない", "ずにはいられない", "っこない", "得ない"], ans: "ざるを得ない", fr: "À cause du typhon, nous n'avons d'autre choix que d'annuler l'événement.", expl: "『〜ざるを得ない』(zaru o enai) signifie être obligé de faire quelque chose contre sa volonté." },
+  { lvl: 'N2', q: "日本の景気は回復し ___ ある。", opts: ["つつ", "ながら", "がてら", "かたがた"], ans: "つつ", fr: "L'économie japonaise est en train de se redresser.", expl: "『〜つつある』(tsutsu aru) indique un processus de changement qui est actuellement en cours." },
+  { lvl: 'N2', q: "彼は政治家としてある ___ 行動をとった。", opts: ["まじき", "べき", "ごとき", "べからざる"], ans: "まじき", fr: "Il a eu un comportement indigne d'un politicien.", expl: "『〜あるまじき』est une expression sévère signifiant 'qui ne devrait jamais exister chez ce type de personne'." },
+
+  // --- NIVEAU N1 (Littérature, emphase et instantanéité) ---
+  { lvl: 'N1', q: "彼は私の顔を見る ___ 逃げ出した。", opts: ["や否や", "が早いか", "そばから", "なり"], ans: "や否や", fr: "Dès qu'il a vu mon visage, il s'est enfui.", expl: "『〜や否や』(ya ina ya) indique qu'une action B se produit presque simultanément après l'action A, avec un effet de surprise." },
+  { lvl: 'N1', q: "愛していれ ___ 厳しく叱るのです。", opts: ["ばこそ", "ばこそか", "るからこそ", "るがゆえに"], ans: "ばこそ", fr: "C'est précisément parce que je l'aime que je le gronde sévèrement.", expl: "『〜ばこそ』(ba koso) met fortement l'accent sur une cause qui peut paraître paradoxale." },
+  { lvl: 'N1', q: "そんな恐ろしい事件が起きるなど、想像する ___ 恐ろしい。", opts: ["だに", "すら", "さえ", "のみ"], ans: "だに", fr: "Rien que d'imaginer qu'un tel incident se produise me terrifie.", expl: "『〜だに』(dani) s'utilise avec des mots comme imaginer ou entendre, et signifie 'rien que de... cela provoque un sentiment intense'." },
+  { lvl: 'N1', q: "その問題については、今さら議論する ___ もない。", opts: ["まで", "こと", "わけ", "はず"], ans: "まで", fr: "Il n'y a même pas besoin de débattre de ce problème à ce stade.", expl: "『〜までもない』(made mo nai) signifie qu'il n'est pas nécessaire d'aller jusqu'à faire cette action, car c'est évident." },
+  { lvl: 'N1', q: "彼女の才能は、天才と呼ぶに ___ 。", opts: ["足る", "堪える", "及ぶ", "値する"], ans: "足る", fr: "Son talent mérite amplement qu'on la qualifie de génie.", expl: "『〜に足る』(ni taru) signifie 'être digne de / valoir la peine de'." }
+];
+
 // Exportation globale
 window.HIRAGANA_BASE = HIRAGANA_BASE;
 window.HIRAGANA_DAKUTEN = HIRAGANA_DAKUTEN;
@@ -815,3 +853,4 @@ window.KATAKANA_YOON = KATAKANA_YOON;
 window.DB_KANJI = DB_KANJI;
 window.DB_VOCAB = DB_VOCAB;
 window.DB_DICTATION = DB_DICTATION;
+window.DB_GRAMMAR = DB_GRAMMAR;
