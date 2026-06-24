@@ -50,10 +50,13 @@ body {
   position: absolute;
   top: -20px;
   border-radius: 0 100% 0 100%;
-  background: linear-gradient(135deg, #fff0f5, #ffb7c5);
-  opacity: 0.7; /* Légèrement plus transparents */
+  /* Un dégradé rose un peu plus soutenu pour mieux contraster avec le fond */
+  background: linear-gradient(135deg, #ffd1dc, #ff9eb5);
+  /* On remonte fortement l'opacité */
+  opacity: 0.95; 
   animation: fall linear forwards;
-  filter: drop-shadow(0 2px 4px rgba(255,182,193,.4));
+  /* Une ombre un peu plus prononcée pour donner du relief */
+  filter: drop-shadow(0 3px 6px rgba(255,143,171,0.6)); 
 }
 
 @keyframes fall {
