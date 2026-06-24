@@ -154,7 +154,7 @@ function createPetal() {
   const size = (Math.random() * 10 + 8) + 'px'; p.style.width = size; p.style.height = size;
   container.appendChild(p); setTimeout(() => { p.remove(); }, 9000);
 }
-setInterval(createPetal, 300);
+setInterval(createPetal, 2000); // 1 pétale par seconde (plus zen)
 
 /* ─── RENDERING DE TABLEAUX ET MODALES ───────────────────────── */
 function generateKanaGrid(dataArray) {
@@ -2809,27 +2809,38 @@ function nextPiegeQuestion() {
   
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
+  // Générateur de Kanjis flottants (Mode Zen)
   const KANJIS = '日本語学桜愛美山川花月火水木金心道力気時間';
   const bg = document.getElementById('bg-kanji');
   if(bg){
-    for(let i=0; i<150; i++){ 
+    // On passe de 150 caractères statiques à seulement 25 caractères mouvants
+    for(let i = 0; i < 25; i++){ 
       const s = document.createElement('span');
       s.textContent = KANJIS[i % KANJIS.length];
-      s.style.fontSize = (Math.random() * 180 + 60) + 'px'; 
+      
+      // Tailles variables mais moins agressives (40px à 140px)
+      s.style.fontSize = (Math.random() * 100 + 40) + 'px'; 
       s.style.left = (Math.random() * 100) + 'vw';
-      s.style.top = (Math.random() * 100) + 'vh';
+      
+      // Vitesse de flottaison aléatoire entre 30 et 80 secondes (très lent)
+      s.style.animationDuration = (Math.random() * 50 + 30) + 's'; 
+      
+      // Désynchronisation pour qu'ils ne partent pas tous en même temps
+      s.style.animationDelay = '-' + (Math.random() * 50) + 's'; 
+      
       bg.appendChild(s);
     }
   }
 
+  // Appliquer les préférences sauvegardées
   if(localStorage.getItem('samouraiMode') === 'true') {
     document.body.classList.add('samourai-mode');
   }
-
   if(localStorage.getItem('hideFurigana') === 'true') {
     document.body.classList.add('hide-furigana');
   }
   
+  // Gestion de la série (Streak)
   const today = new Date().toDateString();
   if (userStats.lastLogin !== today) {
     let yesterday = new Date();
@@ -2843,16 +2854,15 @@ function nextPiegeQuestion() {
     saveStats();
   }
   
+  // Charge la première page avec un léger délai pour la fluidité
   setTimeout(() => loadContent('cours-01'), 100);
 
+  // Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(registration => {
-          console.log('ServiceWorker enregistré avec succès !', registration.scope);
-        })
         .catch(error => {
-          console.log("Échec de l'enregistrement du ServiceWorker :", error);
+          console.log("Échec SW :", error);
         });
     });
   }
