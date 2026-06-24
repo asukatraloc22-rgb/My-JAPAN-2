@@ -857,6 +857,23 @@ const DB_COUNTERS = [
   { id: "hai", counter: "杯", kana: "はい / ぱい", fr: "Tasses et verres", items: ["お茶 (Thé)", "水 (Eau)", "コーヒー (Café)", "ビール (Bière)"] }
 ];
 
+// 7. BASE DE DONNÉES DE LECTURE (Graded Reading)
+const DB_READING = [
+  {
+    id: "r1", lvl: "N5", title: "自己紹介 (Présentation)",
+    text: "[私|わたし|Moi, Je]は[学生|がくせい|étudiant]です。[毎日|まいにち|tous les jours]、[日本語|にほんご|le japonais]を[勉強|べんきょう|étude]します。[週末|しゅうまつ|le week-end]は[友達|ともだち|ami]と[映画|えいが|film]を[見|み|voir]に行きます。"
+  },
+  {
+    id: "r2", lvl: "N4", title: "桃太郎 (Momotaro - Extrait)",
+    text: "むかしむかし、ある[所|ところ|endroit]に、お[爺さん|じいさん|vieux monsieur]とお[婆さん|ばあさん|vieille dame]がいました。お爺さんは[山|やま|montagne]へ芝刈りに、お婆さんは[川|かわ|rivière]へ[洗濯|せんたく|lessive]に行きました。"
+  },
+  {
+    id: "r3", lvl: "N3", title: "日本の電車 (Les trains japonais)",
+    text: "[日本|にほん|Japon]の[電車|でんしゃ|train]はとても[便利|べんり|pratique]で、[時間|じかん|temps/heure]に[正確|せいかく|exact/précis]です。[朝|あさ|matin]の[通勤|つうきん|trajet domicile-travail]の時間はとても[混雑|こんざつ|bondé/affluence]しますが、みんな[静か|しずか|calme]に[乗って|のって|monter/prendre]います。"
+  }
+];
+
+window.DB_READING = DB_READING; // À rajouter dans la zone d'exportation globale
 // Exportation globale
 window.HIRAGANA_BASE = HIRAGANA_BASE;
 window.HIRAGANA_DAKUTEN = HIRAGANA_DAKUTEN;
