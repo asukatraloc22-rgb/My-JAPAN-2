@@ -2866,4 +2866,87 @@ function nextPiegeQuestion() {
         });
     });
   }
+  // --- MOTEUR DE RECHERCHE UNIVERSEL ---
+  const searchInput = document.getElementById('global-search');
+  const searchResults = document.getElementById('search-results');
+
+  // Fermer les résultats si on clique ailleurs sur l'écran
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.search-container')) {
+      searchResults.classList.remove('active');
+    }
+  });
+
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    
+    // Si la recherche est vide, on cache tout
+    if(query.length < 1) { 
+      searchResults.innerHTML = '';
+      searchResults.classList.remove('active');
+      return;
+    }
+
+    let results = [];
+
+    // 1. Fouiller dans la base de données des KANJIS
+    if(window.DB_KANJI) {
+      for(let level in window.DB_KANJI) {
+        window.DB_KANJI[level].forEach(k => {
+          // On vérifie le caractère, le français, et les prononciations
+          const match = k.j === query || 
+                        k.f.toLowerCase().includes(query) || 
+                        (k.on && k.on.toLowerCase().includes(query)) || 
+                        (k.kun && k.kun.toLowerCase().includes(query));
+          if(match) {
+            results.push({
+              type: 'kanji', char: k.j, title: k.j, desc: k.f, level: level
+            });
+          }
+        });
+      }
+    }
+
+    // 2. Fouiller dans la base de données du VOCABULAIRE
+    if(window.DB_VOCAB) {
+      for(let level in window.DB_VOCAB) {
+        ['subjects', 'places', 'verbs_motion'].forEach(category => {
+          if(window.DB_VOCAB[level][category]) {
+            window.DB_VOCAB[level][category].forEach(v => {
+              // On vérifie le caractère, le kana, le romaji et le français
+              const match = v.jp.includes(query) || 
+                            v.kana.includes(query) || 
+                            v.fr.toLowerCase().includes(query) || 
+                            (v.romaji && v.romaji.toLowerCase().includes(query));
+              if(match) {
+                results.push({
+                  type: 'vocab', char: v.jp, title: `${v.jp} (${v.kana})`, desc: v.fr, level: level
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+
+    // 3. Affichage des résultats (limité aux 15 premiers pour ne pas faire lagger)
+    if(results.length > 0) {
+      searchResults.innerHTML = results.slice(0, 15).map(r => `
+        <div class="search-result-item" onclick="${r.type === 'kanji' ? `openKanjiModal('${r.char}')` : `speak('${r.char.replace(/'/g, "\\'")}')`}">
+          <div class="sr-icon">${r.char}</div>
+          <div class="sr-content">
+            <div class="sr-title">
+              <span>${r.title}</span>
+              <span class="sr-badge">${r.level}</span>
+            </div>
+            <div class="sr-desc">${r.desc}</div>
+          </div>
+        </div>
+      `).join('');
+      searchResults.classList.add('active');
+    } else {
+      searchResults.innerHTML = '<div style="padding:15px; text-align:center; color:#888;">Aucun résultat trouvé.</div>';
+      searchResults.classList.add('active');
+    }
+  });
 })();
