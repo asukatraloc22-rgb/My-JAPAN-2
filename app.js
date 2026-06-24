@@ -2948,5 +2948,4 @@ function nextPiegeQuestion() {
       searchResults.innerHTML = '<div style="padding:15px; text-align:center; color:#888;">Aucun résultat trouvé.</div>';
       searchResults.classList.add('active');
     }
-  });
 })();
