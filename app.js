@@ -914,6 +914,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Saisie Manuelle</span>
             <span class="vocab-fr">Tapez vos réponses au clavier</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('counters-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🏪</span>
+            <span class="vocab-jp" style="font-size: 18px;">Le Marchand</span>
+            <span class="vocab-fr">Maîtrisez les compteurs</span>
+          </div>
           <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('reverse-menu')">
             <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🔄</span>
             <span class="vocab-jp" style="font-size: 18px;">Leçon Inversée</span>
