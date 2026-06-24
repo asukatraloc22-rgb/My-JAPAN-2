@@ -3344,30 +3344,67 @@ function nextCanvasQuestion() {
   renderCanvasQuestion();
 }
 
-else if(id === 'reading-menu') {
-    titleHeader.innerText = "Bibliothèque : Textes par niveau";
-    let listHtml = '';
-    if (window.DB_READING) {
-      window.DB_READING.forEach(r => {
-        listHtml += `<div class="vocab-card" style="text-align:left; padding:20px;" onclick="startReadingMode('${r.id}')">
-          <span class="vocab-jp" style="font-size:16px;">${r.lvl}</span>
-          <strong style="font-size:20px; display:block; margin-top:5px;">${r.title}</strong>
-        </div>`;
-      });
-    }
-    contentDiv.innerHTML = `
-      <div class="card">
-        <h3>Lecture Intensive</h3>
-        <p>Lisez des textes en japonais. Si vous bloquez sur un mot souligné, cliquez dessus pour afficher le dictionnaire instantané.</p>
-        <div class="vocab-grid" style="grid-template-columns: 1fr;">${listHtml}</div>
-      </div>`;
-  }
-  else if(id === 'reading-run') {
-    titleHeader.innerText = "LECTURE EN COURS...";
-    contentDiv.innerHTML = `
-      <button class="btn-return" onclick="loadContent('reading-menu')">Retour</button>
-      <div class="card" id="reading-area" style="padding: 20px;"></div>`;
-  }
+/* ─── IMPORT / EXPORT DE SAUVEGARDE ─── */
+function exportData() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userStats));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", "nihongo_michi_save.json");
+  dlAnchorElem.click();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if(imported && imported.xp !== undefined) {
+        userStats = imported;
+        saveStats();
+        alert("Sauvegarde chargée avec succès !");
+        location.reload();
+      } else { alert("Fichier de sauvegarde invalide."); }
+    } catch(err) { alert("Erreur lors de la lecture du fichier."); }
+  };
+  reader.readAsText(file);
+}
+
+/* ─── MOTEUR DE JEU : LECTURE INTERACTIVE ─── */
+function startReadingMode(textId) {
+  if (!window.DB_READING) return;
+  const readingObj = window.DB_READING.find(r => r.id === textId);
+  if (!readingObj) return;
+
+  loadContent('reading-run');
+
+  // L'algorithme transforme [Kanji|Kana|Fr] en boutons cliquables
+  const parsedText = readingObj.text.replace(/\[(.*?)\|(.*?)\|(.*?)\]/g, (match, kanji, kana, fr) => {
+    return `<span class="read-word" onclick="showDictTooltip('${kanji}', '${kana}', '${fr.replace(/'/g, "\\'")}')">${kanji}</span>`;
+  });
+
+  document.getElementById('reading-area').innerHTML = `
+    <h3 style="text-align:center; color:var(--aka); margin-bottom:20px;">${readingObj.title}</h3>
+    <div class="reading-text">${parsedText}</div>
+    <div id="dict-tooltip" class="dict-tooltip">
+      <em>Cliquez sur un mot souligné pour voir sa traduction.</em>
+    </div>
+    <div style="text-align:center; margin-top:20px;">
+      <button class="btn-primary" onclick="loadContent('reading-menu')">Terminer la lecture</button>
+    </div>
+  `;
+}
+
+function showDictTooltip(kanji, kana, fr) {
+  const tooltip = document.getElementById('dict-tooltip');
+  tooltip.innerHTML = `<span style="color:#1abc9c; font-size:24px; font-family:var(--font-jp);">${kanji}</span> <br> <span style="font-size:16px; color:#ccc;">${kana}</span> <br> <strong>${fr}</strong>`;
+  tooltip.classList.add('visible');
+  speak(kanji);
+  // Récompense cachée : cliquer sur un mot donne 1 XP de curiosité !
+  userStats.xp += 1;
+  saveStats();
+}
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   // Générateur de Kanjis flottants (Mode Zen)
