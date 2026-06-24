@@ -845,6 +845,18 @@ const DB_GRAMMAR = [
   { lvl: 'N1', q: "彼女の才能は、天才と呼ぶに ___ 。", opts: ["足る", "堪える", "及ぶ", "値する"], ans: "足る", fr: "Son talent mérite amplement qu'on la qualifie de génie.", expl: "『〜に足る』(ni taru) signifie 'être digne de / valoir la peine de'." }
 ];
 
+// 6. BASE DE DONNÉES DES COMPTEURS (Classificateurs)
+const DB_COUNTERS = [
+  { id: "tsu", counter: "つ", kana: "つ", fr: "Objets généraux / abstraits", items: ["りんご (Pomme)", "机 (Bureau)", "質問 (Question)", "鍵 (Clé)"] },
+  { id: "nin", counter: "人", kana: "にん / り", fr: "Personnes", items: ["学生 (Étudiant)", "友達 (Ami)", "先生 (Professeur)", "子供 (Enfant)"] },
+  { id: "mai", counter: "枚", kana: "まい", fr: "Objets plats et fins", items: ["紙 (Papier)", "切符 (Billet)", "シャツ (Chemise)", "写真 (Photo)"] },
+  { id: "hon", counter: "本", kana: "ほん / ぽん", fr: "Objets longs et cylindriques", items: ["ペン (Stylo)", "傘 (Parapluie)", "木 (Arbre)", "映画 (Film)"] },
+  { id: "hiki", counter: "匹", kana: "ひき / ぴき", fr: "Petits animaux", items: ["猫 (Chat)", "犬 (Chien)", "魚 (Poisson)", "虫 (Insecte)"] },
+  { id: "dai", counter: "台", kana: "だい", fr: "Machines et véhicules", items: ["車 (Voiture)", "パソコン (Ordinateur)", "自転車 (Vélo)", "テレビ (TV)"] },
+  { id: "satsu", counter: "冊", kana: "さつ", fr: "Livres et cahiers", items: ["本 (Livre)", "辞書 (Dictionnaire)", "雑誌 (Magazine)", "ノート (Cahier)"] },
+  { id: "hai", counter: "杯", kana: "はい / ぱい", fr: "Tasses et verres", items: ["お茶 (Thé)", "水 (Eau)", "コーヒー (Café)", "ビール (Bière)"] }
+];
+
 // Exportation globale
 window.HIRAGANA_BASE = HIRAGANA_BASE;
 window.HIRAGANA_DAKUTEN = HIRAGANA_DAKUTEN;
@@ -857,3 +869,4 @@ window.DB_KANJI = DB_KANJI;
 window.DB_VOCAB = DB_VOCAB;
 window.DB_DICTATION = DB_DICTATION;
 window.DB_GRAMMAR = DB_GRAMMAR;
+window.DB_COUNTERS = DB_COUNTERS;
