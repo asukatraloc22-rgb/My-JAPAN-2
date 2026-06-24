@@ -929,6 +929,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Studio Vocal</span>
             <span class="vocab-fr">Parlez en Japonais</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('canvas-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">🖌️</span>
+            <span class="vocab-jp" style="font-size: 18px;">Calligraphie</span>
+            <span class="vocab-fr">Tracez les Kanjis</span>
+          </div>
         </div>
       </div>`;
   }
@@ -1215,6 +1220,27 @@ function loadContent(id) {
     contentDiv.innerHTML = `
       <button class="btn-return" onclick="if(window.recognition) window.recognition.stop(); loadContent('exercices')">Retour</button>
       <div class="card" id="voice-area" style="padding: 40px 20px;"></div>`;
+  }
+    else if(id === 'canvas-menu') {
+    titleHeader.innerText = "Calligraphie : Choix du Niveau";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>L'art du pinceau numérique</h3>
+        <p>L'application vous donnera un mot en français. Vous devrez tracer le Kanji correspondant sur le papier quadrillé. Cliquez ensuite sur "Vérifier" pour révéler le tracé parfait en filigrane et évaluer votre mémoire.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="vocab-card" onclick="startCanvasMode('N5')"><span class="vocab-jp">N5</span><span class="vocab-fr">Tracer Débutant</span></div>
+          <div class="vocab-card" onclick="startCanvasMode('N4')"><span class="vocab-jp">N4</span><span class="vocab-fr">Tracer Élémentaire</span></div>
+          <div class="vocab-card" onclick="startCanvasMode('N3')"><span class="vocab-jp">N3</span><span class="vocab-fr">Tracer Intermédiaire</span></div>
+          <div class="vocab-card" onclick="startCanvasMode('N2')"><span class="vocab-jp">N2</span><span class="vocab-fr">Tracer Avancé</span></div>
+          <div class="vocab-card" onclick="startCanvasMode('N1')"><span class="vocab-jp">N1</span><span class="vocab-fr">Tracer Expert</span></div>
+        </div>
+      </div>`;
+  }
+  else if(id === 'canvas-run') {
+    titleHeader.innerText = "ATELIER D'ÉCRITURE...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="canvas-area" style="padding: 40px 20px;"></div>`;
   }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
@@ -3123,6 +3149,163 @@ function nextVoiceQuestion() {
   renderVoiceQuestion();
 }
 
+
+/* ─── MOTEUR DE JEU : STUDIO DE CALLIGRAPHIE (CANVAS) ─── */
+let canvasQuestions = [];
+let canvasCurrentIndex = 0;
+let ctx = null;
+let isDrawing = false;
+
+function startCanvasMode(level) {
+  if (!window.DB_KANJI || !window.DB_KANJI[level]) {
+    alert("Données non disponibles pour ce niveau !");
+    return;
+  }
+
+  // On pioche 5 Kanjis aléatoires du niveau choisi
+  let pool = [...window.DB_KANJI[level]].sort(() => Math.random() - 0.5);
+  canvasQuestions = pool.slice(0, 5);
+  
+  if(canvasQuestions.length === 0) return;
+  
+  canvasCurrentIndex = 0;
+  loadContent('canvas-run');
+  renderCanvasQuestion();
+}
+
+function renderCanvasQuestion() {
+  if (canvasCurrentIndex >= canvasQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🖌️</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Encre Séchée !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Votre mémoire musculaire se développe parfaitement.</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = canvasQuestions[canvasCurrentIndex];
+
+  document.getElementById('canvas-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Kanji ${canvasCurrentIndex + 1} / 5</div>
+    <div style="text-align:center; color:var(--sumi2); font-size:16px; margin-bottom:10px;">Dessinez le Kanji pour :</div>
+    <div style="font-size: 28px; font-weight:bold; text-align: center; color: var(--sumi); margin-bottom: 20px;">"${q.f}"</div>
+    
+    <div class="canvas-container">
+      <div id="ghost-kanji" class="ghost-kanji">${q.j}</div>
+      <canvas id="kanji-canvas" width="250" height="250"></canvas>
+    </div>
+    
+    <div id="canvas-feedback" class="quiz-feedback" style="text-align:center;"></div>
+    
+    <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:20px;" id="canvas-controls">
+        <button class="btn-primary" style="background:#888;" onclick="clearCanvas()">Effacer</button>
+        <button class="btn-primary" onclick="revealKanji()">Vérifier (Révéler)</button>
+    </div>
+    
+    <div style="display:none; justify-content:center; gap:10px; margin-top:20px;" id="canvas-eval-controls">
+        <button class="srs-btn fail" onclick="evalCanvas(false)">J'ai raté</button>
+        <button class="srs-btn easy" onclick="evalCanvas(true)">C'est parfait !</button>
+    </div>
+  `;
+
+  initCanvas();
+}
+
+function initCanvas() {
+  const canvas = document.getElementById('kanji-canvas');
+  if (!canvas) return;
+  
+  ctx = canvas.getContext('2d');
+  ctx.lineWidth = 8;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  
+  // S'adapte au mode sombre ou clair
+  ctx.strokeStyle = document.body.classList.contains('samourai-mode') ? '#e0e0e0' : '#1a0a0a';
+
+  // Événements Souris
+  canvas.addEventListener('mousedown', startPosition);
+  canvas.addEventListener('mouseup', endPosition);
+  canvas.addEventListener('mouseout', endPosition);
+  canvas.addEventListener('mousemove', draw);
+
+  // Événements Tactiles (Smartphones)
+  canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e.touches[0]); }, { passive: false });
+  canvas.addEventListener('touchend', endPosition);
+  canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
+}
+
+function getCanvasCoordinates(e) {
+  const canvas = document.getElementById('kanji-canvas');
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  };
+}
+
+function startPosition(e) {
+  isDrawing = true;
+  draw(e);
+}
+
+function endPosition() {
+  isDrawing = false;
+  ctx.beginPath(); // Réinitialise le chemin pour ne pas lier les traits
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  const coords = getCanvasCoordinates(e);
+  ctx.lineTo(coords.x, coords.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(coords.x, coords.y);
+}
+
+function clearCanvas() {
+  const canvas = document.getElementById('kanji-canvas');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById('ghost-kanji').classList.remove('visible');
+}
+
+function revealKanji() {
+  // Affiche le kanji parfait en filigrane
+  document.getElementById('ghost-kanji').classList.add('visible');
+  
+  // Bascule les boutons vers l'auto-évaluation
+  document.getElementById('canvas-controls').style.display = 'none';
+  document.getElementById('canvas-eval-controls').style.display = 'flex';
+  
+  // Lecture audio
+  speak(canvasQuestions[canvasCurrentIndex].j);
+}
+
+function evalCanvas(success) {
+  const q = canvasQuestions[canvasCurrentIndex];
+  const feedbackDiv = document.getElementById('canvas-feedback');
+  document.getElementById('canvas-eval-controls').style.display = 'none';
+
+  if (success) {
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Validé !</strong> Prononciation : ${q.on || q.kun}`;
+    updateStat(true);
+  } else {
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ À revoir.</strong> Prononciation : ${q.on || q.kun}`;
+    updateStat(false);
+  }
+  
+  // Bouton pour passer à la suite
+  feedbackDiv.innerHTML += `<br><button class="btn-primary" style="margin-top:15px; background:var(--sumi);" onclick="nextCanvasQuestion()">Suivant ➔</button>`;
+}
+
+function nextCanvasQuestion() {
+  canvasCurrentIndex++;
+  renderCanvasQuestion();
+}
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   // Générateur de Kanjis flottants (Mode Zen)
