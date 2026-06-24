@@ -1175,6 +1175,21 @@ function loadContent(id) {
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="piege-area" style="padding: 40px 20px;"></div>`;
   }
+    else if(id === 'counters-menu') {
+    titleHeader.innerText = "Le Marchand : Choix de la difficulté";
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Bienvenue dans votre boutique !</h3>
+        <p>Un client vous demande un article précis. À vous de choisir le bon "compteur" (classificateur) pour le servir correctement. Attention, une feuille ne se compte pas comme un stylo !</p>
+        <button class="btn-primary" style="width:100%; font-size:18px; padding:15px;" onclick="startCountersMode()">Ouvrir la boutique ➔</button>
+      </div>`;
+  }
+  else if(id === 'counters-run') {
+    titleHeader.innerText = "CLIENT AU COMPTOIR...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
+      <div class="card" id="counters-area" style="padding: 40px 20px;"></div>`;
+  }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
     contentDiv.innerHTML = `
@@ -2837,7 +2852,103 @@ function nextPiegeQuestion() {
   piegeCurrentIndex++;
   renderPiegeQuestion();
 }
+
+/* ─── MOTEUR DE JEU : LE MARCHAND (COMPTEURS) ─── */
+let countQuestions = [];
+let countCurrentIndex = 0;
+
+function startCountersMode() {
+  if (!window.DB_COUNTERS) return alert("Base de compteurs indisponible !");
   
+  countQuestions = [];
+  let allCounters = window.DB_COUNTERS;
+  
+  // On génère 10 requêtes clients aléatoires
+  for (let i = 0; i < 10; i++) {
+    // 1. Tirer une catégorie au hasard (ex: Objets plats)
+    let correctCategory = allCounters[Math.floor(Math.random() * allCounters.length)];
+    // 2. Tirer un objet de cette catégorie au hasard (ex: Papier)
+    let itemAsked = correctCategory.items[Math.floor(Math.random() * correctCategory.items.length)];
+    
+    // 3. Générer les options de compteurs (1 vrai, 3 faux)
+    let options = [correctCategory.counter];
+    while(options.length < 4) {
+      let randC = allCounters[Math.floor(Math.random() * allCounters.length)].counter;
+      if(!options.includes(randC)) options.push(randC);
+    }
+    options.sort(() => Math.random() - 0.5); // Mélange
+    
+    countQuestions.push({ 
+      item: itemAsked, 
+      ans: correctCategory.counter, 
+      opts: options, 
+      kana: correctCategory.kana, 
+      expl: correctCategory.fr 
+    });
+  }
+  
+  countCurrentIndex = 0;
+  loadContent('counters-run');
+  renderCountersQuestion();
+}
+
+function renderCountersQuestion() {
+  if (countCurrentIndex >= countQuestions.length) {
+    document.getElementById('content').innerHTML = `
+      <div class="card" style="text-align:center; padding: 50px 20px; background: var(--sakura-pale);">
+        <span style="font-size: 70px;">🏪</span>
+        <h2 style="color: var(--aka); margin: 20px 0;">Boutique Fermée !</h2>
+        <p style="font-size: 18px; color: var(--sumi); margin-bottom: 20px;">Vous avez servi tous les clients avec brio. Les compteurs n'ont plus de secret pour vous !</p>
+        <button class="btn-primary" onclick="loadContent('exercices')">Retour aux exercices</button>
+      </div>`;
+    return;
+  }
+
+  const q = countQuestions[countCurrentIndex];
+  let optionsHtml = '';
+  
+  q.opts.forEach(opt => {
+    optionsHtml += `<button class="quiz-opt-btn" style="width:48%; font-size:32px; padding:15px;" onclick="checkCountersAnswer('${opt}', this, '${q.ans}')">${opt}</button>`;
+  });
+
+  document.getElementById('counters-area').innerHTML = `
+    <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:var(--aka); font-size:14px; text-transform:uppercase; letter-spacing:1px;">Client ${countCurrentIndex + 1} / 10</div>
+    <div style="text-align:center; color:var(--sumi2); font-size:16px; margin-bottom:10px;">Le client veut acheter :</div>
+    <div style="font-size: 38px; font-family: var(--font-jp); font-weight:bold; text-align: center; color: var(--sumi); margin-bottom: 30px;">${q.item}</div>
+    <p style="text-align:center; font-weight:bold; margin-bottom:15px; color:#666;">Quel compteur utiliseriez-vous ?</p>
+    <div id="counters-options-container" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:400px; margin:0 auto;">${optionsHtml}</div>
+    <div id="counters-feedback" class="quiz-feedback"></div>
+    <button class="btn-primary quiz-next-btn" id="counters-next-btn" style="display:none; margin: 20px auto 0;" onclick="nextCountersQuestion()">Client Suivant ➔</button>
+  `;
+}
+
+function checkCountersAnswer(selected, btnElement, correct) {
+  const allBtns = document.getElementById('counters-options-container').querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  const feedbackDiv = document.getElementById('counters-feedback');
+  const q = countQuestions[countCurrentIndex];
+
+  if (selected === correct) {
+    btnElement.classList.add('correct-ans');
+    feedbackDiv.className = 'quiz-feedback correct';
+    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>On utilise bien <strong>${correct} (${q.kana})</strong> pour : ${q.expl}.`;
+    updateStat(true);
+    speak(correct);
+  } else {
+    btnElement.classList.add('wrong-ans');
+    allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct-ans'); });
+    feedbackDiv.className = 'quiz-feedback wrong';
+    feedbackDiv.innerHTML = `<strong>❌ Erreur.</strong><br>Il fallait utiliser <strong>${correct} (${q.kana})</strong> car cet objet fait partie de la catégorie : ${q.expl}.`;
+    updateStat(false);
+  }
+  document.getElementById('counters-next-btn').style.display = 'block';
+}
+
+function nextCountersQuestion() {
+  countCurrentIndex++;
+  renderCountersQuestion();
+}
+
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   // Générateur de Kanjis flottants (Mode Zen)
