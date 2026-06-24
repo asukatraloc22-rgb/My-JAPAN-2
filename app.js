@@ -2929,7 +2929,7 @@ function nextPiegeQuestion() {
       }
     }
 
-    // 3. Affichage des résultats (limité aux 15 premiers pour ne pas faire lagger)
+   // 3. Affichage des résultats (limité aux 15 premiers pour ne pas faire lagger)
     if(results.length > 0) {
       searchResults.innerHTML = results.slice(0, 15).map(r => `
         <div class="search-result-item" onclick="${r.type === 'kanji' ? `openKanjiModal('${r.char}')` : `speak('${r.char.replace(/'/g, "\\'")}')`}">
@@ -2948,4 +2948,5 @@ function nextPiegeQuestion() {
       searchResults.innerHTML = '<div style="padding:15px; text-align:center; color:#888;">Aucun résultat trouvé.</div>';
       searchResults.classList.add('active');
     }
+  }); // 👈 LA FAMEUSE LIGNE MANQUANTE (Ferme le addEventListener)
 })();
