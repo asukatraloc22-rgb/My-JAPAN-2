@@ -857,23 +857,60 @@ const DB_COUNTERS = [
   { id: "hai", counter: "杯", kana: "はい / ぱい", fr: "Tasses et verres", items: ["お茶 (Thé)", "水 (Eau)", "コーヒー (Café)", "ビール (Bière)"] }
 ];
 
-// 7. BASE DE DONNÉES DE LECTURE (Graded Reading)
+// 7. BASE DE DONNÉES DE LECTURE (Graded Reading - La Totale)
 const DB_READING = [
+  // --- NIVEAU N5 ---
   {
     id: "r1", lvl: "N5", title: "自己紹介 (Présentation)",
-    text: "[私|わたし|Moi, Je]は[学生|がくせい|étudiant]です。[毎日|まいにち|tous les jours]、[日本語|にほんご|le japonais]を[勉強|べんきょう|étude]します。[週末|しゅうまつ|le week-end]は[友達|ともだち|ami]と[映画|えいが|film]を[見|み|voir]に行きます。"
+    text: "はじめまして。[私|わたし|Moi]は[学生|がくせい|étudiant]です。[毎日|まいにち|tous les jours]、[日本語|にほんご|le japonais]を[勉強|べんきょう|étude]します。[週末|しゅうまつ|le week-end]は[友達|ともだち|ami]と[映画|えいが|film]を[見|み|voir]に行きます。[日本|にほん|Japon]の[文化|ぶんか|culture]がとても[好き|すき|aimer]です。"
   },
   {
-    id: "r2", lvl: "N4", title: "桃太郎 (Momotaro - Extrait)",
-    text: "むかしむかし、ある[所|ところ|endroit]に、お[爺さん|じいさん|vieux monsieur]とお[婆さん|ばあさん|vieille dame]がいました。お爺さんは[山|やま|montagne]へ芝刈りに、お婆さんは[川|かわ|rivière]へ[洗濯|せんたく|lessive]に行きました。"
+    id: "r2", lvl: "N5", title: "私の一日 (Ma journée)",
+    text: "[朝|あさ|Le matin]、[六時|ろくじ|6 heures]に[起きます|おきます|se réveiller]。[朝ご飯|あさごはん|petit-déjeuner]を[食べて|たべて|manger]から、[学校|がっこう|école]へ[行きます|いきます|aller]。[電車|でんしゃ|train]はいつも[人|ひと|personnes]がたくさんいます。[午後|ごご|l'après-midi]、[図書館|としょかん|bibliothèque]で[本|ほん|livre]を[読みます|よみます|lire]。"
   },
   {
-    id: "r3", lvl: "N3", title: "日本の電車 (Les trains japonais)",
-    text: "[日本|にほん|Japon]の[電車|でんしゃ|train]はとても[便利|べんり|pratique]で、[時間|じかん|temps/heure]に[正確|せいかく|exact/précis]です。[朝|あさ|matin]の[通勤|つうきん|trajet domicile-travail]の時間はとても[混雑|こんざつ|bondé/affluence]しますが、みんな[静か|しずか|calme]に[乗って|のって|monter/prendre]います。"
+    id: "r3", lvl: "N5", title: "私の町 (Ma ville)",
+    text: "わたしの[町|まち|ville]はとても[静か|しずか|calme]で[綺麗|きれい|joli]です。[大きい|おおきい|grand][公園|こうえん|parc]が[あります|あります|se trouver / il y a]。[春|はる|printemps]は[桜|さくら|cerisier]が綺麗です。[駅|えき|gare]の[前|まえ|devant]に[新しい|あたらしい|nouveau][スーパー|すーぱー|supermarché]ができました。[買い物|かいもの|les courses]はとても[便利|べんり|pratique]です。"
+  },
+
+  // --- NIVEAU N4 ---
+  {
+    id: "r4", lvl: "N4", title: "日本への旅行 (Voyage au Japon)",
+    text: "[去年|きょねん|L'année dernière]、[初めて|はじめて|pour la première fois][日本|にほん|Japon]へ[旅行|りょこう|voyage]しました。[富士山|ふじさん|Mont Fuji]に[登った|のぼった|escalader]ことがあります。とても[疲れました|つかれました|être fatigué]が、[景色|けしき|paysage]は[最高|さいこう|le meilleur / génial]でした。[温泉|おんせん|source thermale]に[入って|はいって|entrer]、[美味しい|おいしい|délicieux][寿司|すし|sushi]を[食べました|たべました|manger]。"
+  },
+  {
+    id: "r5", lvl: "N4", title: "図書館の規則 (Règles de la bibliothèque)",
+    text: "[図書館|としょかん|bibliothèque]の[中|なか|intérieur]で[大きい|おおきい|grand][声|こえ|voix]で[話してはいけません|はなしてはいけません|ne pas avoir le droit de parler]。[携帯電話|けいたいでんわ|téléphone portable]の[電源|でんげん|alimentation]を[切る|きる|couper / éteindre]ようにしてください。もし[辞書|じしょ|dictionnaire]を[借りたい|かりたい|vouloir emprunter]なら、あの[窓口|まどぐち|guichet]で[聞いて|きいて|demander]ください。"
+  },
+
+  // --- NIVEAU N3 ---
+  {
+    id: "r6", lvl: "N3", title: "忙しい日々 (Des jours occupés)",
+    text: "[最近|さいきん|Récemment]、[仕事|しごと|travail]がとても[忙しい|いそがしい|occupé]です。[毎日|まいにち|Tous les jours]、[夜遅く|よるおそく|tard le soir]まで[残業|ざんぎょう|heures supplémentaires]を[させられています|させられています|être forcé de faire]。[疲労|ひろう|fatigue]が[溜まって|たまって|s'accumuler]いるので、[今度|こんど|la prochaine fois]の[連休|れんきゅう|jours fériés consécutifs]は[自然|しぜん|nature]の[豊か|ゆたか|riche / abondant]な[場所|ばしょ|endroit]で[ゆっくり|ゆっくり|tranquillement][休みたい|やすみたい|vouloir se reposer]と[思って|おもって|penser]います。"
+  },
+  {
+    id: "r7", lvl: "N3", title: "花見の文化 (La culture du Hanami)",
+    text: "[春|はる|Le printemps]になると、[日本中|にほんじゅう|dans tout le Japon]の[桜|さくら|cerisiers]が[一斉に|いっせいに|tous en même temps][咲きます|さきます|fleurir]。[人々|ひとびと|Les gens]は[家族|かぞく|famille]や[同僚|どうりょう|collègues]と[一緒|いっしょ|ensemble]に、[桜の木|さくらのき|arbres de cerisier]の[下|した|sous]で[お弁当|おべんとう|boîte repas]を[食べたり|たべたり|manger (entre autres)]、[お酒|おさけ|alcool]を[飲んだり|のんだり|boire (entre autres)]して[花見|はなみ|contemplation des fleurs]を[楽しみます|たのしみます|apprécier / profiter]。"
+  },
+
+  // --- NIVEAU N2 ---
+  {
+    id: "r8", lvl: "N2", title: "環境問題 (Problèmes environnementaux)",
+    text: "[地球温暖化|ちきゅうおんだんか|Le réchauffement climatique]の[影響|えいきょう|influence / impact]により、[世界各地|せかいかくち|partout dans le monde]で[異常気象|いじょうきしょう|climat anormal]が[増加|ぞうか|augmentation]し[つつあります|つつある|être en train de]。[我々|われわれ|Nous]は[環境保護|かんきょうほご|protection de l'environnement]に[対して|たいして|à l'égard de][真剣|しんけん|sérieux]に[取り組まざるを得ない|とりくまざるをえない|être obligé de s'attaquer à][状況|じょうきょう|situation]に[直面|ちょくめん|faire face]しています。[未来|みらい|le futur]の[世代|せだい|génération]のために、[今すぐ|いますぐ|dès maintenant][行動|こうどう|action]を[起こす|おこす|provoquer / déclencher][必要|ひつよう|nécessité]があります。"
+  },
+  {
+    id: "r9", lvl: "N2", title: "AIと社会 (L'IA et la société)",
+    text: "[人工知能|じんこうちのう|L'intelligence artificielle]の[急速|きゅうそく|rapide]な[発展|はってん|développement]は、[社会|しゃかい|société]に[多大|ただい|immense]な[変化|へんか|changement]をもたらしました。[生活|せいかつ|la vie]が[便利|べんり|pratique]になる[反面|はんめん|d'un autre côté]、[従来|じゅうらい|jusqu'à présent / traditionnel]の[雇用|こよう|emploi]が[失われる|うしなわれる|être perdu]のではないかと[懸念|けねん|inquiétude / crainte]する[声|こえ|voix]もあります。[技術|ぎじゅつ|technologie]と[人間|にんげん|humain]がどう[共存|きょうぞん|coexistence]していくかが[問われて|とわれて|être remis en question]います。"
+  },
+
+  // --- NIVEAU N1 ---
+  {
+    id: "r10", lvl: "N1", title: "現代の孤独 (La solitude moderne)",
+    text: "[現代社会|げんだいしゃかい|La société contemporaine]における[孤独|こどく|solitude]は、[単なる|たんなる|simple]物理的な[孤立|こりつ|isolement]にとどまらず、[精神的|せいしんてき|psychologique / spirituel]な[空虚|くうきょ|vide]を[伴う|ともなう|accompagner]。[物質的|ぶっしつてき|matériel]な[豊かさ|ゆたかさ|richesse]を[追求|ついきゅう|poursuite]する[が早いか|がはやいか|à peine (fait)... que]、[人々|ひとびと|les gens]は[真|しん|véritable]の[幸福|こうふく|bonheur]を[見失って|みうしなって|perdre de vue]しまったかのようだ。「[出る杭は打たれる|でるくいはうたれる|Le clou qui dépasse appelle le marteau]」という[諺|ことわざ|proverbe]が[示す|しめす|montrer / indiquer]ように、[同調圧力|どうちょうあつりょく|pression des pairs]が[強い|つよい|fort]社会では、[真の自己|しんのじこ|le véritable soi]を[表現|ひょうげん|expression]することは[至難の業|しなんのわざ|tâche extrêmement difficile]である。"
   }
 ];
 
-window.DB_READING = DB_READING; // À rajouter dans la zone d'exportation globale
+
 // Exportation globale
 window.HIRAGANA_BASE = HIRAGANA_BASE;
 window.HIRAGANA_DAKUTEN = HIRAGANA_DAKUTEN;
@@ -887,3 +924,4 @@ window.DB_VOCAB = DB_VOCAB;
 window.DB_DICTATION = DB_DICTATION;
 window.DB_GRAMMAR = DB_GRAMMAR;
 window.DB_COUNTERS = DB_COUNTERS;
+window.DB_READING = DB_READING;
