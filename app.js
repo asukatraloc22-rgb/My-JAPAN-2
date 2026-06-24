@@ -1423,11 +1423,27 @@ function nextFlashcard() {
       </div>`;
     return;
   }
+  
   currentCard = activeDeck.shift();
+  const cardElement = document.getElementById('fc-card-element');
+  
+  // 1. Désactiver l'animation de rotation
+  cardElement.style.transition = 'none';
+  
+  // 2. Remettre la carte de face immédiatement
+  cardElement.classList.remove('is-flipped');
+  
+  // 3. Forcer le navigateur à appliquer le changement visuel tout de suite (Reflow)
+  void cardElement.offsetWidth;
+  
+  // 4. Réactiver l'animation pour quand l'utilisateur cliquera
+  cardElement.style.transition = '';
+
+  // 5. Injecter le nouveau texte
   document.getElementById('fc-front-text').innerText = currentCard.jp;
   document.getElementById('fc-back-jp').innerHTML = currentCard.reading;
   document.getElementById('fc-back-fr').innerText = currentCard.meaning;
-  document.getElementById('fc-card-element').classList.remove('is-flipped');
+  
   document.getElementById('srs-controls').style.display = 'none';
   document.getElementById('flip-hint').style.display = 'block';
 }
