@@ -2948,5 +2948,5 @@ function nextPiegeQuestion() {
       searchResults.innerHTML = '<div style="padding:15px; text-align:center; color:#888;">Aucun résultat trouvé.</div>';
       searchResults.classList.add('active');
     }
-  }); // 👈 LA FAMEUSE LIGNE MANQUANTE (Ferme le addEventListener)
-})();
+  }); // 👈 FERMETURE DE L'ÉCOUTEUR DE RECHERCHE (Celle qui te manquait !)
+})(); // 👈 FERMETURE DE LA FONCTION D'INITIALISATION
