@@ -934,6 +934,11 @@ function loadContent(id) {
             <span class="vocab-jp" style="font-size: 18px;">Calligraphie</span>
             <span class="vocab-fr">Tracez les Kanjis</span>
           </div>
+          <div class="vocab-card" style="padding: 24px; border-color: var(--aka); background: var(--sakura-pale);" onclick="loadContent('reading-menu')">
+            <span class="vocab-jp" style="font-size: 32px; margin-bottom:10px;">📖</span>
+            <span class="vocab-jp" style="font-size: 18px;">Bibliothèque</span>
+            <span class="vocab-fr">Textes interactifs</span>
+          </div>
         </div>
       </div>`;
   }
@@ -1242,6 +1247,30 @@ function loadContent(id) {
       <button class="btn-return" onclick="loadContent('exercices')">Retour</button>
       <div class="card" id="canvas-area" style="padding: 40px 20px;"></div>`;
   }
+    else if(id === 'reading-menu') {
+    titleHeader.innerText = "Bibliothèque : Textes par niveau";
+    let listHtml = '';
+    if (window.DB_READING) {
+      window.DB_READING.forEach(r => {
+        listHtml += `<div class="vocab-card" style="text-align:left; padding:20px;" onclick="startReadingMode('${r.id}')">
+          <span class="vocab-jp" style="font-size:16px;">${r.lvl}</span>
+          <strong style="font-size:20px; display:block; margin-top:5px;">${r.title}</strong>
+        </div>`;
+      });
+    }
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Lecture Intensive</h3>
+        <p>Lisez des textes en japonais. Si vous bloquez sur un mot souligné, cliquez dessus pour afficher le dictionnaire instantané.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr;">${listHtml}</div>
+      </div>`;
+  }
+  else if(id === 'reading-run') {
+    titleHeader.innerText = "LECTURE EN COURS...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('reading-menu')">Retour</button>
+      <div class="card" id="reading-area" style="padding: 20px;"></div>`;
+  }
   else if(id === 'examens') {
     titleHeader.innerText = "Simulateurs d'Examens JLPT";
     contentDiv.innerHTML = `
@@ -1438,6 +1467,14 @@ else if(id === 'progression') {
         <h3 style="color: #e74c3c;">Zone de Danger</h3>
         <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Réinitialisez votre XP et votre jauge de jours consécutifs. Utile pour repartir de zéro.</p>
         <button class="btn-primary" style="background: #e74c3c; width: 100%;" onclick="resetProgress()">Effacer ma progression</button>
+        <h3 style="margin-top:20px;">Sauvegarde des données</h3>
+        <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Exportez vos XP pour ne pas les perdre, ou importez un fichier de sauvegarde.</p>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-primary" style="flex:1; background:#1abc9c;" onclick="exportData()">⬇️ Exporter</button>
+          <label class="btn-primary" style="flex:1; background:#3498db; text-align:center; cursor:pointer;">
+            ⬆️ Importer <input type="file" style="display:none;" onchange="importData(event)" accept=".json">
+          </label>
+        </div>
       </div>`;
   }
 }
@@ -3306,6 +3343,31 @@ function nextCanvasQuestion() {
   canvasCurrentIndex++;
   renderCanvasQuestion();
 }
+
+else if(id === 'reading-menu') {
+    titleHeader.innerText = "Bibliothèque : Textes par niveau";
+    let listHtml = '';
+    if (window.DB_READING) {
+      window.DB_READING.forEach(r => {
+        listHtml += `<div class="vocab-card" style="text-align:left; padding:20px;" onclick="startReadingMode('${r.id}')">
+          <span class="vocab-jp" style="font-size:16px;">${r.lvl}</span>
+          <strong style="font-size:20px; display:block; margin-top:5px;">${r.title}</strong>
+        </div>`;
+      });
+    }
+    contentDiv.innerHTML = `
+      <div class="card">
+        <h3>Lecture Intensive</h3>
+        <p>Lisez des textes en japonais. Si vous bloquez sur un mot souligné, cliquez dessus pour afficher le dictionnaire instantané.</p>
+        <div class="vocab-grid" style="grid-template-columns: 1fr;">${listHtml}</div>
+      </div>`;
+  }
+  else if(id === 'reading-run') {
+    titleHeader.innerText = "LECTURE EN COURS...";
+    contentDiv.innerHTML = `
+      <button class="btn-return" onclick="loadContent('reading-menu')">Retour</button>
+      <div class="card" id="reading-area" style="padding: 20px;"></div>`;
+  }
 /* ─── INITIALIZATION ───────────────────────────────────────── */
 (function(){
   // Générateur de Kanjis flottants (Mode Zen)
