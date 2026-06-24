@@ -422,3 +422,53 @@ body.samourai-mode .sr-badge { background: #111; color: var(--sakura); border-co
 /* Adaptation Samouraï */
 body.samourai-mode .mic-btn { background: var(--washi); border-color: var(--sakura-pale); }
 body.samourai-mode .mic-btn.recording { background: #3a1c1c; border-color: var(--aka); }
+
+/* --- STUDIO DE CALLIGRAPHIE (CANVAS) --- */
+.canvas-container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  margin: 20px auto;
+  border: 2px dashed rgba(188,0,45,0.3);
+  background: #fffef9;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+  border-radius: 12px;
+  overflow: hidden;
+  touch-action: none; /* Empêche l'écran de scroller quand on dessine sur mobile */
+}
+
+/* Les lignes de repère (croix centrale) du Genkō yōshi */
+.canvas-container::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed rgba(188,0,45,0.2); pointer-events: none; }
+.canvas-container::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px dashed rgba(188,0,45,0.2); pointer-events: none; }
+
+#kanji-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  cursor: crosshair;
+  z-index: 10;
+}
+
+/* Le Kanji qui apparaît en fond pour la correction */
+.ghost-kanji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-jp);
+  font-size: 180px;
+  color: #1abc9c;
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.ghost-kanji.visible {
+  opacity: 0.3;
+}
+
+body.samourai-mode .canvas-container {
+  background: var(--kinari);
+  border-color: rgba(255,255,255,0.1);
+}
