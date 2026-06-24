@@ -1611,25 +1611,33 @@ function generateProceduralSOV(level, count = 5) {
   let generated = [];
   for(let i=0; i<count; i++) {
      let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
-     let p1 = vocab.places[Math.floor(Math.random() * vocab.places.length)];
-     let p2 = vocab.places[(Math.floor(Math.random() * vocab.places.length) + 1) % vocab.places.length]; // Lieu différent
-     let v = vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)];
+     // Sécurités au cas où le niveau ne possèderait pas encore certaines listes
+     let p1 = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
+     let vm = vocab.verbs_motion ? vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)] : null;
+     let obj = vocab.objects ? vocab.objects[Math.floor(Math.random() * vocab.objects.length)] : null;
+     let va = vocab.verbs_action ? vocab.verbs_action[Math.floor(Math.random() * vocab.verbs_action.length)] : null;
      
-     let pattern = Math.floor(Math.random() * 3);
-     let jpOrder, frTranslation;
+     let patterns = [];
 
-     if (pattern === 0) { // Destination
-       jpOrder = [s.jp, "は", p1.jp, "に", v.jp];
-       frTranslation = s.fr + " " + v.fr + " à " + p1.fr + ".";
-     } else if (pattern === 1) { // Origine
-       jpOrder = [s.jp, "は", p1.jp, "から", v.jp];
-       frTranslation = s.fr + " " + v.fr + " depuis " + p1.fr + ".";
-     } else { // Origine à Destination
-       jpOrder = [p1.jp, "から", p2.jp, "まで", v.jp];
-       frTranslation = v.fr + " de " + p1.fr + " jusqu'à " + p2.fr + ".";
+     // Modèles 1 & 2 : Les Déplacements (ex: Je vais à Tokyo)
+     if (p1 && vm) {
+       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "に", vm.jp], fr: s.fr + " " + vm.fr + " à " + p1.fr + "." });
+       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "から", vm.jp], fr: s.fr + " " + vm.fr + " depuis " + p1.fr + "." });
      }
 
-     generated.push({ lvl: level, fr: frTranslation, order: jpOrder });
+     // Modèle 3 : L'Action avec Objet (ex: Je mange une pomme)
+     if (obj && va) {
+       patterns.push({ jpOrder: [s.jp, "は", obj.jp, "を", va.jp], fr: s.fr + " " + va.fr + " " + obj.fr + "." });
+     }
+
+     // Modèle 4 : L'Action complexe (ex: Je lis un livre à l'école)
+     if (p1 && obj && va) {
+       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "で", obj.jp, "を", va.jp], fr: s.fr + " " + va.fr + " " + obj.fr + " à " + p1.fr + "." });
+     }
+
+     // Sélection aléatoire d'un des modèles générés
+     let chosenPattern = patterns[Math.floor(Math.random() * patterns.length)];
+     generated.push({ lvl: level, fr: chosenPattern.fr, order: chosenPattern.jpOrder });
   }
   return generated;
 }
@@ -1666,23 +1674,24 @@ function renderSovQuestion() {
 function updateSovUI() {
   const q = activeSovQuiz[currentSovIndex];
   
+  // 👈 NOUVEAU : On aspire absolument toutes les catégories pour trouver les furiganas
+  const v = window.DB_VOCAB[q.lvl];
+  const allVocab = [
+    ...(v.subjects || []), ...(v.places || []), ...(v.verbs_motion || []),
+    ...(v.objects || []), ...(v.verbs_action || []), ...(v.adjectives || [])
+  ];
+  
   let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
   placedWords.forEach((wordObj, i) => {
-    // 👈 MAGIE DU FURIGANA : On cherche le mot dans la base pour récupérer son .kana
-    const vocabLevel = q.lvl;
-    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const original = allVocab.find(x => x.jp === wordObj.text);
     const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
-    
     sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordDisplay}</div>`;
   });
 
   let bankHtml = '';
   bankWords.forEach((wordObj, i) => {
-    // 👈 MAGIE DU FURIGANA : Même chose pour la banque de mots disponibles
-    const vocabLevel = q.lvl;
-    const original = [...window.DB_VOCAB[vocabLevel].subjects, ...window.DB_VOCAB[vocabLevel].places, ...window.DB_VOCAB[vocabLevel].verbs_motion].find(x => x.jp === wordObj.text);
+    const original = allVocab.find(x => x.jp === wordObj.text);
     const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
-    
     bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
   });
 
