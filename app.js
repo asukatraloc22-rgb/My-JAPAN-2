@@ -1407,6 +1407,65 @@ else if(id === 'progression') {
         </div>
       </div>`;
   }
+
+  else if(id === 'verbs-dict') {
+    titleHeader.innerText = "Dictionnaire des Verbes";
+
+    // 🧠 L'algorithme d'analyse grammaticale
+    function getVerbGroup(jp, kana) {
+      // Liste des exceptions du Groupe 1 qui se terminent par "shimasu" ou "imasu"
+      const g1Shimasu = ['話します', '探します', '直します', '出します', '隠します', '崩します', '返します', '貸します', '引っ越します'];
+      const g2Imasu = ['見ます', '起きます', '借ります', '降ります', '足ります', '着ます', '居ます', '似ます', '落ちます'];
+
+      if (jp === '来ます') return 'Groupe 3 (Irrégulier)';
+      if (g1Shimasu.includes(jp)) return 'Groupe 1 (Godan)';
+      if (jp.endsWith('します')) return 'Groupe 3 (Irrégulier)';
+      // Si la syllabe avant 'masu' contient le son "e" (ex: tabEmasu, akEmasu)
+      if (kana.match(/([えけせてねへめれげぜでべぺ])ます$/)) return 'Groupe 2 (Ichidan)';
+      if (g2Imasu.includes(jp)) return 'Groupe 2 (Ichidan)';
+      
+      return 'Groupe 1 (Godan)'; // Tout le reste est par défaut du Groupe 1
+    }
+
+    let dictHtml = `
+      <div class="card">
+        <h3>La Bibliothèque des Actions</h3>
+        <p>Voici l'intégralité des verbes de votre base de données. L'application analyse automatiquement leur forme phonétique pour déterminer leur groupe grammatical. Cliquez sur un verbe pour écouter sa prononciation.</p>
+      </div>`;
+
+    const levels = ['N5', 'N4', 'N3', 'N2', 'N1'];
+
+    levels.forEach(lvl => {
+      if(window.DB_VOCAB && window.DB_VOCAB[lvl]) {
+        let verbs = [];
+        if(window.DB_VOCAB[lvl].verbs_motion) verbs = verbs.concat(window.DB_VOCAB[lvl].verbs_motion);
+        if(window.DB_VOCAB[lvl].verbs_action) verbs = verbs.concat(window.DB_VOCAB[lvl].verbs_action);
+
+        if(verbs.length > 0) {
+          dictHtml += `<div class="card"><h4 style="color:var(--aka); margin-bottom:10px;">Niveau ${lvl}</h4>`;
+          dictHtml += `<table class="course-table" style="width:100%; text-align:left;">
+                        <tr><th>Kanji</th><th>Furigana</th><th>Français</th><th>Groupe</th></tr>`;
+
+          // Tri alphabétique par groupe (G1 -> G2 -> G3)
+          verbs.sort((a, b) => getVerbGroup(a.jp, a.kana).localeCompare(getVerbGroup(b.jp, b.kana)));
+
+          verbs.forEach(v => {
+            const group = getVerbGroup(v.jp, v.kana);
+            dictHtml += `
+              <tr onclick="speak('${v.jp.replace(/'/g, "\\'")}')" style="cursor:pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(188,0,45,0.05)'" onmouseout="this.style.background=''">
+                <td style="font-family:var(--font-jp); font-size:20px; font-weight:bold;">${v.jp}</td>
+                <td style="color:#666;">${v.kana}</td>
+                <td>${v.fr}</td>
+                <td><span style="font-size:12px; background:var(--sakura-pale); color:var(--aka); padding:4px 8px; border-radius:12px; white-space:nowrap; font-weight:bold;">${group}</span></td>
+              </tr>`;
+          });
+          dictHtml += `</table></div>`;
+        }
+      }
+    });
+
+    contentDiv.innerHTML = dictHtml;
+  }
   else if(id === 'parametres') {
     titleHeader.innerText = "Paramètres de l'Application";
     const isSamourai = document.body.classList.contains('samourai-mode');
