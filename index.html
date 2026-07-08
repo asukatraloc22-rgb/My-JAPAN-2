@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   
-  <!-- ─── FAVICON & ICONS ─── -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22><rect fill=%22%23FEFDFB%22 width=%22180%22 height=%22180%22/><text x=%2290%22 y=%22135%22 font-size=%22120%22 text-anchor=%22middle%22 fill=%22%23C41E3A%22>🌸</text></svg>">
-  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
+  <!-- ─── FAVICON & ICONS (UTILISANT L'ÉMOJI 🌸 NATIF) ─── -->
+  <link rel="icon" href="./icons/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="shortcut icon" href="./icons/favicon-32.png" type="image/png">
   
   <!-- ─── PWA MANIFEST ─── -->
   <link rel="manifest" href="manifest.json">
@@ -61,17 +61,7 @@
   <aside class="sidebar" id="sidebar">
     <button class="toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle">◀</button>
     <div class="sidebar-logo">
-      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="sakuraGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFB7C5" /><stop offset="100%" stop-color="#e75480" /></linearGradient></defs>
-        <g transform="translate(50, 50)">
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(72)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(144)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(216)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(288)" />
-          <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.9"/><circle cx="0" cy="0" r="2.5" fill="#BC002D"/>
-        </g>
-      </svg>
+      <span style="font-size: 2.5rem; margin-right: 10px;">🌸</span>
       <div class="logo-text-container">
         <span class="jp-title">日本語の道</span>
         <span class="sub">MON PARCOURS</span>
@@ -99,7 +89,7 @@
       </div>
 
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
-        <span><span class="nav-icon"> Fuji</span> JLPT N4 (Élémentaire)</span>
+        <span><span class="nav-icon">🗻</span> JLPT N4 (Élémentaire)</span>
         <span class="chevron" id="chevron-jlpt4-menu">▼</span>
       </button>
       <div id="jlpt4-menu" class="submenu" style="display: none;">
