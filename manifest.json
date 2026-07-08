@@ -1,21 +1,118 @@
 {
-  "name": "Nihongo no Michi",
-  "short_name": "Japonais",
-  "description": "Mon parcours complet pour apprendre le japonais du N5 au N1.",
+  "name": "Nihongo no Michi - Mon Parcours Complet du Japonais",
+  "short_name": "日本語の道",
+  "description": "Application complète pour apprendre le japonais du N5 (débutant) au N1 (expert) avec leçons, exercices interactifs, flashcards SRS et dictionnaire des verbes.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#fffef9",
-  "theme_color": "#BC002D",
-  "icons": [
+  "orientation": "portrait-primary",
+  "background_color": "#FEFDFB",
+  "theme_color": "#C41E3A",
+  "categories": ["education", "productivity"],
+  "screenshots": [
     {
-      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>",
-      "sizes": "192x192",
-      "type": "image/svg+xml"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23FEFDFB' width='540' height='720'/><text x='270' y='360' font-size='120' text-anchor='middle' fill='%23C41E3A' font-family='serif'>日本語</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>",
-      "sizes": "512x512",
-      "type": "image/svg+xml"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect fill='%23FEFDFB' width='1280' height='720'/><text x='640' y='360' font-size='120' text-anchor='middle' fill='%23C41E3A' font-family='serif'>日本語の道</text></svg>",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
     }
-  ]
+  ],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23FFB7C5;stop-opacity:1' /><stop offset='100%' style='stop-color:%23E75480;stop-opacity:1' /></linearGradient></defs><rect fill='%23FEFDFB' width='192' height='192'/><circle cx='96' cy='96' r='85' fill='url(%23grad)' opacity='0.2'/><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>🌸</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='grad2' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23FFB7C5;stop-opacity:1' /><stop offset='100%' style='stop-color:%23E75480;stop-opacity:1' /></linearGradient></defs><rect fill='%23FEFDFB' width='512' height='512'/><circle cx='256' cy='256' r='230' fill='url(%23grad2)' opacity='0.2'/><text x='256' y='360' font-size='280' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>🌸</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='grad3' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23FFB7C5;stop-opacity:1' /><stop offset='100%' style='stop-color:%23E75480;stop-opacity:1' /></linearGradient></defs><rect fill='%23FEFDFB' width='192' height='192' rx='45'/><circle cx='96' cy='96' r='85' fill='url(%23grad3)' opacity='0.2'/><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>🌸</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='grad4' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%23FFB7C5;stop-opacity:1' /><stop offset='100%' style='stop-color:%23E75480;stop-opacity:1' /></linearGradient></defs><rect fill='%23FEFDFB' width='512' height='512' rx='120'/><circle cx='256' cy='256' r='230' fill='url(%23grad4)' opacity='0.2'/><text x='256' y='360' font-size='280' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>🌸</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Démarrer les Leçons N5",
+      "short_name": "N5",
+      "description": "Commencer par le niveau débutant",
+      "url": "./index.html?lesson=cours-01",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>🎓</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Exercices Interactifs",
+      "short_name": "Exercices",
+      "description": "Accéder aux exercices et flashcards",
+      "url": "./index.html?section=exercices",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>💪</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Dictionnaire des Verbes",
+      "short_name": "Verbes",
+      "description": "Consulter le dictionnaire des verbes",
+      "url": "./index.html?section=verbs-dict",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>📘</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Ma Progression",
+      "short_name": "Progression",
+      "description": "Voir mon avancement et mes statistiques",
+      "url": "./index.html?section=progression",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><text x='96' y='130' font-size='100' text-anchor='middle' fill='%23C41E3A' font-family='serif' font-weight='bold'>📈</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "./share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "prefer_related_applications": false,
+  "related_applications": []
 }
