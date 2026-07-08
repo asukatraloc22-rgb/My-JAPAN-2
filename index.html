@@ -1,154 +1,146 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#BC002D">
-<title>日本語 de 道 — Mon Parcours Japonais</title>
-
-<!-- Polices Google -->
-<link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-
-<!-- 🎨 LE FICHIER DE DESIGN -->
-<link rel="stylesheet" href="./style.css">
+  <!-- ─── META TAGS ESSENTIELS ─── -->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  
+  <!-- ─── FAVICON & ICONS ─── -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 180 180%22><rect fill=%22%23FEFDFB%22 width=%22180%22 height=%22180%22/><text x=%2290%22 y=%22135%22 font-size=%22120%22 text-anchor=%22middle%22 fill=%22%23C41E3A%22>🌸</text></svg>">
+  <link rel="shortcut icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
+  
+  <!-- ─── PWA MANIFEST ─── -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- ─── THEME COLOR ─── -->
+  <meta name="theme-color" content="#C41E3A">
+  <meta name="msapplication-TileColor" content="#C41E3A">
+  <meta name="msapplication-config" content="browserconfig.xml">
+  
+  <!-- ─── iOS SPECIFIC META TAGS ─── -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="日本語の道">
+  
+  <!-- ─── ANDROID SPECIFIC META TAGS ─── -->
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <!-- ─── SEO META TAGS ─── -->
+  <title>日本語 de 道 — Mon Parcours Japonais | Apprendre le Japonais N5-N1</title>
+  <meta name="description" content="Application complète pour apprendre le japonais du N5 (débutant) au N1 (expert). Leçons interactives, flashcards SRS, exercices, dictionnaire des verbes et bien plus. Gratuit et hors-ligne.">
+  <meta name="keywords" content="japonais, JLPT, N5, N4, N3, N2, N1, apprendre, leçons, exercices, flashcards, kanji, hiragana, katakana">
+  <meta name="author" content="Nihongo no Michi">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="fr">
+  
+  <!-- ─── OPEN GRAPH (Social Media) ─── -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="日本語 de 道 — Mon Parcours Japonais">
+  <meta property="og:description" content="Apprenez le japonais du N5 au N1 avec des leçons interactives, des exercices et des flashcards SRS.">
+  <meta property="og:url" content="https://my-japan-2.vercel.app/">
+  <meta property="og:image" content="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 630%22><rect fill=%22%23FEFDFB%22 width=%221200%22 height=%22630%22/><text x=%22600%22 y=%22315%22 font-size=%22200%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23C41E3A%22 font-family=%22serif%22 font-weight=%22bold%22>日本語の道</text></svg>">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Nihongo no Michi">
+  
+  <!-- ─── TWITTER CARD ─── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="日本語 de 道 — Mon Parcours Japonais">
+  <meta name="twitter:description" content="Apprenez le japonais du N5 au N1 avec des leçons interactives, des exercices et des flashcards SRS.">
+  <meta name="twitter:image" content="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 630%22><rect fill=%22%23FEFDFB%22 width=%221200%22 height=%22630%22/><text x=%22600%22 y=%22315%22 font-size=%22200%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23C41E3A%22 font-family=%22serif%22 font-weight=%22bold%22>日本語の道</text></svg>">
+  
+  <!-- ─── CANONICAL URL ─── -->
+  <link rel="canonical" href="https://my-japan-2.vercel.app/">
+  
+  <!-- ─── ALTERNATE LINKS ─── -->
+  <link rel="alternate" hreflang="fr" href="https://my-japan-2.vercel.app/">
+  <link rel="alternate" hreflang="ja" href="https://my-japan-2.vercel.app/?lang=ja">
+  <link rel="alternate" hreflang="en" href="https://my-japan-2.vercel.app/?lang=en">
+  
+  <!-- ─── PRECONNECT & DNS-PREFETCH ─── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  
+  <!-- ─── POLICES GOOGLE (OPTIMISÉES) ─── -->
+  <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  
+  <!-- ─── CSS PRINCIPAL ─── -->
+  <link rel="stylesheet" href="./style.css">
+  
+  <!-- ─── STRUCTURED DATA (JSON-LD) ─── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Nihongo no Michi",
+    "description": "Application complète pour apprendre le japonais du N5 au N1",
+    "url": "https://my-japan-2.vercel.app/",
+    "applicationCategory": "EducationalApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "Nihongo no Michi"
+    },
+    "image": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><text x=%22256%22 y=%22360%22 font-size=%22280%22 text-anchor=%22middle%22 fill=%22%23C41E3A%22 font-family=%22serif%22 font-weight=%22bold%22>🌸</text></svg>"
+  }
+  </script>
+  
+  <!-- ─── SCRIPT DE DÉTECTION DE SERVICE WORKER ─── -->
+  <script>
+    // Vérifier si le navigateur supporte les service workers
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(registration => {
+            console.log('✅ Service Worker enregistré :', registration);
+            
+            // Vérifier les mises à jour
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('🔄 Mise à jour disponible');
+                  // Notifier l'utilisateur qu'une mise à jour est disponible
+                  if (window.confirm('Une nouvelle version est disponible. Recharger ?')) {
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                  }
+                }
+              });
+            });
+          })
+          .catch(error => {
+            console.error('❌ Erreur lors de l\'enregistrement du Service Worker :', error);
+          });
+      });
+    }
+  </script>
+  
+  <!-- ─── PRELOAD CRITIQUES ─── -->
+  <link rel="preload" href="./database.js" as="script">
+  <link rel="preload" href="./app.js" as="script">
+  
+  <!-- ─── PREFETCH NON-CRITIQUES ─── -->
+  <link rel="prefetch" href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&display=swap">
+  
+  <!-- ─── SECURITY HEADERS ─── -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  
+  <!-- ─── PERFORMANCE OPTIMIZATION ─── -->
+  <meta http-equiv="Cache-Control" content="public, max-age=3600">
+  
+  <!-- ─── COLOR SCHEME ─── -->
+  <meta name="color-scheme" content="light dark">
+  
 </head>
-<body>
-
-<!-- ARRIÈRE-PLANS -->
-<div class="bg-kanji" id="bg-kanji"></div>
-<div class="petals" id="petals"></div>
-
-<button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-
-<div class="app-shell">
-  <!-- SIDEBAR (MENU GAUCHE) -->
-  <aside class="sidebar" id="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle">◀</button>
-    <div class="sidebar-logo">
-      <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="sakuraGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFB7C5" /><stop offset="100%" stop-color="#e75480" /></linearGradient></defs>
-        <g transform="translate(50, 50)">
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(72)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(144)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(216)" />
-          <path d="M0,0 C-12,-15 -20,-35 -8,-42 C-4,-44 0,-38 0,-38 C0,-38 4,-44 8,-42 C20,-35 12,-15 0,0 Z" fill="url(#sakuraGrad)" transform="rotate(288)" />
-          <circle cx="0" cy="0" r="5" fill="#fff" opacity="0.9"/><circle cx="0" cy="0" r="2.5" fill="#BC002D"/>
-        </g>
-      </svg>
-      <div class="logo-text-container">
-        <span class="jp-title">日本語の道</span>
-        <span class="sub">MON PARCOURS</span>
-      </div>
-    </div>
-    
-    <nav class="sidebar-nav">
-      <div class="nav-group-label">Apprentissage JLPT</div>
-      
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
-        <span><span class="nav-icon">🎓</span> JLPT N5 (Débutant)</span>
-        <span class="chevron" id="chevron-jlpt5-menu">▼</span>
-      </button>
-      <div id="jlpt5-menu" class="submenu" style="display: block;">
-        <button class="nav-item sub-item active" onclick="loadContent('cours-01')">1: Hiragana</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-02')">2: Katakana</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-03')">3: Structure SOV</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-04')">4: Particules</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05')">5: Verbes (Masu)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-4')">5.4: Vocabulaire Essentiel</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
-      </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
-        <span><span class="nav-icon">🗻</span> JLPT N4 (Élémentaire)</span>
-        <span class="chevron" id="chevron-jlpt4-menu" style="transform: rotate(-90deg);">▼</span>
-      </button>
-      <div id="jlpt4-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-07')">7: Kanji N4</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Potentiel & Volitif</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Les 4 Conditionnels</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Suppositions & Apparences</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
-      </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
-        <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
-        <span class="chevron" id="chevron-jlpt3-menu" style="transform: rotate(-90deg);">▼</span>
-      </button>
-      <div id="jlpt3-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-11')">11: Kanji N3</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-12')">12: Passif & Causatif</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13')">13: Le Keigo (Politesse)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13-1')">13.1: Temps & Limites</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13-2')">13.2: Décisions & État</button>
-      </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt2-menu')">
-        <span><span class="nav-icon">🚄</span> JLPT N2 (Avancé)</span>
-        <span class="chevron" id="chevron-jlpt2-menu" style="transform: rotate(-90deg);">▼</span>
-      </button>
-      <div id="jlpt2-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-14')">14: Kanji N2</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-15')">15: Grammaire N2</button>
-      </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt1-menu')">
-        <span><span class="nav-icon">⛩️</span> JLPT N1 (Expert)</span>
-        <span class="chevron" id="chevron-jlpt1-menu" style="transform: rotate(-90deg);">▼</span>
-      </button>
-      <div id="jlpt1-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-16')">16: Kanji N1</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-17')">17: Grammaire Experte</button>
-      </div>
-
-      <div class="sidebar-section-divider"></div>
-      
-      <div class="nav-group-label">Pratique & Évaluation</div>
-      <button class="nav-item" onclick="loadContent('exercices')"><span class="nav-icon">💪</span> Exercices</button>
-      <button class="nav-item" onclick="loadContent('examens')"><span class="nav-icon">🎓</span> Examens JLPT</button>
-      <button class="nav-item" onclick="loadContent('verbs-dict')"><span class="nav-icon">📘</span> Dico des Verbes</button>
-      
-      <div class="sidebar-section-divider"></div>
-      
-      <div class="nav-group-label">Mon Compte</div>
-      <button class="nav-item" onclick="loadContent('progression')"><span class="nav-icon">📈</span> Progression</button>
-      <button class="nav-item" onclick="loadContent('parametres')"><span class="nav-icon">⚙️</span> Paramètres</button>
-      
-    </nav>
-  </aside>
-
-  <!-- CONTENU PRINCIPAL -->
-  <main class="main-content">
-    <header class="main-header">
-      <div class="page-title" id="page-title">Chargement...</div>
-      <div class="search-container">
-        <input type="text" id="global-search" placeholder="Chercher un kanji, mot, fr..." autocomplete="off">
-        <div id="search-results" class="search-results"></div>
-      </div>
-    </header>
-    
-    <div class="main-body" id="content"></div>
-    
-  </main>
-</div>
-
-<!-- MODAL KANJI CACHÉE -->
-<div class="modal-overlay" id="kanji-modal-overlay" onclick="closeKanjiModal(event)">
-  <div class="kanji-modal" id="kanji-modal-box">
-    <!-- Le contenu sera injecté ici par JavaScript -->
-  </div>
-</div>
-
-<!-- 🗄️ LA BASE DE DONNÉES -->
-<script src="./database.js"></script>
-
-<!-- 🧠 LE MOTEUR JAVASCRIPT -->
-<script src="./app.js"></script>
-
-</body>
-</html>
