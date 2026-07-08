@@ -2161,6 +2161,18 @@ let activeSovQuiz = [];
 let currentSovIndex = 0;
 let bankWords = [];
 let placedWords = [];
+let sovCorrectAnswers = 0;
+let sovTotalAnswers = 0;
+
+// ─── CONJUGAISONS DE VERBES ─── 
+const verbConjugations = {
+  'ます': { form: 'masu', meaning: 'Forme polie présent', tense: 'present' },
+  'ました': { form: 'mashita', meaning: 'Forme polie passé', tense: 'past' },
+  'ません': { form: 'masen', meaning: 'Forme polie négatif', tense: 'present' },
+  'ませんでした': { form: 'masen deshita', meaning: 'Forme polie négatif passé', tense: 'past' },
+  'ている': { form: 'te iru', meaning: 'Action en cours', tense: 'present' },
+  'ていた': { form: 'te ita', meaning: 'Action passée en cours', tense: 'past' }
+};
 
 function generateProceduralSOV(level, count = 5) {
   if(!window.DB_VOCAB) return [];
@@ -2168,35 +2180,174 @@ function generateProceduralSOV(level, count = 5) {
   if (!vocab || !vocab.subjects || vocab.subjects.length === 0) return [];
   
   let generated = [];
-  for(let i=0; i<count; i++) {
-     let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
-     // Sécurités au cas où le niveau ne possèderait pas encore certaines listes
-     let p1 = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
-     let vm = vocab.verbs_motion ? vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)] : null;
-     let obj = vocab.objects ? vocab.objects[Math.floor(Math.random() * vocab.objects.length)] : null;
-     let va = vocab.verbs_action ? vocab.verbs_action[Math.floor(Math.random() * vocab.verbs_action.length)] : null;
-     
-     let patterns = [];
+  for(let i = 0; i < count; i++) {
+    let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+    let p1 = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
+    let vm = vocab.verbs_motion ? vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)] : null;
+    let obj = vocab.objects ? vocab.objects[Math.floor(Math.random() * vocab.objects.length)] : null;
+    let va = vocab.verbs_action ? vocab.verbs_action[Math.floor(Math.random() * vocab.verbs_action.length)] : null;
+    let adj = vocab.adjectives ? vocab.adjectives[Math.floor(Math.random() * vocab.adjectives.length)] : null;
+    
+    let patterns = [];
 
-     // Modèles 1 & 2 : Les Déplacements (ex: Je vais à Tokyo)
-     if (p1 && vm) {
-       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "に", vm.jp], fr: s.fr + " " + vm.fr + " à " + p1.fr + "." });
-       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "から", vm.jp], fr: s.fr + " " + vm.fr + " depuis " + p1.fr + "." });
-     }
+    // ─── PATTERN 1 : Déplacement simple (Je vais à Tokyo) ─── 
+    if (p1 && vm) {
+      patterns.push({
+        jpOrder: [s.jp, "は", p1.jp, "に", vm.jp + "ます"],
+        fr: s.fr + " va à " + p1.fr + ".",
+        explanation: "Sujet (は) + Destination (に) + Verbe de mouvement (ます)"
+      });
+    }
 
-     // Modèle 3 : L'Action avec Objet (ex: Je mange une pomme)
-     if (obj && va) {
-       patterns.push({ jpOrder: [s.jp, "は", obj.jp, "を", va.jp], fr: s.fr + " " + va.fr + " " + obj.fr + "." });
-     }
+    // ─── PATTERN 2 : Déplacement avec origine (Je viens de Tokyo) ─── 
+    if (p1 && vm) {
+      patterns.push({
+        jpOrder: [s.jp, "は", p1.jp, "から", vm.jp + "ました"],
+        fr: s.fr + " venait de " + p1.fr + ".",
+        explanation: "Sujet (は) + Origine (から) + Verbe de mouvement (ました - passé)"
+      });
+    }
 
-     // Modèle 4 : L'Action complexe (ex: Je lis un livre à l'école)
-     if (p1 && obj && va) {
-       patterns.push({ jpOrder: [s.jp, "は", p1.jp, "で", obj.jp, "を", va.jp], fr: s.fr + " " + va.fr + " " + obj.fr + " à " + p1.fr + "." });
-     }
+    // ─── PATTERN 3 : Action avec objet direct (Je mange une pomme) ─── 
+    if (obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ます"],
+        fr: s.fr + " mange " + obj.fr + ".",
+        explanation: "Sujet (は) + Objet direct (を) + Verbe d'action (ます)"
+      });
+    }
 
-     // Sélection aléatoire d'un des modèles générés
-     let chosenPattern = patterns[Math.floor(Math.random() * patterns.length)];
-     generated.push({ lvl: level, fr: chosenPattern.fr, order: chosenPattern.jpOrder });
+    // ─── PATTERN 4 : Action avec objet au passé (J'ai mangé une pomme) ─── 
+    if (obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ました"],
+        fr: s.fr + " a mangé " + obj.fr + ".",
+        explanation: "Sujet (は) + Objet direct (を) + Verbe d'action (ました - passé)"
+      });
+    }
+
+    // ─── PATTERN 5 : Action avec objet négatif (Je ne mange pas de pomme) ─── 
+    if (obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ません"],
+        fr: s.fr + " ne mange pas " + obj.fr + ".",
+        explanation: "Sujet (は) + Objet direct (を) + Verbe d'action (ません - négatif)"
+      });
+    }
+
+    // ─── PATTERN 6 : Action complexe (Je lis un livre à l'école) ─── 
+    if (p1 && obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", p1.jp, "で", obj.jp, "を", va.jp + "ます"],
+        fr: s.fr + " lit " + obj.fr + " à " + p1.fr + ".",
+        explanation: "Sujet (は) + Lieu d'action (で) + Objet direct (を) + Verbe (ます)"
+      });
+    }
+
+    // ─── PATTERN 7 : Action complexe au passé ─── 
+    if (p1 && obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", p1.jp, "で", obj.jp, "を", va.jp + "ました"],
+        fr: s.fr + " a lu " + obj.fr + " à " + p1.fr + ".",
+        explanation: "Sujet (は) + Lieu d'action (で) + Objet direct (を) + Verbe (ました - passé)"
+      });
+    }
+
+    // ─── PATTERN 8 : Avec adjectif descriptif (C'est un beau livre) ─── 
+    if (obj && adj) {
+      patterns.push({
+        jpOrder: [obj.jp, "は", adj.jp, "です"],
+        fr: obj.fr + " est " + adj.fr + ".",
+        explanation: "Sujet (は) + Adjectif + です (copule)"
+      });
+    }
+
+    // ─── PATTERN 9 : Avec adjectif au passé (C'était beau) ─── 
+    if (obj && adj) {
+      patterns.push({
+        jpOrder: [obj.jp, "は", adj.jp, "でした"],
+        fr: obj.fr + " était " + adj.fr + ".",
+        explanation: "Sujet (は) + Adjectif + でした (copule passée)"
+      });
+    }
+
+    // ─── PATTERN 10 : Avec deux objets (Je donne un livre à mon ami) ─── 
+    if (obj && s) {
+      let recipient = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+      if (recipient && recipient.jp !== s.jp) {
+        patterns.push({
+          jpOrder: [s.jp, "は", recipient.jp, "に", obj.jp, "を", "あげます"],
+          fr: s.fr + " donne " + obj.fr + " à " + recipient.fr + ".",
+          explanation: "Sujet (は) + Destinataire (に) + Objet direct (を) + Verbe (あげます)"
+        });
+      }
+    }
+
+    // ─── PATTERN 11 : Action en cours (Je suis en train de manger) ─── 
+    if (obj && va) {
+      patterns.push({
+        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ています"],
+        fr: s.fr + " est en train de manger " + obj.fr + ".",
+        explanation: "Sujet (は) + Objet direct (を) + Verbe (ている - action en cours)"
+      });
+    }
+
+    // ─── PATTERN 12 : Avec particule も (aussi) ─── 
+    if (obj && va && s) {
+      let other = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+      if (other && other.jp !== s.jp) {
+        patterns.push({
+          jpOrder: [s.jp, "も", obj.jp, "を", va.jp + "ます"],
+          fr: s.fr + " aussi mange " + obj.fr + ".",
+          explanation: "Sujet (も - aussi) + Objet direct (を) + Verbe (ます)"
+        });
+      }
+    }
+
+    // ─── PATTERN 13 : Avec particule が (sujet nouveau) ─── 
+    if (obj && va) {
+      patterns.push({
+        jpOrder: [obj.jp, "が", s.jp, "を", va.jp + "ます"],
+        fr: obj.fr + " que " + s.fr + " mange.",
+        explanation: "Objet (が - sujet nouveau) + Sujet (を) + Verbe (ます)"
+      });
+    }
+
+    // ─── PATTERN 14 : Avec particule と (avec) ─── 
+    if (p1 && vm && s) {
+      let companion = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+      if (companion && companion.jp !== s.jp) {
+        patterns.push({
+          jpOrder: [s.jp, "は", companion.jp, "と", p1.jp, "に", vm.jp + "ます"],
+          fr: s.fr + " va à " + p1.fr + " avec " + companion.fr + ".",
+          explanation: "Sujet (は) + Compagnon (と - avec) + Destination (に) + Verbe (ます)"
+        });
+      }
+    }
+
+    // ─── PATTERN 15 : Avec particule から/まで (de...à) ─── 
+    if (p1 && vm) {
+      let p2 = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
+      if (p2 && p2.jp !== p1.jp) {
+        patterns.push({
+          jpOrder: [s.jp, "は", p1.jp, "から", p2.jp, "まで", vm.jp + "ます"],
+          fr: s.fr + " va de " + p1.fr + " à " + p2.fr + ".",
+          explanation: "Sujet (は) + Origine (から) + Destination (まで) + Verbe (ます)"
+        });
+      }
+    }
+
+    // Sélection aléatoire d'un pattern valide
+    let validPatterns = patterns.filter(p => p.jpOrder && p.jpOrder.length > 0);
+    if (validPatterns.length > 0) {
+      let chosenPattern = validPatterns[Math.floor(Math.random() * validPatterns.length)];
+      generated.push({ 
+        lvl: level, 
+        fr: chosenPattern.fr, 
+        order: chosenPattern.jpOrder,
+        explanation: chosenPattern.explanation
+      });
+    }
   }
   return generated;
 }
@@ -2208,21 +2359,29 @@ function startSov(level) {
     return;
   }
   currentSovIndex = 0;
+  sovCorrectAnswers = 0;
+  sovTotalAnswers = 0;
   loadContent('sov-run');
   renderSovQuestion();
 }
 
 function renderSovQuestion() {
   if (currentSovIndex >= activeSovQuiz.length) {
+    const percentage = Math.round((sovCorrectAnswers / sovTotalAnswers) * 100);
     document.getElementById('content').innerHTML = `
       <div class="card" style="text-align:center; padding: 40px;">
         <span style="font-size: 60px;">🏯</span>
         <h3 style="color: var(--aka); margin: 20px 0;">Entraînement SOV Terminé !</h3>
-        <p>Vos réflexes s'améliorent.</p>
-        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour</button>
+        <p style="font-size: 18px; margin: 15px 0;"><strong>${sovCorrectAnswers}/${sovTotalAnswers}</strong> réponses correctes</p>
+        <div style="background: var(--sakura-pale); padding: 15px; border-radius: 8px; margin: 15px 0;">
+          <p style="margin: 0; font-size: 16px;">Réussite : <strong style="color: var(--aka); font-size: 20px;">${percentage}%</strong></p>
+        </div>
+        <p style="color: #666; margin-top: 15px;">Vos réflexes de construction de phrases s'améliorent ! Continuez vos entraînements.</p>
+        <button class="btn-primary" style="margin-top:20px;" onclick="loadContent('exercices')">Retour aux exercices</button>
       </div>`;
     return;
   }
+  
   const q = activeSovQuiz[currentSovIndex];
   placedWords = [];
   bankWords = [...q.order].map((word, idx) => ({ id: idx, text: word }));
@@ -2233,7 +2392,6 @@ function renderSovQuestion() {
 function updateSovUI() {
   const q = activeSovQuiz[currentSovIndex];
   
-  // 👈 NOUVEAU : On aspire absolument toutes les catégories pour trouver les furiganas
   const v = window.DB_VOCAB[q.lvl];
   const allVocab = [
     ...(v.subjects || []), ...(v.places || []), ...(v.verbs_motion || []),
@@ -2254,11 +2412,19 @@ function updateSovUI() {
     bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
   });
 
+  const progressText = `Question ${currentSovIndex + 1}/${activeSovQuiz.length}`;
+  
   document.getElementById('sov-area').innerHTML = `
-    <div class="sov-header">Traduisez : "${q.fr}"</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div class="sov-header">Traduisez : "${q.fr}"</div>
+      <div style="font-size: 12px; color: #999;">${progressText}</div>
+    </div>
     <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
     <div class="sov-bank-area" id="sov-bank">${bankHtml}</div>
     <div id="quiz-feedback" class="quiz-feedback"></div>
+    <div style="background: var(--sakura-pale); padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 13px; color: #555;">
+      <strong>💡 Rappel :</strong> ${q.explanation}
+    </div>
     <div class="sov-controls">
       <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
       <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
@@ -2288,13 +2454,28 @@ function checkSovAnswer() {
   document.getElementById('sov-next-btn').style.display = 'block';
   document.querySelectorAll('.sov-word').forEach(w => w.onclick = null);
 
+  sovTotalAnswers++;
+
   if (userOrder === correctOrder) {
+    sovCorrectAnswers++;
     feedbackDiv.className = 'quiz-feedback correct';
-    feedbackDiv.innerHTML = `<strong>✅ Parfait !</strong><br>La structure SOV est respectée.`;
+    feedbackDiv.innerHTML = `
+      <strong>✅ Parfait !</strong><br>
+      <span style="font-size: 13px; margin-top: 8px; display: block;">
+        La structure SOV est correcte : <strong>${q.order.join(" ")}</strong><br>
+        <em>${q.explanation}</em>
+      </span>
+    `;
     updateStat(true); 
   } else {
     feedbackDiv.className = 'quiz-feedback wrong';
-    feedbackDiv.innerHTML = `<strong>❌ Incorrect.</strong><br>L'ordre était : <strong>${q.order.join(" ")}</strong>`;
+    feedbackDiv.innerHTML = `
+      <strong>❌ Incorrect.</strong><br>
+      <span style="font-size: 13px; margin-top: 8px; display: block;">
+        L'ordre correct était : <strong>${q.order.join(" ")}</strong><br>
+        <em>${q.explanation}</em>
+      </span>
+    `;
     updateStat(false); 
   }
 }
