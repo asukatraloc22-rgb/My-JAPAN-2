@@ -2157,6 +2157,17 @@ function nextQuizQuestion() {
 }
 
 /* ─── MOTEUR CONSTRUCTEUR SOV (PROCÉDURAL) ─── */
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MOTEUR CONSTRUCTEUR SOV ROBUSTE - VERSION 2.2
+   
+   À REMPLACER DANS app.js (lignes 1768-1915)
+   
+   CORRECTIONS :
+   ✅ Utilise les verbes déjà conjugués de database.js (évite les erreurs de sens)
+   ✅ Cohérence Sujet-Verbe-Lieu
+   ✅ Rétablit la fluidité de l'application
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
 let activeSovQuiz = [];
 let currentSovIndex = 0;
 let bankWords = [];
@@ -2171,73 +2182,48 @@ function generateProceduralSOV(level, count = 5) {
   
   let generated = [];
   for(let i = 0; i < count; i++) {
-    // Filtrage pour la cohérence sémantique
-    const subjects = vocab.subjects.filter(s => s.fr === "Je" || s.fr === "Il" || s.fr === "Elle" || s.fr === "L'étudiant" || s.fr === "Le professeur" || s.fr === "L'ami" || s.fr === "Maman" || s.fr === "Papa" || s.fr === "Le chat" || s.fr === "Le chien");
-    const humanSubjects = vocab.subjects.filter(s => s.fr !== "Le chat" && s.fr !== "Le chien");
-    
-    let s = subjects[Math.floor(Math.random() * subjects.length)] || vocab.subjects[0];
-    let p1 = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
+    let s = vocab.subjects[Math.floor(Math.random() * vocab.subjects.length)];
+    let p = vocab.places ? vocab.places[Math.floor(Math.random() * vocab.places.length)] : null;
     let vm = vocab.verbs_motion ? vocab.verbs_motion[Math.floor(Math.random() * vocab.verbs_motion.length)] : null;
     let obj = vocab.objects ? vocab.objects[Math.floor(Math.random() * vocab.objects.length)] : null;
     let va = vocab.verbs_action ? vocab.verbs_action[Math.floor(Math.random() * vocab.verbs_action.length)] : null;
-    let adj = vocab.adjectives ? vocab.adjectives[Math.floor(Math.random() * vocab.adjectives.length)] : null;
     
     let patterns = [];
 
-    // ─── PATTERN 1 : Déplacement (Humain ou Animal) ─── 
-    if (p1 && vm) {
+    // Modèle 1 : Déplacement (Sujet + Destination + Verbe de mouvement)
+    if (p && vm) {
       patterns.push({
-        jpOrder: [s.jp, "は", p1.jp, "に", vm.jp + "ます"],
-        fr: s.fr + " va à " + p1.fr + ".",
-        explanation: "Sujet (は) + Destination (に) + Verbe de mouvement (ます)"
+        jpOrder: [s.jp, "は", p.jp, "に", vm.jp],
+        fr: s.fr + " " + vm.fr + " " + p.fr + ".",
+        explanation: "Sujet (は) + Destination (に) + Verbe de mouvement."
       });
     }
 
-    // ─── PATTERN 2 : Action avec objet (Humain seulement) ─── 
-    if (obj && va && humanSubjects.includes(s)) {
+    // Modèle 2 : Action simple (Sujet + Objet + Verbe d'action)
+    if (obj && va) {
       patterns.push({
-        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ます"],
-        fr: s.fr + " mange " + obj.fr + ".",
-        explanation: "Sujet (は) + Objet direct (を) + Verbe d'action (ます)"
+        jpOrder: [s.jp, "は", obj.jp, "を", va.jp],
+        fr: s.fr + " " + va.fr + " " + obj.fr + ".",
+        explanation: "Sujet (は) + Objet direct (を) + Verbe d'action."
       });
     }
 
-    // ─── PATTERN 3 : Action complexe (Humain seulement) ─── 
-    if (p1 && obj && va && humanSubjects.includes(s)) {
+    // Modèle 3 : Action dans un lieu (Sujet + Lieu + Objet + Verbe)
+    if (p && obj && va) {
       patterns.push({
-        jpOrder: [s.jp, "は", p1.jp, "で", obj.jp, "を", va.jp + "ます"],
-        fr: s.fr + " lit " + obj.fr + " à " + p1.fr + ".",
-        explanation: "Sujet (は) + Lieu d'action (で) + Objet direct (を) + Verbe (ます)"
+        jpOrder: [s.jp, "は", p.jp, "で", obj.jp, "を", va.jp],
+        fr: s.fr + " " + va.fr + " " + obj.fr + " à " + p.fr + ".",
+        explanation: "Sujet (は) + Lieu d'action (で) + Objet (を) + Verbe."
       });
     }
 
-    // ─── PATTERN 4 : Description d'objet ─── 
-    if (obj && adj) {
-      patterns.push({
-        jpOrder: [obj.jp, "は", adj.jp, "です"],
-        fr: obj.fr + " est " + adj.fr + ".",
-        explanation: "Sujet (は) + Adjectif + です (copule)"
-      });
-    }
-
-    // ─── PATTERN 5 : Action au passé ─── 
-    if (obj && va && humanSubjects.includes(s)) {
-      patterns.push({
-        jpOrder: [s.jp, "は", obj.jp, "を", va.jp + "ました"],
-        fr: s.fr + " a mangé " + obj.fr + ".",
-        explanation: "Sujet (は) + Objet direct (を) + Verbe au passé (ました)"
-      });
-    }
-
-    // Sélection aléatoire d'un pattern valide
-    let validPatterns = patterns.filter(p => p.jpOrder && p.jpOrder.length > 0);
-    if (validPatterns.length > 0) {
-      let chosenPattern = validPatterns[Math.floor(Math.random() * validPatterns.length)];
+    if (patterns.length > 0) {
+      let chosen = patterns[Math.floor(Math.random() * patterns.length)];
       generated.push({ 
         lvl: level, 
-        fr: chosenPattern.fr, 
-        order: chosenPattern.jpOrder,
-        explanation: chosenPattern.explanation
+        fr: chosen.fr, 
+        order: chosen.jpOrder,
+        explanation: chosen.explanation
       });
     }
   }
@@ -2282,43 +2268,45 @@ function renderSovQuestion() {
 
 function updateSovUI() {
   const q = activeSovQuiz[currentSovIndex];
-  
   const v = window.DB_VOCAB[q.lvl];
   const allVocab = [
     ...(v.subjects || []), ...(v.places || []), ...(v.verbs_motion || []),
     ...(v.objects || []), ...(v.verbs_action || []), ...(v.adjectives || [])
   ];
   
-  let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Tapez sur les mots pour construire la phrase...</div>` : '';
+  let sentenceHtml = placedWords.length === 0 ? `<div class="sov-placeholder">Construisez la phrase...</div>` : '';
   placedWords.forEach((wordObj, i) => {
-    const original = allVocab.find(x => x.jp === wordObj.text || wordObj.text.startsWith(x.jp));
+    const original = allVocab.find(x => x.jp === wordObj.text);
     const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
     sentenceHtml += `<div class="sov-word" onclick="moveWordToBank(${i})">${wordDisplay}</div>`;
   });
 
   let bankHtml = '';
   bankWords.forEach((wordObj, i) => {
-    const original = allVocab.find(x => x.jp === wordObj.text || wordObj.text.startsWith(x.jp));
+    const original = allVocab.find(x => x.jp === wordObj.text);
     const wordDisplay = original ? `<ruby>${wordObj.text}<rt>${original.kana}</rt></ruby>` : wordObj.text;
-    bankHtml += `<div class="sov-word" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
+    bankHtml += `<div class="vocab-card" style="padding:10px; margin:5px; cursor:pointer; display:inline-block; min-width:60px; text-align:center;" onclick="moveWordToSentence(${i})">${wordDisplay}</div>`;
   });
 
-  const progressText = `Question ${currentSovIndex + 1}/${activeSovQuiz.length}`;
-  
   document.getElementById('sov-area').innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <div class="sov-header">Traduisez : "${q.fr}"</div>
-      <div style="font-size: 12px; color: #999;">${progressText}</div>
-    </div>
-    <div class="sov-sentence-area" id="sov-sentence">${sentenceHtml}</div>
-    <div class="sov-bank-area" id="sov-bank">${bankHtml}</div>
-    <div id="quiz-feedback" class="quiz-feedback"></div>
-    <div style="background: var(--sakura-pale); padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 13px; color: #555;">
-      <strong>💡 Rappel :</strong> ${q.explanation}
-    </div>
-    <div class="sov-controls">
-      <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier</button>
-      <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
+    <div class="card" style="background: white; border: 2px solid var(--aka); border-radius: 16px; padding: 25px; margin-bottom: 20px;">
+      <div style="font-size: 14px; color: #666; margin-bottom: 10px;">Traduisez en respectant l'ordre SOV :</div>
+      <div style="font-size: 20px; font-weight: bold; color: var(--aka); margin-bottom: 20px;">"${q.fr}"</div>
+      
+      <div id="sov-sentence" style="min-height: 80px; padding: 15px; background: var(--sakura-pale); border-radius: 12px; border: 2px dashed #ccc; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; margin-bottom: 20px;">
+        ${sentenceHtml}
+      </div>
+      
+      <div id="sov-bank" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 15px; background: #f9f9f9; border-radius: 12px; border: 1px solid #eee;">
+        ${bankHtml}
+      </div>
+      
+      <div id="quiz-feedback" class="quiz-feedback" style="margin-top: 20px;"></div>
+      
+      <div class="sov-controls" style="margin-top: 25px; display: flex; justify-content: center; gap: 15px;">
+        <button class="btn-primary" id="sov-check-btn" onclick="checkSovAnswer()" ${placedWords.length === 0 ? 'disabled style="opacity:0.5"' : ''}>Vérifier la phrase</button>
+        <button class="btn-primary" id="sov-next-btn" onclick="nextSovQuestion()" style="display:none; background:var(--sumi);">Continuer ➔</button>
+      </div>
     </div>
   `;
 }
@@ -2326,7 +2314,7 @@ function updateSovUI() {
 function moveWordToSentence(bankIndex) {
   const word = bankWords.splice(bankIndex, 1)[0];
   placedWords.push(word);
-  speak(word.text);
+  if (typeof speak === 'function') speak(word.text);
   updateSovUI();
 }
 
@@ -2341,33 +2329,32 @@ function checkSovAnswer() {
   const userOrder = placedWords.map(w => w.text).join("");
   const correctOrder = q.order.join("");
   const feedbackDiv = document.getElementById('quiz-feedback');
+  
   document.getElementById('sov-check-btn').style.display = 'none';
   document.getElementById('sov-next-btn').style.display = 'block';
-  document.querySelectorAll('.sov-word').forEach(w => w.onclick = null);
-
+  
   sovTotalAnswers++;
 
   if (userOrder === correctOrder) {
     sovCorrectAnswers++;
     feedbackDiv.className = 'quiz-feedback correct';
     feedbackDiv.innerHTML = `
-      <strong>✅ Parfait !</strong><br>
-      <span style="font-size: 13px; margin-top: 8px; display: block;">
-        La structure SOV est correcte : <strong>${q.order.join(" ")}</strong><br>
-        <em>${q.explanation}</em>
-      </span>
+      <div style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 12px; border-left: 5px solid #4caf50;">
+        <strong style="font-size: 18px;">✅ Parfait !</strong><br>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">La structure est correcte. ${q.explanation}</p>
+      </div>
     `;
-    updateStat(true); 
+    if (typeof updateStat === 'function') updateStat(true); 
   } else {
     feedbackDiv.className = 'quiz-feedback wrong';
     feedbackDiv.innerHTML = `
-      <strong>❌ Incorrect.</strong><br>
-      <span style="font-size: 13px; margin-top: 8px; display: block;">
-        L'ordre correct était : <strong>${q.order.join(" ")}</strong><br>
-        <em>${q.explanation}</em>
-      </span>
+      <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 12px; border-left: 5px solid #f44336;">
+        <strong style="font-size: 18px;">❌ Incorrect</strong><br>
+        <p style="margin: 10px 0 0 0; font-size: 14px;">L'ordre correct était : <strong style="font-size: 16px;">${q.order.join(" ")}</strong></p>
+        <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">${q.explanation}</p>
+      </div>
     `;
-    updateStat(false); 
+    if (typeof updateStat === 'function') updateStat(false); 
   }
 }
 
@@ -2375,6 +2362,7 @@ function nextSovQuestion() {
   currentSovIndex++;
   renderSovQuestion();
 }
+
 
 /* ─── MOTEUR DICTÉE AVEUGLE BILINGUE ─── */
 let activeDict = [];
