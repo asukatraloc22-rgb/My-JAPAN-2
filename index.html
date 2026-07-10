@@ -1,63 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- ─── META TAGS ESSENTIELS ─── -->
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  
-  <!-- ─── FAVICON & ICONS (UTILISANT L'ÉMOJI 🌸 NATIF) ─── -->
   <link rel="icon" href="./icons/favicon-32.png" type="image/png">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-  <link rel="shortcut icon" href="./icons/favicon-32.png" type="image/png">
-  
-  <!-- ─── PWA MANIFEST ─── -->
   <link rel="manifest" href="manifest.json">
-  
-  <!-- ─── THEME COLOR ─── -->
   <meta name="theme-color" content="#C41E3A">
-  <meta name="msapplication-TileColor" content="#C41E3A">
-  
-  <!-- ─── iOS SPECIFIC META TAGS ─── -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="日本語の道">
-  
-  <!-- ─── SEO META TAGS ─── -->
-  <title>日本語 de 道 — Mon Parcours Japonais | Apprendre le Japonais N5-N1</title>
-  <meta name="description" content="Application complète pour apprendre le japonais du N5 au N1. Leçons interactives, flashcards SRS, exercices et dictionnaire.">
-  
-  <!-- ─── POLICES GOOGLE ─── -->
+  <title>日本語 de 道 — Mon Parcours Japonais</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-  
-  <!-- ─── CSS PRINCIPAL ─── -->
   <link rel="stylesheet" href="./style.css">
-
-  <!-- ─── SCRIPT DE DÉTECTION DE SERVICE WORKER ─── -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then(reg => {
-          console.log('✅ SW enregistré');
-        }).catch(err => {
-          console.error('❌ Erreur SW', err);
-        });
-      });
-    }
-  </script>
 </head>
 <body>
-
-<!-- ARRIÈRE-PLANS -->
 <div class="bg-kanji" id="bg-kanji"></div>
 <div class="petals" id="petals"></div>
-
 <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-
 <div class="app-shell">
-  <!-- SIDEBAR (MENU GAUCHE) -->
   <aside class="sidebar" id="sidebar">
     <button class="toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle">◀</button>
     <div class="sidebar-logo">
@@ -67,10 +28,8 @@
         <span class="sub">MON PARCOURS</span>
       </div>
     </div>
-    
     <nav class="sidebar-nav">
       <div class="nav-group-label">Apprentissage JLPT</div>
-      
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
         <span><span class="nav-icon">🎓</span> JLPT N5 (Débutant)</span>
         <span class="chevron" id="chevron-jlpt5-menu">▼</span>
@@ -87,7 +46,6 @@
         <button class="nav-item sub-item" onclick="loadContent('cours-05-4')">5.4: Vocabulaire Essentiel</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
       </div>
-
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
         <span><span class="nav-icon">🗻</span> JLPT N4 (Élémentaire)</span>
         <span class="chevron" id="chevron-jlpt4-menu">▼</span>
@@ -99,7 +57,6 @@
         <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Suppositions & Apparences</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
       </div>
-
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
         <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
         <span class="chevron" id="chevron-jlpt3-menu">▼</span>
@@ -111,42 +68,16 @@
         <button class="nav-item sub-item" onclick="loadContent('cours-13-1')">13.1: Temps & Limites</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-13-2')">13.2: Décisions & État</button>
       </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt2-menu')">
-        <span><span class="nav-icon">🚄</span> JLPT N2 (Avancé)</span>
-        <span class="chevron" id="chevron-jlpt2-menu">▼</span>
-      </button>
-      <div id="jlpt2-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-14')">14: Kanji N2</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-15')">15: Grammaire N2</button>
-      </div>
-
-      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt1-menu')">
-        <span><span class="nav-icon">⛩️</span> JLPT N1 (Expert)</span>
-        <span class="chevron" id="chevron-jlpt1-menu">▼</span>
-      </button>
-      <div id="jlpt1-menu" class="submenu" style="display: none;">
-        <button class="nav-item sub-item" onclick="loadContent('cours-16')">16: Kanji N1</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-17')">17: Grammaire Experte</button>
-      </div>
-
       <div class="sidebar-section-divider"></div>
-      
       <div class="nav-group-label">Pratique & Évaluation</div>
       <button class="nav-item" onclick="loadContent('exercices')"><span class="nav-icon">💪</span> Exercices</button>
-      <button class="nav-item" onclick="loadContent('examens')"><span class="nav-icon">🎓</span> Examens JLPT</button>
       <button class="nav-item" onclick="loadContent('verbs-dict')"><span class="nav-icon">📘</span> Dico des Verbes</button>
-      
       <div class="sidebar-section-divider"></div>
-      
       <div class="nav-group-label">Mon Compte</div>
       <button class="nav-item" onclick="loadContent('progression')"><span class="nav-icon">📈</span> Progression</button>
       <button class="nav-item" onclick="loadContent('parametres')"><span class="nav-icon">⚙️</span> Paramètres</button>
-      
     </nav>
   </aside>
-
-  <!-- CONTENU PRINCIPAL -->
   <main class="main-content">
     <header class="main-header">
       <div class="page-title" id="page-title">Chargement...</div>
@@ -155,24 +86,20 @@
         <div id="search-results" class="search-results"></div>
       </div>
     </header>
-    
     <div class="main-body" id="content"></div>
-    
   </main>
 </div>
-
-<!-- MODAL KANJI CACHÉE -->
 <div class="modal-overlay" id="kanji-modal-overlay" onclick="closeKanjiModal(event)">
-  <div class="kanji-modal" id="kanji-modal-box">
-    <!-- Le contenu sera injecté ici par JavaScript -->
-  </div>
+  <div class="kanji-modal" id="kanji-modal-box"></div>
 </div>
-
-<!-- 🗄️ LA BASE DE DONNÉES -->
 <script src="./database.js"></script>
-
-<!-- 🧠 LE MOTEUR JAVASCRIPT -->
 <script src="./app.js"></script>
-
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(err => console.error('❌ Erreur SW', err));
+    });
+  }
+</script>
 </body>
 </html>
