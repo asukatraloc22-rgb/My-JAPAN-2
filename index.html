@@ -5,24 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   
-  <!-- ─── FAVICON & ICONS (RÉTABLIS) ─── -->
-  <link rel="icon" href="./icons/favicon-32.png" type="image/png">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-  <link rel="shortcut icon" href="./icons/favicon-32.png" type="image/png">
+  <!-- Favicon Sakura -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🌸</text></svg>">
   
-  <!-- ─── PWA MANIFEST ─── -->
   <link rel="manifest" href="manifest.json">
-  
   <meta name="theme-color" content="#C41E3A">
+  
   <title>日本語 de 道 — Mon Parcours Japonais</title>
   
-  <!-- ─── POLICES GOOGLE ─── -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Polices -->
   <link href="https://fonts.googleapis.com/css2?family=Kaisei+Decol:wght@400;700&family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet"/>
   
-  <!-- ─── CSS PRINCIPAL ─── -->
+  <!-- CSS -->
   <link rel="stylesheet" href="./style.css">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW Error', err));
+      });
+    }
+  </script>
 </head>
 <body>
 
@@ -32,12 +35,11 @@
 <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
 
 <div class="app-shell">
-  <!-- SIDEBAR (MENU GAUCHE) -->
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <button class="toggle-btn" onclick="toggleSidebar()" id="sidebar-toggle">◀</button>
     <div class="sidebar-logo">
-      <!-- Logo Sakura avec classe pour l'animation de rotation -->
-      <img src="./icons/favicon-32.png" class="logo-svg" alt="Logo Sakura" style="width: 44px; height: 44px;">
+      <span style="font-size: 3rem; margin-bottom: 10px; display:block;">🌸</span>
       <div class="logo-text-container">
         <span class="jp-title">日本語の道</span>
         <span class="sub">MON PARCOURS</span>
@@ -47,6 +49,7 @@
     <nav class="sidebar-nav">
       <div class="nav-group-label">Apprentissage JLPT</div>
       
+      <!-- N5 -->
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt5-menu')">
         <span><span class="nav-icon">🎓</span> JLPT N5 (Débutant)</span>
         <span class="chevron" id="chevron-jlpt5-menu">▼</span>
@@ -57,41 +60,64 @@
         <button class="nav-item sub-item" onclick="loadContent('cours-03')">3: Structure SOV</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-04')">4: Particules</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-05')">5: Verbes (Masu)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Les Adjectifs</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Arimasu / Imasu</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs & Questions</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-05-4')">5.4: Vocabulaire Essentiel</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-1')">5.1: Adjectifs</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-2')">5.2: Existence</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-3')">5.3: Compteurs</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-05-4')">5.4: Vocabulaire</button>
         <button class="nav-item sub-item" onclick="loadContent('cours-06')">6: Kanji N5</button>
       </div>
 
+      <!-- N4 -->
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt4-menu')">
         <span><span class="nav-icon">🗻</span> JLPT N4 (Élémentaire)</span>
         <span class="chevron" id="chevron-jlpt4-menu">▼</span>
       </button>
       <div id="jlpt4-menu" class="submenu" style="display: none;">
         <button class="nav-item sub-item" onclick="loadContent('cours-07')">7: Kanji N4</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Potentiel & Volitif</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Les 4 Conditionnels</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Suppositions & Apparences</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner et Recevoir</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-08')">8: Potentiel/Volitif</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-09')">9: Conditionnels</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-10')">10: Suppositions</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-10-1')">10.1: Donner/Recevoir</button>
       </div>
 
+      <!-- N3 -->
       <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt3-menu')">
         <span><span class="nav-icon">🏯</span> JLPT N3 (Intermédiaire)</span>
         <span class="chevron" id="chevron-jlpt3-menu">▼</span>
       </button>
       <div id="jlpt3-menu" class="submenu" style="display: none;">
         <button class="nav-item sub-item" onclick="loadContent('cours-11')">11: Kanji N3</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-12')">12: Passif & Causatif</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13')">13: Le Keigo (Politesse)</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13-1')">13.1: Temps & Limites</button>
-        <button class="nav-item sub-item" onclick="loadContent('cours-13-2')">13.2: Décisions & État</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-12')">12: Passif/Causatif</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13')">13: Keigo</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13-1')">13.1: Temps/Limites</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-13-2')">13.2: Décisions/État</button>
+      </div>
+
+      <!-- N2 -->
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt2-menu')">
+        <span><span class="nav-icon">🚄</span> JLPT N2 (Avancé)</span>
+        <span class="chevron" id="chevron-jlpt2-menu">▼</span>
+      </button>
+      <div id="jlpt2-menu" class="submenu" style="display: none;">
+        <button class="nav-item sub-item" onclick="loadContent('cours-14')">14: Kanji N2</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-15')">15: Grammaire N2</button>
+      </div>
+
+      <!-- N1 -->
+      <button class="nav-item menu-toggle" onclick="toggleMenu('jlpt1-menu')">
+        <span><span class="nav-icon">⛩️</span> JLPT N1 (Expert)</span>
+        <span class="chevron" id="chevron-jlpt1-menu">▼</span>
+      </button>
+      <div id="jlpt1-menu" class="submenu" style="display: none;">
+        <button class="nav-item sub-item" onclick="loadContent('cours-16')">16: Kanji N1</button>
+        <button class="nav-item sub-item" onclick="loadContent('cours-17')">17: Grammaire N1</button>
       </div>
 
       <div class="sidebar-section-divider"></div>
       
       <div class="nav-group-label">Pratique & Évaluation</div>
       <button class="nav-item" onclick="loadContent('exercices')"><span class="nav-icon">💪</span> Exercices</button>
+      <button class="nav-item" onclick="loadContent('examens')"><span class="nav-icon">🎓</span> Examens JLPT</button>
       <button class="nav-item" onclick="loadContent('verbs-dict')"><span class="nav-icon">📘</span> Dico des Verbes</button>
       
       <div class="sidebar-section-divider"></div>
@@ -99,10 +125,11 @@
       <div class="nav-group-label">Mon Compte</div>
       <button class="nav-item" onclick="loadContent('progression')"><span class="nav-icon">📈</span> Progression</button>
       <button class="nav-item" onclick="loadContent('parametres')"><span class="nav-icon">⚙️</span> Paramètres</button>
+      
     </nav>
   </aside>
 
-  <!-- CONTENU PRINCIPAL -->
+  <!-- CONTENU -->
   <main class="main-content">
     <header class="main-header">
       <div class="page-title" id="page-title">Chargement...</div>
@@ -111,25 +138,15 @@
         <div id="search-results" class="search-results"></div>
       </div>
     </header>
-    
     <div class="main-body" id="content"></div>
   </main>
 </div>
 
 <div class="modal-overlay" id="kanji-modal-overlay" onclick="closeKanjiModal(event)">
-  <div class="kanji-modal" id="kanji-modal-box"></div>
+  <div class="modal-box" id="kanji-modal-box"></div>
 </div>
 
 <script src="./database.js"></script>
 <script src="./app.js"></script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.error('❌ Erreur SW', err));
-    });
-  }
-</script>
-
 </body>
 </html>
