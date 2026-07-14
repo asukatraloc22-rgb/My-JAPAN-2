@@ -1710,3 +1710,13 @@ body.samourai-mode .sr-badge {
     min-width: auto;
   }
 }
+
+/* --- ANIMATION DU LOGO SAKURA --- */
+@keyframes spin-sakura {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.sakura-spin {
+  animation: spin-sakura 12s linear infinite; /* 12s = rotation lente et zen */
+  transform-origin: center;
+}
