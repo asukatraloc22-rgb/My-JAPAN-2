@@ -1720,3 +1720,48 @@ body.samourai-mode .sr-badge {
   animation: spin-sakura 12s linear infinite; /* 12s = rotation lente et zen */
   transform-origin: center;
 }
+
+/* --- OVERLAY (Le fond assombri derrière la modale) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.65); /* Gris sombre transparent */
+  backdrop-filter: blur(4px); /* Effet de flou moderne sur le site derrière */
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* --- LA BOÎTE DU KANJI --- */
+.modal-box, .kanji-modal {
+  background: #fffef9; /* Fond blanc crème TRÈS SOLIDE */
+  width: 90%;
+  max-width: 450px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+  max-height: 85vh;
+  overflow-y: auto;
+  transform: translateY(20px); /* Petit effet de glissement */
+  transition: transform 0.3s ease;
+  position: relative;
+}
+
+.modal-overlay.active .modal-box, .modal-overlay.active .kanji-modal {
+  transform: translateY(0);
+}
+
+/* --- ADAPTATION MODE SOMBRE (SAMOURAÏ) --- */
+body.samourai-mode .modal-box, 
+body.samourai-mode .kanji-modal {
+  background: var(--sumi); /* Gris très foncé */
+  color: var(--kinari);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+}
