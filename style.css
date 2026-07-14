@@ -1757,14 +1757,17 @@ body.samourai-mode .sr-badge {
   position: relative;
 }
 
-.modal-overlay.active .modal-box, .modal-overlay.active .kanji-modal {
-  transform: translateY(0);
+/* --- AMÉLIORATION DU CONTRASTE DE TA MODALE KANJI --- */
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.65) !important; /* Rend le fond derrière la modale bien sombre */
 }
 
-/* --- ADAPTATION MODE SOMBRE (SAMOURAÏ) --- */
-body.samourai-mode .modal-box, 
+/* On ajoute juste un fond propre à ta carte existante, sans toucher à ton design ! */
+.kanji-modal {
+  background-color: #fffef9 !important; /* Fond blanc crème très solide */
+}
+
+/* Adaptation pour le mode sombre (Samouraï) */
 body.samourai-mode .kanji-modal {
-  background: var(--sumi); /* Gris très foncé */
-  color: var(--kinari);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+  background-color: var(--sumi) !important; /* Gris foncé propre */
 }
