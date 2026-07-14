@@ -1718,10 +1718,10 @@ body.samourai-mode .sr-badge {
 }
 
 .sakura-spin {
-  display: inline-block !important; /* 👈 LE SECRET EST ICI : on force le mode bloc */
-  animation: spin-sakura 12s linear infinite;
-  transform-origin: center center;
-  line-height: 1; /* Évite que la fleur soit décentrée pendant la rotation */
+  display: inline-block !important; 
+  animation: spin-sakura 12s linear infinite !important;
+  transform-origin: center center !important;
+  line-height: 1 !important;
 }
 
 /* --- OVERLAY (Le fond assombri derrière la modale) --- */
